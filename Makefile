@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/03/04 20:06:04 by victor           ###   ########.fr        #
+#    Updated: 2025/03/15 12:59:36 by vberdugo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,11 @@ SRC_DIR = ./src
 # Lista de archivos fuente
 SRC = $(SRC_DIR)/cub3D.c 
 
+OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 # Lista de archivos objeto
-OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+# OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+
+INCLUDE = iinc/cube3D.hnc/cub3D.h #libft/libft.h
 
 BONUS_SRC = $(SRC_DIR)/bonus/cub3D_bonus.c
 BONUS_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(BONUS_SRC))
@@ -77,7 +80,7 @@ $(MINI):
 	@cmake MLX42 -B MLX42/build && make -C MLX42/build -j4
 
 # Regla para compilar archivos objeto
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: src/%.c $(INCLUDE) Makefile
 	@mkdir -p $(dir $@)  # Crea el directorio de destino si no existe
 	$(CC) $(CFLAGS) -c $< -o $@
 	@echo "$(GREEN_DARK)Compiled: $<$(RESET)"
