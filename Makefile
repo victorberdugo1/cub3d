@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/03/15 12:59:36 by vberdugo         ###   ########.fr        #
+#    Updated: 2025/03/19 10:47:40 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,21 +19,21 @@ MINI_BACKUP = $(MINI).backup
 
 OBJ_DIR = ./obj
 SRC_DIR = ./src
+SRC_DIR_BONUS = ./src/bonus
 
 # Lista de archivos fuente
 SRC = $(SRC_DIR)/cub3D.c 
 
-OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 # Lista de archivos objeto
-# OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
-INCLUDE = iinc/cube3D.hnc/cub3D.h #libft/libft.h
+INCLUDE = inc/cube3D.h libft/libft.h
 
-BONUS_SRC = $(SRC_DIR)/bonus/cub3D_bonus.c
-BONUS_OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(BONUS_SRC))
+BONUS_SRC = $(SRC_DIR_BONUS)/cub3D_bonus.c
+BONUS_OBJ = $(BONUS_SRC:/src/bonus/%.c=$(OBJ_DIR)/%.o)
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Ilibft -Iinc  #-g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -Ilibft -Iinc -g -fsanitize=address
 
 LDFLAGS = $(LIBFT) $(MINI) -lglfw -lm
 
@@ -72,6 +72,7 @@ $(NAME): $(LIBFT) $(MINI) $(OBJ)
 
 $(NAME_BONUS): $(LIBFT) $(MINI) $(BONUS_OBJ)
 	$(CC) $(CFLAGS) $(BONUS_OBJ) -o $(NAME_BONUS) $(LDFLAGS)
+	@echo "$(GREEN_DARK)Executable $(NAME_BONUS) created successfully!$(RESET)"
 
 $(LIBFT):
 	@make -C libft
@@ -97,7 +98,8 @@ bonus: libs mlx $(NAME_BONUS)
 clean:
 	@make -C libft clean
 	@make -C MLX42/build clean
-	rm -rf $(OBJ_DIR) $(BONUS_OBJ)
+	rm -f $(HBONUS)
+	rm -rf $(OBJ_DIR)
 	@echo "$(RED)Cleaned up object files.$(RESET)"
 
 fclean: clean
