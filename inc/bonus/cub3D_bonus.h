@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/03/26 20:09:04 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/26 18:40:33 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,11 @@ typedef struct s_collision
 	double	dy;
 }	t_collision;
 
-void	process_lines(char **lines, int count, t_game *game, t_camera *camera);
+void	process_lines(char **lines, int line_count, t_game *game, t_camera *camera);
 int		read_lines(const char *filename, char ***lines, int *line_count);
 char	safe_get_tile(t_game *game, int x, int y);
 int		collides(t_game *game, double new_x, double new_y);
 void	render_scene(void *param);
 void	move_camera(void *param);
-void	close_window(void *param);
-int		load_map(char *filename, char ***lines, int *line_count);
-void	free_map_lines(char **lines, int line_count);
-int		init_app_struct(t_app *app, char **lines, int line_count);
-void	cleanup(t_app *app);
 
 #endif
