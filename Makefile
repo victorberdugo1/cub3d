@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/03/19 10:47:40 by victor           ###   ########.fr        #
+#    Updated: 2025/03/26 12:46:00 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@ libs: prepare_libft
 mlx: prepare_mlx
 	@cmake MLX42 -B MLX42/build && make -C MLX42/build -j4
 
-$(NAME): $(LIBFT) $(MINI) $(OBJ)
+$(NAME): $(LIBFT) $(MINI) $(OBJ) Makefile
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
 	@echo "$(GREEN_DARK)Executable $(NAME) created successfully!$(RESET)"
 
