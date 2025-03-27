@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/03/26 20:42:26 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/27 13:26:09 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ static void	ft_draw_background(t_app *app)
 
 void	render_scene(void *param)
 {
-	t_app *app = (t_app *)param;
+	t_app	*app;
+
+	app = (t_app *)param;
 	ft_draw_background(app);
 	for (int x = 0; x < WIDTH; x++)
 	{

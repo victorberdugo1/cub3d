@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/03/26 21:19:10 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/27 13:00:10 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	close_window(void *param)
 {
-	t_app *app = (t_app *)param;
+	t_app	*app;
+
+	app = (t_app *)param;
 	mlx_close_window(app->mlx);
 }
 
@@ -25,7 +27,7 @@ int	load_map(char *filename, char ***lines, int *line_count)
 	ret = read_lines(filename, lines, line_count);
 	if (ret == -1)
 	{
-		fprintf(stderr, "Error: Failed to load map %s\n", filename);
+		printf("Error: Failed to load map %s\n", filename);
 		return (-1);
 	}
 	return (0);
@@ -41,12 +43,12 @@ void	free_map_lines(char **lines, int line_count)
 		free(lines[i]);
 		i = i + 1;
 	}
-	free(lines);
+	ft_free(lines);
 }
 
 int	init_app_struct(t_app *app, char **lines, int line_count)
 {
-	memset(app, 0, sizeof(*app));
+	ft_memset(app, 0, sizeof(*app));
 	process_lines(lines, line_count, &app->game, &app->camera);
 	return (0);
 }
@@ -69,6 +71,6 @@ void	cleanup(t_app *app)
 		free(app->game.map[i]);
 		i = i + 1;
 	}
-	free(app->game.map);
+	ft_free(app->game.map);
 	mlx_terminate(app->mlx);
 }

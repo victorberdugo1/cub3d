@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:17:00 by victor            #+#    #+#             */
-/*   Updated: 2025/03/26 20:49:23 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/27 11:38:15 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	safe_get_tile(t_game *game, int x, int y)
 
 	if (y < 0 || y >= game->map_height)
 		return ('1');
-	len = strlen(game->map[y]);
+	len = ft_strlen(game->map[y]);
 	if (x < 0 || x >= len)
 		return ('1');
 	return (game->map[y][x]);

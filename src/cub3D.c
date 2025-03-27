@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/03/26 21:19:24 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/27 11:44:22 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	check_usage(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		fprintf(stderr, "Error: Usage: %s <map_file.cub>\n", argv[0]);
+		printf("Error: Usage: %s <map_file.cub>\n", argv[0]);
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
@@ -30,7 +30,7 @@ static int	init_mlx_and_image(t_app *app)
 	mlx_instance = mlx_init(WIDTH, HEIGHT, "cub3D", true);
 	if (!mlx_instance)
 	{
-		fprintf(stderr, "Error: %s\n", mlx_strerror(mlx_errno));
+		printf("Error: %s\n", mlx_strerror(mlx_errno));
 		return (-1);
 	}
 	app->mlx = mlx_instance;
@@ -38,14 +38,14 @@ static int	init_mlx_and_image(t_app *app)
 	if (!img)
 	{
 		mlx_terminate(mlx_instance);
-		fprintf(stderr, "Error: %s\n", mlx_strerror(mlx_errno));
+		printf("Error: %s\n", mlx_strerror(mlx_errno));
 		return (-1);
 	}
 	app->image = img;
 	if (mlx_image_to_window(mlx_instance, img, 0, 0) == -1)
 	{
 		mlx_terminate(mlx_instance);
-		fprintf(stderr, "Error: %s\n", mlx_strerror(mlx_errno));
+		printf("Error: %s\n", mlx_strerror(mlx_errno));
 		return (-1);
 	}
 	return (0);
@@ -56,10 +56,10 @@ static int	load_game_textures(t_app *app)
 	t_game	*game;
 
 	game = &app->game;
-	if (!game->texture_no || !game->texture_so ||
-			!game->texture_we || !game->texture_ea)
+	if (!game->texture_no || !game->texture_so
+		|| !game->texture_we || !game->texture_ea)
 	{
-		fprintf(stderr, "Error: Missing texture paths in map file.\n");
+		printf("Error: Missing texture paths in map file.\n");
 		mlx_terminate(app->mlx);
 		return (-1);
 	}
@@ -67,10 +67,10 @@ static int	load_game_textures(t_app *app)
 	game->tex_so = mlx_load_png(game->texture_so);
 	game->tex_we = mlx_load_png(game->texture_we);
 	game->tex_ea = mlx_load_png(game->texture_ea);
-	if (!game->tex_no || !game->tex_so ||
-			!game->tex_we || !game->tex_ea)
+	if (!game->tex_no || !game->tex_so
+		|| !game->tex_we || !game->tex_ea)
 	{
-		fprintf(stderr, "Error: Failed to load one or more textures.\n");
+		printf("Error: Failed to load one or more textures.\n");
 		mlx_terminate(app->mlx);
 		return (-1);
 	}
@@ -90,29 +90,22 @@ int	main(int argc, char **argv)
 	char	**lines;
 	int		line_count;
 	t_app	app;
-	int		ret;
 
-	ret = check_usage(argc, argv);
-	if (ret != EXIT_SUCCESS)
+	if (check_usage(argc, argv) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
 	lines = NULL;
 	line_count = 0;
-	ret = load_map(argv[1], &lines, &line_count);
-	if (ret == -1)
+	if (load_map(argv[1], &lines, &line_count) == -1)
 		return (EXIT_FAILURE);
-	ret = init_app_struct(&app, lines, line_count);
-	if (ret != 0)
+	if (init_app_struct(&app, lines, line_count) != 0)
 		return (EXIT_FAILURE);
 	free_map_lines(lines, line_count);
 	app.camera.move_speed = 0.05;
 	app.camera.rot_speed = 0.05;
-	ret = init_mlx_and_image(&app);
-	if (ret == -1)
+	if (init_mlx_and_image(&app) == -1)
 		return (EXIT_FAILURE);
-	ret = load_game_textures(&app);
-	if (ret == -1)
+	if (load_game_textures(&app) == -1)
 		return (EXIT_FAILURE);
 	run_loop(&app);
-	cleanup(&app);
-	return (EXIT_SUCCESS);
+	return (cleanup(&app), EXIT_SUCCESS);
 }
