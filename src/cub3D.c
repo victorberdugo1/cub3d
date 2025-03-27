@@ -6,207 +6,106 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/03/15 13:46:54 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/03/27 11:44:22 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
-#include <math.h>
 
-#define WIDTH 512
-#define HEIGHT 512
-
-static mlx_image_t* image;
-
-typedef struct s_camera
+static int	check_usage(int argc, char **argv)
 {
-    t_vec2 pos;       // Posición en el mapa
-    t_vec2 dir;       // Dirección de la cámara
-    t_vec2 plane;     // Plano de la cámara (define FOV)
-    double move_speed;
-    double rot_speed;
-} t_camera;
-
-t_camera camera = {
-    .pos = {2.0, 2.0},
-    .dir = {1.0, 0.0},
-    .plane = {0.0, 0.66},
-    .move_speed = 0.05,
-    .rot_speed = 0.05
-};
-
-// Mapa simple (1 = pared, 0 = espacio libre)
-int world_map[10][10] = {
-    {1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,0,0,0,0,0,1},
-    {1,0,1,1,0,0,0,1,0,1},
-    {1,0,1,0,0,0,0,1,0,1},
-    {1,0,1,0,0,0,0,1,0,1},
-    {1,0,0,0,0,1,1,1,0,1},
-    {1,0,1,1,0,1,0,0,0,1},
-    {1,0,1,0,0,1,0,1,0,1},
-    {1,0,0,0,0,0,0,0,0,1},
-    {1,1,1,1,1,1,1,1,1,1}
-};
-
-// Función para calcular el color de un píxel
-int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
-{
-    return (r << 24 | g << 16 | b << 8 | a);
+	if (argc != 2)
+	{
+		printf("Error: Usage: %s <map_file.cub>\n", argv[0]);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }
 
-void ft_draw_background()
+static int	init_mlx_and_image(t_app *app)
 {
-    for (uint32_t i = 0; i < image->width; ++i)
-    {
-        for (uint32_t y = 0; y < image->height; ++y)
-        {
-            mlx_put_pixel(image, i, y, ft_pixel(255, 255, 0, 255)); // Fondo rojo
-        }
-    }
+	mlx_t			*mlx_instance;
+	mlx_image_t		*img;
+
+	mlx_instance = mlx_init(WIDTH, HEIGHT, "cub3D", true);
+	if (!mlx_instance)
+	{
+		printf("Error: %s\n", mlx_strerror(mlx_errno));
+		return (-1);
+	}
+	app->mlx = mlx_instance;
+	img = mlx_new_image(mlx_instance, WIDTH, HEIGHT);
+	if (!img)
+	{
+		mlx_terminate(mlx_instance);
+		printf("Error: %s\n", mlx_strerror(mlx_errno));
+		return (-1);
+	}
+	app->image = img;
+	if (mlx_image_to_window(mlx_instance, img, 0, 0) == -1)
+	{
+		mlx_terminate(mlx_instance);
+		printf("Error: %s\n", mlx_strerror(mlx_errno));
+		return (-1);
+	}
+	return (0);
 }
 
-// Algoritmo de Raycasting para dibujar el mundo
-void render_scene(void *param)
+static int	load_game_textures(t_app *app)
 {
-    (void)param;
-    ft_draw_background();
-    for (int x = 0; x < WIDTH; x++)
-    {
-        double cameraX = 2 * x / (double)WIDTH - 1;
-        t_vec2 rayDir = {camera.dir.x + camera.plane.x * cameraX, camera.dir.y + camera.plane.y * cameraX};
+	t_game	*game;
 
-        t_vec2 map = { (int)camera.pos.x, (int)camera.pos.y };
-        t_vec2 deltaDist = {
-            fabs(1 / rayDir.x),
-            fabs(1 / rayDir.y)
-        };
-
-        t_vec2 sideDist;
-        t_vec2 step;
-        int hit = 0;
-        int side;
-
-        if (rayDir.x < 0)
-        {
-            step.x = -1;
-            sideDist.x = (camera.pos.x - map.x) * deltaDist.x;
-        }
-        else
-        {
-            step.x = 1;
-            sideDist.x = (map.x + 1.0 - camera.pos.x) * deltaDist.x;
-        }
-        if (rayDir.y < 0)
-        {
-            step.y = -1;
-            sideDist.y = (camera.pos.y - map.y) * deltaDist.y;
-        }
-        else
-        {
-            step.y = 1;
-            sideDist.y = (map.y + 1.0 - camera.pos.y) * deltaDist.y;
-        }
-
-        while (!hit)
-        {
-            if (sideDist.x < sideDist.y)
-            {
-                sideDist.x += deltaDist.x;
-                map.x += step.x;
-                side = 0;
-            }
-            else
-            {
-                sideDist.y += deltaDist.y;
-                map.y += step.y;
-                side = 1;
-            }
-            if (world_map[(int)map.x][(int)map.y] > 0)
-                hit = 1;
-        }
-
-        double perpWallDist = (side == 0) ? (sideDist.x - deltaDist.x) : (sideDist.y - deltaDist.y);
-        int lineHeight = (int)(HEIGHT / perpWallDist);
-
-        int drawStart = -lineHeight / 2 + HEIGHT / 2;
-        if (drawStart < 0) drawStart = 0;
-        int drawEnd = lineHeight / 2 + HEIGHT / 2;
-        if (drawEnd >= HEIGHT) drawEnd = HEIGHT - 1;
-
-        int32_t color = (side == 1) ? ft_pixel(255, 0, 0, 255) : ft_pixel(200, 0, 0, 255);
-
-        for (int y = drawStart; y < drawEnd; y++)
-            mlx_put_pixel(image, x, y, color);
-    }
+	game = &app->game;
+	if (!game->texture_no || !game->texture_so
+		|| !game->texture_we || !game->texture_ea)
+	{
+		printf("Error: Missing texture paths in map file.\n");
+		mlx_terminate(app->mlx);
+		return (-1);
+	}
+	game->tex_no = mlx_load_png(game->texture_no);
+	game->tex_so = mlx_load_png(game->texture_so);
+	game->tex_we = mlx_load_png(game->texture_we);
+	game->tex_ea = mlx_load_png(game->texture_ea);
+	if (!game->tex_no || !game->tex_so
+		|| !game->tex_we || !game->tex_ea)
+	{
+		printf("Error: Failed to load one or more textures.\n");
+		mlx_terminate(app->mlx);
+		return (-1);
+	}
+	return (0);
 }
 
-// Movimiento de la cámara
-void move_camera(void *param)
+static void	run_loop(t_app *app)
 {
-    mlx_t *mlx = param;
-
-    if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
-        mlx_close_window(mlx);
-
-    if (mlx_is_key_down(mlx, MLX_KEY_W))
-    {
-        if (!world_map[(int)(camera.pos.x + camera.dir.x * camera.move_speed)][(int)camera.pos.y])
-            camera.pos.x += camera.dir.x * camera.move_speed;
-        if (!world_map[(int)camera.pos.x][(int)(camera.pos.y + camera.dir.y * camera.move_speed)])
-            camera.pos.y += camera.dir.y * camera.move_speed;
-    }
-    if (mlx_is_key_down(mlx, MLX_KEY_S))
-    {
-        if (!world_map[(int)(camera.pos.x - camera.dir.x * camera.move_speed)][(int)camera.pos.y])
-            camera.pos.x -= camera.dir.x * camera.move_speed;
-        if (!world_map[(int)camera.pos.x][(int)(camera.pos.y - camera.dir.y * camera.move_speed)])
-            camera.pos.y -= camera.dir.y * camera.move_speed;
-    }
-    if (mlx_is_key_down(mlx, MLX_KEY_A) || mlx_is_key_down(mlx, MLX_KEY_D))
-    {
-        double rotDir = (mlx_is_key_down(mlx, MLX_KEY_A)) ? 1 : -1;
-        double oldDirX = camera.dir.x;
-        camera.dir.x = camera.dir.x * cos(rotDir * camera.rot_speed) - camera.dir.y * sin(rotDir * camera.rot_speed);
-        camera.dir.y = oldDirX * sin(rotDir * camera.rot_speed) + camera.dir.y * cos(rotDir * camera.rot_speed);
-
-        double oldPlaneX = camera.plane.x;
-        camera.plane.x = camera.plane.x * cos(rotDir * camera.rot_speed) - camera.plane.y * sin(rotDir * camera.rot_speed);
-        camera.plane.y = oldPlaneX * sin(rotDir * camera.rot_speed) + camera.plane.y * cos(rotDir * camera.rot_speed);
-    }
+	mlx_loop_hook(app->mlx, render_scene, app);
+	mlx_loop_hook(app->mlx, move_camera, app);
+	mlx_close_hook(app->mlx, close_window, app);
+	mlx_loop(app->mlx);
 }
 
-
-// Main
-int32_t main(void)
+int	main(int argc, char **argv)
 {
-    mlx_t* mlx;
+	char	**lines;
+	int		line_count;
+	t_app	app;
 
-    if (!(mlx = mlx_init(WIDTH, HEIGHT, "cub3D", true)))
-    {
-        puts(mlx_strerror(mlx_errno));
-        return EXIT_FAILURE;
-    }
-
-    if (!(image = mlx_new_image(mlx, WIDTH, HEIGHT)))
-    {
-        mlx_close_window(mlx);
-        puts(mlx_strerror(mlx_errno));
-        return EXIT_FAILURE;
-    }
-
-    if (mlx_image_to_window(mlx, image, 0, 0) == -1)
-    {
-        mlx_close_window(mlx);
-        puts(mlx_strerror(mlx_errno));
-        return EXIT_FAILURE;
-    }
-
-    mlx_loop_hook(mlx, render_scene, mlx);
-    mlx_loop_hook(mlx, move_camera, mlx);
-
-    mlx_loop(mlx);
-    mlx_terminate(mlx);
-    return EXIT_SUCCESS;
+	if (check_usage(argc, argv) != EXIT_SUCCESS)
+		return (EXIT_FAILURE);
+	lines = NULL;
+	line_count = 0;
+	if (load_map(argv[1], &lines, &line_count) == -1)
+		return (EXIT_FAILURE);
+	if (init_app_struct(&app, lines, line_count) != 0)
+		return (EXIT_FAILURE);
+	free_map_lines(lines, line_count);
+	app.camera.move_speed = 0.05;
+	app.camera.rot_speed = 0.05;
+	if (init_mlx_and_image(&app) == -1)
+		return (EXIT_FAILURE);
+	if (load_game_textures(&app) == -1)
+		return (EXIT_FAILURE);
+	run_loop(&app);
+	return (cleanup(&app), EXIT_SUCCESS);
 }
-
