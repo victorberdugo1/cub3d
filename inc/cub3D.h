@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/03/28 13:35:27 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/28 22:04:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,6 @@ int		load_map(char *filename, char ***lines, int *line_count);
 void	free_map_lines(char **lines, int line_count);
 int		init_app_struct(t_app *app, char **lines, int line_count);
 void	cleanup(t_app *app);
+void	validate_map(t_game *game, t_camera *camera);
 
 #endif
