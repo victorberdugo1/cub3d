@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/03/27 13:26:09 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/03/28 13:52:46 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	ft_draw_background(t_app *app)
 			mlx_put_pixel(app->image, x, y, floor_color);
 	}
 }
-
+/*
 void	render_scene(void *param)
 {
 	t_app	*app;
@@ -144,5 +144,141 @@ void	render_scene(void *param)
 			uint32_t color = ((uint32_t *)tex->pixels)[texY * texWidth + texX];
 			mlx_put_pixel(app->image, x, y, color);
 		}
+	}
+}*/
+
+static void	init_ray(t_app *app, int x, t_ray *ray)
+{
+	double	camx;
+
+	camx = 2 * x / (double)WIDTH - 1;
+	ray->raydir.x = app->camera.dir.x + app->camera.plane.x * camx;
+	ray->raydir.y = app->camera.dir.y + app->camera.plane.y * camx;
+	ray->map_x = (int)app->camera.pos.x;
+	ray->map_y = (int)app->camera.pos.y;
+	ray->deltadist.x = fabs(1 / ray->raydir.x);
+	ray->deltadist.y = fabs(1 / ray->raydir.y);
+}
+
+static void	do_dda(t_app *app, t_ray *ray)
+{
+	if (ray->raydir.x < 0)
+	{
+		ray->step.x = -1;
+		ray->sidedist.x = (app->camera.pos.x - ray->map_x) * ray->deltadist.x;
+	}
+	else
+	{
+		ray->step.x = 1;
+		ray->sidedist.x = ((ray->map_x + 1.0) - app->camera.pos.x) * ray->deltadist.x;
+	}
+	if (ray->raydir.y < 0)
+	{
+		ray->step.y = -1;
+		ray->sidedist.y = (app->camera.pos.y - ray->map_y) * ray->deltadist.y;
+	}
+	else
+	{
+		ray->step.y = 1;
+		ray->sidedist.y = ((ray->map_y + 1.0) - app->camera.pos.y) * ray->deltadist.y;
+	}
+	while (1)
+	{
+		if (ray->sidedist.x < ray->sidedist.y)
+		{
+			ray->sidedist.x += ray->deltadist.x;
+			ray->map_x += ray->step.x;
+			ray->side = 0;
+		}
+		else
+		{
+			ray->sidedist.y += ray->deltadist.y;
+			ray->map_y += ray->step.y;
+			ray->side = 1;
+		}
+		if (ray->map_y < 0 || ray->map_y >= app->game.map_height
+			|| ray->map_x < 0 || ray->map_x >= (int)ft_strlen(app->game.map[ray->map_y])
+			|| safe_get_tile(&app->game, ray->map_x, ray->map_y) == '1')
+			break ;
+	}
+	if (ray->side == 0)
+		ray->perpwalldist = ray->sidedist.x - ray->deltadist.x;
+	else
+		ray->perpwalldist = ray->sidedist.y - ray->deltadist.y;
+}
+
+static void	compute_draw_params(t_app *app, t_ray *ray, t_draw *draw)
+{
+	double	wx;
+
+	draw->lh = (int)(HEIGHT / ray->perpwalldist);
+	draw->ds = -draw->lh / 2 + HEIGHT / 2;
+	if (draw->ds < 0)
+		draw->ds = 0;
+	draw->de = draw->lh / 2 + HEIGHT / 2;
+	if (draw->de >= HEIGHT)
+		draw->de = HEIGHT - 1;
+	if (ray->side == 0)
+		wx = app->camera.pos.y + ray->perpwalldist * ray->raydir.y;
+	else
+		wx = app->camera.pos.x + ray->perpwalldist * ray->raydir.x;
+	wx = wx - floor(wx);
+	if (ray->side == 0)
+	{
+		if (ray->raydir.x < 0)
+			draw->tex = app->game.tex_we;
+		else
+			draw->tex = app->game.tex_ea;
+	}
+	else
+	{
+		if (ray->raydir.y < 0)
+			draw->tex = app->game.tex_no;
+		else
+			draw->tex = app->game.tex_so;
+	}
+	if (!draw->tex)
+		return ;
+	draw->tx = (int)(wx * draw->tex->width);
+	if (ray->side == 0 && ray->raydir.x > 0)
+		draw->tx = draw->tex->width - draw->tx - 1;
+	if (ray->side == 1 && ray->raydir.y < 0)
+		draw->tx = draw->tex->width - draw->tx - 1;
+}
+
+static void	draw_pixels(t_app *app, int x, t_draw *draw)
+{
+	int	y;
+	int	d;
+	int	ty;
+
+	y = draw->ds;
+	while (y < draw->de)
+	{
+		d = y * 256 - HEIGHT * 128 + draw->lh * 128;
+		ty = ((d * draw->tex->height) / draw->lh) / 256;
+		mlx_put_pixel(app->image, x, y,
+			((uint32_t *)draw->tex->pixels)[ty * draw->tex->width + draw->tx]);
+		y++;
+	}
+}
+
+void	render_scene(void *param)
+{
+	t_app	*app;
+	int		x;
+	t_ray	ray;
+	t_draw	draw;
+
+	app = (t_app *)param;
+	ft_draw_background(app);
+	x = 0;
+	while (x < WIDTH)
+	{
+		init_ray(app, x, &ray);
+		do_dda(app, &ray);
+		compute_draw_params(app, &ray, &draw);
+		draw_pixels(app, x, &draw);
+		x++;
 	}
 }

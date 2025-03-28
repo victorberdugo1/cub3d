@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/03/26 20:09:04 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/28 13:35:27 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,27 @@ typedef struct s_camera
 	double	move_speed;
 	double	rot_speed;
 }	t_camera;
+
+typedef struct s_ray
+{
+	t_vec2	raydir;
+	int		map_x;
+	int		map_y;
+	t_vec2	deltadist;
+	t_vec2	sidedist;
+	t_vec2	step;
+	int		side;
+	double	perpwalldist;
+}	t_ray;
+
+typedef struct s_draw
+{
+	int				lh;
+	int				ds;
+	int				de;
+	int				tx;
+	mlx_texture_t	*tex;
+}	t_draw;
 
 typedef struct s_game
 {

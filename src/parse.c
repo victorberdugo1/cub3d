@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/03/27 13:23:03 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/03/28 13:35:40 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,23 +173,31 @@ int	read_lines(const char *filename, char ***lines, int *line_count)
 
 static void	parse_color(char *line, int color[3])
 {
-	int	r;
-	int	g;
-	int	b;
+	int		i;
+	char	*s;
 
-	if (sscanf(line, "%d,%d,%d", &r, &g, &b) != 3)
+	i = -1;
+	s = line;
+	while (++i < 3)
 	{
-		printf("Error: Formato de color inválido\n");
-		exit(EXIT_FAILURE);
+		while (*s == ' ' || *s == '\t')
+			s++;
+		if (!*s)
+			exit(write(1, "Error: Formato de color inválido\n", 33));
+		color[i] = ft_atoi(s);
+		while (*s >= '0' && *s <= '9')
+			s++;
+		if (color[i] < 0 || color[i] > 255)
+			exit(write(1, "Error: Valores RGB fuera de rango (0-255)\n", 42));
+		if (i < 2)
+		{
+			while (*s == ' ' || *s == '\t')
+				s++;
+			if (*s != ',')
+				exit(write(1, "Error: Formato de color inválido\n", 33));
+			s++;
+		}
 	}
-	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-	{
-		printf("Error: Valores RGB fuera de rango (0-255)\n");
-		exit(EXIT_FAILURE);
-	}
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
 }
 
 void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
