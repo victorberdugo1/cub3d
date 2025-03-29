@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/03/28 22:04:50 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/29 13:56:30 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,5 +113,10 @@ void	free_map_lines(char **lines, int line_count);
 int		init_app_struct(t_app *app, char **lines, int line_count);
 void	cleanup(t_app *app);
 void	validate_map(t_game *game, t_camera *camera);
+void	ft_draw_background(t_app *app);
+void	draw_pixels(t_app *app, int x, t_draw *draw);
+void	init_ray(t_app *app, int x, t_ray *ray);
+void	do_dda(t_app *app, t_ray *ray);
+void	compute_draw_boundaries(t_draw *draw, t_ray *ray);
 
 #endif

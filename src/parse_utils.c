@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 22:51:37 by victor            #+#    #+#             */
-/*   Updated: 2025/03/28 22:53:35 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/29 13:24:27 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,21 @@ int	read_lines(const char *filename, char ***lines, int *line_count)
 	*lines = temp;
 	*line_count = count;
 	return (0);
+}
+
+void	draw_pixels(t_app *app, int x, t_draw *draw)
+{
+	int	y;
+	int	d;
+	int	ty;
+
+	y = draw->ds;
+	while (y < draw->de)
+	{
+		d = y * 256 - HEIGHT * 128 + draw->lh * 128;
+		ty = ((d * draw->tex->height) / draw->lh) / 256;
+		mlx_put_pixel(app->image, x, y,
+			((uint32_t *)draw->tex->pixels)[ty * draw->tex->width + draw->tx]);
+		y++;
+	}
 }
