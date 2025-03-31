@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/03/27 11:44:22 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/03/31 11:09:32 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int	load_game_textures(t_app *app)
 		|| !game->tex_we || !game->tex_ea)
 	{
 		printf("Error: Failed to load one or more textures.\n");
-		mlx_terminate(app->mlx);
+		cleanup(app);
 		return (-1);
 	}
 	return (0);
