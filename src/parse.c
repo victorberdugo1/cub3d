@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/03/29 13:25:00 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/31 11:16:17 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,18 @@ static void	parse_color(char *line, int color[3])
 		while (*s == ' ' || *s == '\t')
 			s++;
 		if (!*s)
-			exit(write(1, "Error: Formato de color inválido\n", 33));
+			exit(write(1, "Error\nInvalid color format\n", 28));
 		color[i] = ft_atoi(s);
 		while (*s >= '0' && *s <= '9')
 			s++;
 		if (color[i] < 0 || color[i] > 255)
-			exit(write(1, "Error: Valores RGB fuera de rango (0-255)\n", 42));
+			exit(write(1, "Error\nRGB values out of range (0-255)\n", 39));
 		if (i < 2)
 		{
 			while (*s == ' ' || *s == '\t')
 				s++;
 			if (*s != ',')
-				exit(write(1, "Error: Formato de color inválido\n", 33));
+				exit(write(1, "Error\nInvalid color format\n", 28));
 			s++;
 		}
 	}
@@ -78,4 +78,15 @@ void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
 	game->map = temp_map;
 	game->map_height = lines_count;
 	validate_map(game, camera);
+	if (!game->texture_no || !game->texture_so
+		|| !game->texture_we || !game->texture_ea)
+	{
+		printf("Error\nMissing texture paths in map file\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((game->floor_color[0] == 0 && game->floor_color[1] == 0
+			&& game->floor_color[2] == 0)
+		|| (game->ceiling_color[0] == 0 && game->ceiling_color[1] == 0
+			&& game->ceiling_color[2] == 0))
+		exit(write(1, "Error\nMissing floor or ceiling color\n", 38));
 }

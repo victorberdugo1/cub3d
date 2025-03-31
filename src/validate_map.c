@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/03/28 23:51:29 by victor           ###   ########.fr       */
+/*   Updated: 2025/03/31 10:21:57 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	validate_borders(char *line, int is_border)
 		j = -1;
 		while (++j < len)
 			if (line[j] != '1' && line[j] != ' ')
-				exit(write(2, "Error\nMap not closed at row XX, col YY\n", 39));
+				exit(write(2, "Error\nMap is not closed\n", 25));
 	}
 	else
 	{
@@ -37,12 +37,12 @@ static void	validate_borders(char *line, int is_border)
 		while (++j < len && line[j] == ' ')
 			;
 		if (j < len && line[j] != '1')
-			exit(write(2, "Error\nMap left open at row XX\n", 30));
+			exit(write(2, "Error\nMap is left open\n", 24));
 		j = len;
 		while (--j >= 0 && line[j] == ' ')
 			;
 		if (j >= 0 && line[j] != '1')
-			exit(write(2, "Error\nMap right open at row XX\n", 31));
+			exit(write(2, "Error\nMap is right open\n", 25));
 	}
 }
 

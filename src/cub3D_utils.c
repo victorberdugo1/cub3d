@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/03/27 13:00:10 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/03/31 11:11:15 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,14 @@ void	cleanup(t_app *app)
 {
 	int	i;
 
-	mlx_delete_texture(app->game.tex_no);
-	mlx_delete_texture(app->game.tex_so);
-	mlx_delete_texture(app->game.tex_we);
-	mlx_delete_texture(app->game.tex_ea);
+	if (app->game.tex_no)
+		mlx_delete_texture(app->game.tex_no);
+	if (app->game.tex_so)
+		mlx_delete_texture(app->game.tex_so);
+	if (app->game.tex_we)
+		mlx_delete_texture(app->game.tex_we);
+	if (app->game.tex_ea)
+		mlx_delete_texture(app->game.tex_ea);
 	free(app->game.texture_no);
 	free(app->game.texture_so);
 	free(app->game.texture_we);
