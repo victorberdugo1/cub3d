@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/03/31 11:09:32 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/04/01 23:06:30 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,17 @@
 
 static int	check_usage(int argc, char **argv)
 {
+	int	len;
+
 	if (argc != 2)
 	{
 		printf("Error: Usage: %s <map_file.cub>\n", argv[0]);
+		return (EXIT_FAILURE);
+	}
+	len = ft_strlen(argv[1]);
+	if (len < 4 || ft_strcmp(argv[1] + len - 4, ".cub") != 0)
+	{
+		printf("Error: Invalid file extension. Expected .cub\n");
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);

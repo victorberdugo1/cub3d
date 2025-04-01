@@ -1,13 +1,13 @@
-   WE                            ./textures/W.png 
-NO      ./textures/N.png
+   WE                      ./textures/W.png
+   NO      ./textures/N.png 
 
 
 
-SO ./textures/S.png
+SO   ./textures/S.png
 
-F   69, 222, 199
+F   69, 222, 199    
 
-EA ./textures/E.png
+    EA ./textures/E.png
 
 
 

@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/03/31 11:11:15 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/04/01 23:14:34 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	free_map_lines(char **lines, int line_count)
 int	init_app_struct(t_app *app, char **lines, int line_count)
 {
 	ft_memset(app, 0, sizeof(*app));
+	ft_memset(app->game.floor_color, -1, sizeof(app->game.floor_color));
+	ft_memset(app->game.ceiling_color, -1, sizeof(app->game.ceiling_color));
 	process_lines(lines, line_count, &app->game, &app->camera);
 	return (0);
 }

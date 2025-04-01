@@ -6,16 +6,32 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/03/31 10:21:57 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/04/02 00:05:21 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-static void	check_empty_line(char *line)
+static void	check_empty_line(t_game *game)
 {
-	if (ft_strlen(line) == 0)
-		exit(write(2, "Error\nEmpty map line\n", 21));
+	char	*trimmed;
+
+	while (game->map_height > 0)
+	{
+		trimmed = ft_strtrim(game->map[game->map_height - 1], " ");
+		if (ft_strlen(trimmed) == 0)
+		{
+			free(game->map[game->map_height - 1]);
+			game->map[game->map_height - 1] = NULL;
+			game->map_height--;
+		}
+		else
+		{
+			free(trimmed);
+			break ;
+		}
+		free(trimmed);
+	}
 }
 
 static void	validate_borders(char *line, int is_border)
@@ -94,14 +110,16 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 
 void	validate_map(t_game *game, t_camera *camera)
 {
-	int	i;
-	int	spawn_count;
+	int		i;
+	int		spawn_count;
 
+	check_empty_line(game);
 	spawn_count = 0;
 	i = -1;
 	while (++i < game->map_height)
 	{
-		check_empty_line(game->map[i]);
+		if (ft_strlen(game->map[i]) == 0)
+			exit(write(2, "Error\nEmpty map line\n", 21));
 		validate_borders(game->map[i], (i == 0 || i == game->map_height - 1));
 		process_row_chars(game, camera, i, &spawn_count);
 	}

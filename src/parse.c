@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/01 14:41:36 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/01 23:54:55 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,27 +41,59 @@ static void	parse_color(char *line, int color[3])
 	}
 }
 
+static int	check_texture_duplicate(t_game *game, const char *texture_type)
+{
+	if (!ft_strncmp(texture_type, "NO", 2) && game->texture_no)
+		return (1);
+	if (!ft_strncmp(texture_type, "SO", 2) && game->texture_so)
+		return (1);
+	if (!ft_strncmp(texture_type, "WE", 2) && game->texture_we)
+		return (1);
+	if (!ft_strncmp(texture_type, "EA", 2) && game->texture_ea)
+		return (1);
+	return (0);
+}
+
+static void	process_texture(char *trimmed, t_game *game)
+{
+	if (check_texture_duplicate(game, trimmed))
+	{
+		exit(write(2, "Error\nDuplicate texture\n", 24));
+	}
+	if (!ft_strncmp(trimmed, "NO", 2))
+		game->texture_no = ft_strtrim(skip_spaces(trimmed + 2), " ");
+	else if (!ft_strncmp(trimmed, "SO", 2))
+		game->texture_so = ft_strtrim(skip_spaces(trimmed + 2), " ");
+	else if (!ft_strncmp(trimmed, "WE", 2))
+		game->texture_we = ft_strtrim(skip_spaces(trimmed + 2), " ");
+	else if (!ft_strncmp(trimmed, "EA", 2))
+		game->texture_ea = ft_strtrim(skip_spaces(trimmed + 2), " ");
+	else if (!ft_strncmp(trimmed, "F", 1))
+		parse_color(skip_spaces(trimmed + 1), game->floor_color);
+	else if (!ft_strncmp(trimmed, "C", 1))
+		parse_color(skip_spaces(trimmed + 1), game->ceiling_color);
+}
+
 static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 		int *lines)
 {
-	if (ft_strncmp(line, "NO ", 3) == 0)
-		game->texture_no = ft_strdup(line + 3);
-	else if (ft_strncmp(line, "SO ", 3) == 0)
-		game->texture_so = ft_strdup(line + 3);
-	else if (ft_strncmp(line, "WE ", 3) == 0)
-		game->texture_we = ft_strdup(line + 3);
-	else if (ft_strncmp(line, "EA ", 3) == 0)
-		game->texture_ea = ft_strdup(line + 3);
-	else if (ft_strncmp(line, "F ", 2) == 0)
-		parse_color(line + 2, game->floor_color);
-	else if (ft_strncmp(line, "C ", 2) == 0)
-		parse_color(line + 2, game->ceiling_color);
-	else if (line[0] == '1' || line[0] == ' ')
+	static int	map_started = 0;
+	char		*trimmed;
+
+	trimmed = skip_spaces(line);
+	if (map_started || trimmed[0] == '1')
 	{
-		*temp_map = ft_realloc(*temp_map, (*lines + 1) * sizeof(char *));
+		map_started = 1;
+		*temp_map = ft_realloc(*temp_map, ((*lines) + 1) * sizeof(char *));
 		(*temp_map)[*lines] = ft_strdup(line);
 		(*lines)++;
 	}
+	else if (*trimmed == '\0')
+		return ;
+	else if (!ft_strncmp(trimmed, "NO", 2) || !ft_strncmp(trimmed, "SO", 2)
+		|| !ft_strncmp(trimmed, "WE", 2) || !ft_strncmp(trimmed, "EA", 2)
+		|| !ft_strncmp(trimmed, "F", 1) || !ft_strncmp(trimmed, "C", 1))
+		process_texture(trimmed, game);
 }
 
 void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
