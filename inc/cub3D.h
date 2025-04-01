@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/03/29 13:56:30 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/01 12:16:17 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_game
 	mlx_texture_t	*tex_so;
 	mlx_texture_t	*tex_we;
 	mlx_texture_t	*tex_ea;
+	int				map_started;
 }	t_game;
 
 typedef struct s_app

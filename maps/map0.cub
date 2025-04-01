@@ -3,6 +3,9 @@ SO ./textures/S.png
 WE ./textures/W.png
 EA ./textures/E.png
 
+
+
+
 F 220,100,0
 C 225,30,0
 

@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/03/31 11:16:17 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:41:36 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
 		printf("Error\nMissing texture paths in map file\n");
 		exit(EXIT_FAILURE);
 	}
-	if ((game->floor_color[0] == 0 && game->floor_color[1] == 0
-			&& game->floor_color[2] == 0)
-		|| (game->ceiling_color[0] == 0 && game->ceiling_color[1] == 0
-			&& game->ceiling_color[2] == 0))
+	if ((game->floor_color[0] == -1 && game->floor_color[1] == -1
+			&& game->floor_color[2] == -1)
+		|| (game->ceiling_color[0] == -1 && game->ceiling_color[1] == -1
+			&& game->ceiling_color[2] == -1))
 		exit(write(1, "Error\nMissing floor or ceiling color\n", 38));
 }
