@@ -6,11 +6,18 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 22:51:37 by victor            #+#    #+#             */
-/*   Updated: 2025/03/31 10:31:13 by vberdugo         ###   ########.fr       */
+/*   Updated: 2025/04/01 22:10:52 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
+
+char	*skip_spaces(char *s)
+{
+	while (*s == ' ')
+		s++;
+	return (s);
+}
 
 static int	process_line(char **line, char ***temp, int *count, int is_newline)
 {
