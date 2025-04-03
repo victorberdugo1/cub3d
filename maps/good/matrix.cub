@@ -1,7 +1,7 @@
-NO ./textures/N.png
-SO ./textures/S.png
-WE ./textures/W.png
-EA ./textures/E.png
+NO ./textures/matrix.png
+SO ./textures/matrix.png
+WE ./textures/matrix.png
+EA ./textures/matrix.png
 
 F 0,0,0
 C 0,0,0

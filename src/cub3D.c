@@ -6,12 +6,19 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/01 23:06:30 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 12:08:55 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Validates the command-line arguments. Checks that exactly one argument   */
+/*   is provided and that the file extension is ".cub". Returns EXIT_SUCCESS  */
+/*   if valid, otherwise returns EXIT_FAILURE.                                */
+/*                                                                            */
+/* ************************************************************************** */
 static int	check_usage(int argc, char **argv)
 {
 	int	len;
@@ -30,6 +37,13 @@ static int	check_usage(int argc, char **argv)
 	return (EXIT_SUCCESS);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Initializes the MLX instance and creates a new image with the specified  */
+/*   WIDTH and HEIGHT. If any initialization fails, prints an error message   */
+/*   and returns -1. Otherwise, assigns the MLX instance and image to the app */
+/*                                                                            */
+/* ************************************************************************** */
 static int	init_mlx_and_image(t_app *app)
 {
 	mlx_t			*mlx_instance;
@@ -59,6 +73,14 @@ static int	init_mlx_and_image(t_app *app)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Loads texture PNG files using the texture paths stored in the game       */
+/*   structure. If any texture path is missing or any texture fails to load,  */
+/*   prints an error message, terminates MLX, and returns -1. Otherwise,      */
+/*	 loads  all textures and returns 0.                                       */
+/*                                                                            */
+/* ************************************************************************** */
 static int	load_game_textures(t_app *app)
 {
 	t_game	*game;
@@ -85,6 +107,12 @@ static int	load_game_textures(t_app *app)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Sets up the MLX loop hooks for rendering, camera movement, and window    */
+/*   closing. Then enters the MLX main loop.                                  */
+/*                                                                            */
+/* ************************************************************************** */
 static void	run_loop(t_app *app)
 {
 	mlx_loop_hook(app->mlx, render_scene, app);
@@ -93,6 +121,14 @@ static void	run_loop(t_app *app)
 	mlx_loop(app->mlx);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Entry point of the program. It validates usage, loads the map,           */
+/*   initializes the application and MLX, loads textures, sets camera         */
+/*   parameters, and finally enters the main loop. Cleans up resources before */
+/*   exiting.                                                                 */
+/*                                                                            */
+/* ************************************************************************** */
 int	main(int argc, char **argv)
 {
 	char	**lines;
