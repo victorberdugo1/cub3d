@@ -6,12 +6,23 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/02 00:05:21 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 12:48:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Removes empty lines from the bottom of the map.                         */
+/*                                                                            */
+/*   - Iterates over the map lines from the bottom.                           */
+/*   - Trims the line to remove spaces and checks if the line is empty.      */
+/*   - If the line is empty, it frees the memory of the line and decreases    */
+/*     the map height.                                                       */
+/*   - Stops when a non-empty line is encountered or the whole map is empty. */
+/*                                                                            */
+/* ************************************************************************** */
 static void	check_empty_line(t_game *game)
 {
 	char	*trimmed;
@@ -34,6 +45,17 @@ static void	check_empty_line(t_game *game)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Validates the borders of each row in the map.                            */
+/*                                                                            */
+/*   - If `is_border` is true, it checks if the entire line is composed of    */
+/*     '1' (wall) or spaces.                                                  */
+/*   - If `is_border` is false, it ensures the line starts and ends with      */
+/*     '1' (wall) after trimming spaces from the left and right.              */
+/*   - Exits the program with an error if any of these conditions are violated*/
+/*                                                                            */
+/* ************************************************************************** */
 static void	validate_borders(char *line, int is_border)
 {
 	int	j;
@@ -62,6 +84,21 @@ static void	validate_borders(char *line, int is_border)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Sets the camera's position and direction based on the map.              */
+/*                                                                            */
+/*   - Based on the character ('N', 'S', 'E', 'W'), it sets the camera's     */
+/*     position to be at the center of the corresponding grid cell.          */
+/*   - The direction vector is set according to the cardinal direction.      */
+/*     - North ('N') has direction (0, -1) and plane (0.66, 0).               */
+/*     - South ('S') has direction (0, 1) and plane (-0.66, 0).              */
+/*     - East ('E') has direction (1, 0) and plane (0, 0.66).                */
+/*     - West ('W') has direction (-1, 0) and plane (0, -0.66).              */
+/*   - The camera's direction vector defines which way it faces.             */
+/*   - The plane vector helps in calculating the view direction for the ray. */
+/*                                                                            */
+/* ************************************************************************** */
 static void	set_camera(t_camera *camera, char dir, int x, int y)
 {
 	camera->pos.x = x + 0.5;
@@ -88,6 +125,18 @@ static void	set_camera(t_camera *camera, char dir, int x, int y)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Processes each character in a row of the map.                            */
+/*                                                                            */
+/*   - For each row, checks whether each character is valid                   */
+/*     (' ', '0', '1', 'N', 'S', 'E', 'W').                                   */
+/*   - If a spawn character ('N', 'S', 'E', or 'W') is found, the camera's    */
+/*     position and direction are set accordingly.                            */
+/*   - Replaces the spawn character with '0' to mark the cell as empty.       */
+/*   - Exits the program with an error if an invalid character is found.      */
+/*                                                                            */
+/* ************************************************************************** */
 static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 {
 	int		j;
@@ -108,6 +157,16 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Validates the map by checking for empty lines, borders, and spawn.       */
+/*                                                                            */
+/*   - Calls `check_empty_line()` to remove empty lines at the bottom.        */
+/*   - Ensures that the map borders are closed and valid `validate_borders()` */
+/*   - Processes each row for valid characters and checks for exact one spawn */
+/*   - Exits with an error if any conditions are violated.                    */
+/*                                                                            */
+/* ************************************************************************** */
 void	validate_map(t_game *game, t_camera *camera)
 {
 	int		i;

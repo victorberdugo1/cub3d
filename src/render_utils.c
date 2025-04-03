@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:20:35 by victor            #+#    #+#             */
-/*   Updated: 2025/03/29 13:22:41 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 13:02:04 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,52 @@ void	ft_draw_background(t_app *app)
 		y = HEIGHT / 2;
 		while (++y < HEIGHT)
 			mlx_put_pixel(app->image, x, y, floor_color);
+	}
+}
+
+/* ************************************************************************** */
+/* Converts a pixel color value to a format suitable for rendering in the     */
+/* graphical context. Returns the converted pixel color as a uint32_t value. */
+/* ************************************************************************** */
+uint32_t	convert_pixel(uint32_t px)
+{
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
+	uint8_t	alpha;
+
+	red = (px >> 16) & 0xFF;
+	green = (px >> 8) & 0xFF;
+	blue = px & 0xFF;
+	alpha = (px >> 24) & 0xFF;
+	return (ft_pixel(blue, green, red, alpha));
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws a vertical strip of pixels for a wall texture on the screen.       */
+/*                                                                            */
+/*   - Iterates from `draw->ds` (draw start) to `draw->de` (draw end).        */
+/*   - Calculates the texture y-coordinate (`ty`) for each screen pixel.      */
+/*   - Retrieves the corresponding texture pixel and plots it with            */
+/*     `mlx_put_pixel()`.                                                     */
+/*                                                                            */
+/* ************************************************************************** */
+void	draw_pixels(t_app *app, int x, t_draw *draw)
+{
+	int			y;
+	int			d;
+	int			ty;
+	uint32_t	px;
+
+	y = draw->ds;
+	while (y < draw->de)
+	{
+		d = y * 256 - HEIGHT * 128 + draw->lh * 128;
+		ty = ((d * draw->tex->height) / draw->lh) / 256;
+		px = ((uint32_t *)draw->tex->pixels)[ty * draw->tex->width + draw->tx];
+		px = convert_pixel(px);
+		mlx_put_pixel(app->image, x, y, px);
+		y++;
 	}
 }

@@ -6,12 +6,34 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/03/29 13:56:23 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 12:55:00 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Initializes a ray for the given screen column (x).                       */
+/*                                                                            */
+/*   - Computes `camx`, which represents the camera's x-coordinate in        */
+/*     normalized device coordinates (ranging from -1 to 1).                  */
+/*     Formula: camx = 2 * x / WIDTH - 1                                      */
+/*                                                                            */
+/*   - Calculates the ray direction `raydir` using the camera direction       */
+/*     (`dir`) and plane (`plane`):                                           */
+/*       raydir.x = dir.x + plane.x * camx                                    */
+/*       raydir.y = dir.y + plane.y * camx                                    */
+/*                                                                            */
+/*   - Determines `map_x` and `map_y`, which are the integer coordinates      */
+/*     of the current grid cell (truncated from `pos`).                       */
+/*                                                                            */
+/*   - Computes `deltadist`, the distance the ray travels between grid        */
+/*     lines in each axis. It is calculated as:                               */
+/*       deltadist.x = |1 / raydir.x|                                         */
+/*       deltadist.y = |1 / raydir.y|                                         */
+/*                                                                            */
+/* ************************************************************************** */
 void	init_ray(t_app *app, int x, t_ray *ray)
 {
 	double	camx;
@@ -25,6 +47,19 @@ void	init_ray(t_app *app, int x, t_ray *ray)
 	ray->deltadist.y = fabs(1 / ray->raydir.y);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Determines the step direction and initial side distance.                 */
+/*                                                                            */
+/*   - The step `ret.x` determines whether the ray moves left (-1) or right   */
+/*     (+1) in the x-direction, and similarly for `ret.y` in the y-direction. */
+/*                                                                            */
+/*   - The initial `sidedist` is calculated using:                            */
+/*       sidedist_x = (map_x + 1 - pos_x) * deltadist_x  (if moving right)    */
+/*       sidedist_x = (pos_x - map_x) * deltadist_x  (if moving left)         */
+/*     Similarly for `sidedist_y`.                                            */
+/*                                                                            */
+/* ************************************************************************** */
 static t_vec2	init_step(double pos, int map, double deltadist, double raydir)
 {
 	t_vec2	ret;
@@ -42,6 +77,25 @@ static t_vec2	init_step(double pos, int map, double deltadist, double raydir)
 	return (ret);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Implements the Digital Differential Analyzer (DDA) algorithm.            */
+/*                                                                            */
+/*   - This algorithm finds the first intersection of the ray with a wall.    */
+/*   - The ray moves in discrete steps, choosing either the x or y direction  */
+/*     depending on which `sidedist` is smaller.                              */
+/*                                                                            */
+/*   - If `sidedist.x < sidedist.y`, the ray moves in the x-direction:        */
+/*       sidedist.x += deltadist.x                                            */
+/*       map_x += step_x                                                      */
+/*                                                                            */
+/*   - Otherwise, it moves in the y-direction:                                */
+/*       sidedist.y += deltadist.y                                            */
+/*       map_y += step_y                                                      */
+/*                                                                            */
+/*   - This process repeats until a wall (`'1'`) is found or out of bounds.   */
+/*                                                                            */
+/* ************************************************************************** */
 static void	dda_loop(t_app *app, t_ray *ray)
 {
 	while (1)
@@ -67,6 +121,24 @@ static void	dda_loop(t_app *app, t_ray *ray)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Executes the full DDA (raycasting) routine for a single ray.             */
+/*                                                                            */
+/*   - Calls `init_step()` to determine stepping direction and initial        */
+/*     side distances.                                                        */
+/*                                                                            */
+/*   - Runs `dda_loop()` to trace the ray through the grid until it hits      */
+/*     a wall.                                                                */
+/*                                                                            */
+/*   - Computes the perpendicular distance to the wall (`perpwalldist`),      */
+/*     which is essential for perspective projection.                         */
+/*                                                                            */
+/*     Formula:                                                               */
+/*       perpwalldist = sidedist_x - deltadist_x  (if hit was on x-side)      */
+/*       perpwalldist = sidedist_y - deltadist_y  (if hit was on y-side)      */
+/*                                                                            */
+/* ************************************************************************** */
 void	do_dda(t_app *app, t_ray *ray)
 {
 	t_vec2	steps;
@@ -86,6 +158,21 @@ void	do_dda(t_app *app, t_ray *ray)
 		ray->perpwalldist = ray->sidedist.y - ray->deltadist.y;
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Computes the vertical drawing boundaries for the wall slice.             */
+/*                                                                            */
+/*   - Uses `perpwalldist` to determine the height of the projected wall:     */
+/*       line_height = HEIGHT / perpwalldist                                  */
+/*                                                                            */
+/*   - Calculates the top (`draw_start`) and bottom (`draw_end`) positions    */
+/*     on the screen, centering the wall slice:                               */
+/*       draw_start = -line_height / 2 + HEIGHT / 2                           */
+/*       draw_end = line_height / 2 + HEIGHT / 2                              */
+/*                                                                            */
+/*   - Ensures the values stay within screen limits.                          */
+/*                                                                            */
+/* ************************************************************************** */
 void	compute_draw_boundaries(t_draw *draw, t_ray *ray)
 {
 	draw->lh = (int)(HEIGHT / ray->perpwalldist);

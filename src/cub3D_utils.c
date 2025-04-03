@@ -6,12 +6,17 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/01 23:14:34 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 11:47:38 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Closes the MLX window.                                                   */
+/*                                                                            */
+/* ************************************************************************** */
 void	close_window(void *param)
 {
 	t_app	*app;
@@ -20,6 +25,12 @@ void	close_window(void *param)
 	mlx_close_window(app->mlx);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Loads the map from a file and stores its lines in a dynamically          */
+/*   allocated array. Returns -1 on failure, 0 on success.                    */
+/*                                                                            */
+/* ************************************************************************** */
 int	load_map(char *filename, char ***lines, int *line_count)
 {
 	int	ret;
@@ -33,6 +44,11 @@ int	load_map(char *filename, char ***lines, int *line_count)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Frees the memory allocated for storing the map lines.                    */
+/*                                                                            */
+/* ************************************************************************** */
 void	free_map_lines(char **lines, int line_count)
 {
 	int	i;
@@ -46,6 +62,12 @@ void	free_map_lines(char **lines, int line_count)
 	ft_free(lines);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Initializes the t_app structure, setting default values and processing   */
+/*   the map lines to extract game and camera data.                           */
+/*                                                                            */
+/* ************************************************************************** */
 int	init_app_struct(t_app *app, char **lines, int line_count)
 {
 	ft_memset(app, 0, sizeof(*app));
@@ -55,6 +77,12 @@ int	init_app_struct(t_app *app, char **lines, int line_count)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Frees all dynamically allocated resources, including textures,           */
+/*   map data, and MLX-related objects.                                       */
+/*                                                                            */
+/* ************************************************************************** */
 void	cleanup(t_app *app)
 {
 	int	i;

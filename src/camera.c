@@ -6,18 +6,42 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/03/26 20:38:32 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 12:05:57 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Checks if the Escape key is pressed. If so, it closes the MLX window,    */
+/*   effectively terminating the program.                                     */
+/*                                                                            */
+/* ************************************************************************** */
 static void	check_escape(t_app *app)
 {
 	if (mlx_is_key_down(app->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(app->mlx);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Updates the camera's position based on user input.                       */
+/*                                                                            */
+/*   - Moves forward (W) or backward (S) along the camera's direction vector. */
+/*   - Moves left (A) or right (D) perpendicular to the direction vector.     */
+/*   - Prevents movement if a collision is detected.                          */
+/*                                                                            */
+/*   The movement logic works as follows:                                     */
+/*   - The direction vector (dir.x, dir.y) represents where the camera is     */
+/*     facing.                                                                */
+/*   - Moving forward (W) means adding this vector scaled by speed.           */
+/*   - Moving backward (S) means subtracting this vector scaled by speed.     */
+/*   - Moving sideways (A/D) requires a perpendicular movement:               */
+/*     - Left (A) is along the negative perpendicular vector (-dir.y, dir.x)  */
+/*     - Right (D) is along the positive perpendicular vector (dir.y, -dir.x) */
+/*                                                                            */
+/* ************************************************************************** */
 static void	update_camera_movement(t_app *app)
 {
 	double	new_x;
@@ -46,6 +70,23 @@ static void	update_camera_movement(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Rotates the camera left or right by a given angle.                       */
+/*                                                                            */
+/*   - Uses a standard 2D rotation matrix:                                    */
+/*       [ cos(theta)  -sin(theta) ]                                          */
+/*       [ sin(theta)   cos(theta) ]                                          */
+/*   - Applies this rotation to both the direction vector and the camera      */
+/*     plane to maintain correct rendering of perspective.                    */
+/*                                                                            */
+/*   The rotation logic works as follows:                                     */
+/*   - The `dir` vector represents where the camera is facing.                */
+/*   - The `plane` vector determines how much of the world is visible         */
+/*     (used for raycasting projection).                                      */
+/*   - Applying the rotation matrix rotates both vectors around the origin.   */
+/*                                                                            */
+/* ************************************************************************** */
 static void	rotate_camera(t_app *app, double rotation)
 {
 	double	old_dir_x;
@@ -63,6 +104,15 @@ static void	rotate_camera(t_app *app, double rotation)
 		+ app->camera.plane.y * cos(rotation);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Detects if the left or right arrow keys are pressed and rotates the      */
+/*   camera accordingly.                                                      */
+/*                                                                            */
+/*   - Left Arrow (←) rotates counterclockwise (negative rotation).           */
+/*   - Right Arrow (→) rotates clockwise (positive rotation).                 */
+/*                                                                            */
+/* ************************************************************************** */
 static void	update_camera_rotation(t_app *app)
 {
 	double	rotation;
@@ -79,6 +129,11 @@ static void	update_camera_rotation(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Handles camera movement and rotation each frame.                         */
+/*                                                                            */
+/* ************************************************************************** */
 void	move_camera(void *param)
 {
 	t_app	*app;

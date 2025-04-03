@@ -6,12 +6,17 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 22:51:37 by victor            #+#    #+#             */
-/*   Updated: 2025/04/01 22:10:52 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 12:55:40 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Skips leading spaces in a string and returns the first non-space char.   */
+/*                                                                            */
+/* ************************************************************************** */
 char	*skip_spaces(char *s)
 {
 	while (*s == ' ')
@@ -19,6 +24,17 @@ char	*skip_spaces(char *s)
 	return (s);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Processes a line read from the file and stores it in a dynamic array.    */
+/*                                                                            */
+/*   - If `is_newline` is true, it removes the trailing newline character.    */
+/*   - Reallocates memory to store the new line in the `temp` array.          */
+/*   - Duplicates and stores the line, updating the count of stored lines.    */
+/*   - If `is_newline`, resets `*line` to an empty string for the next input. */
+/*   - Returns 0 on success, -1 on memory allocation failure.                 */
+/*                                                                            */
+/* ************************************************************************** */
 static int	process_line(char **line, char ***temp, int *count, int is_newline)
 {
 	size_t	len;
@@ -46,6 +62,16 @@ static int	process_line(char **line, char ***temp, int *count, int is_newline)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Reads a file character by character, dynamically storing each line.      */
+/*                                                                            */
+/*   - Reads one character at a time and appends it to the current `line`.    */
+/*   - If a newline is encountered, calls `process_line()` to store it.       */
+/*   - Stops reading when EOF is reached or on error.                         */
+/*   - Returns 0 on success, -1 on memory allocation failure.                 */
+/*                                                                            */
+/* ************************************************************************** */
 static int	read_loop(int fd, char ***temp, int *count, char **line)
 {
 	int		r;
@@ -71,6 +97,18 @@ static int	read_loop(int fd, char ***temp, int *count, char **line)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Reads all lines from a file and stores them in a dynamically allocated   */
+/*   array.                                                                   */
+/*                                                                            */
+/*   - Opens the file and initializes variables.                              */
+/*   - Uses `read_loop()` to read and store lines dynamically.                */
+/*   - Ensures the last line is processed if it doesn't end in '\n'.          */
+/*   - Closes the file and updates `lines` and `line_count`.                  */
+/*   - Returns 0 on success, -1 on failure.                                   */
+/*                                                                            */
+/* ************************************************************************** */
 int	read_lines(const char *filename, char ***lines, int *line_count)
 {
 	int		fd;
@@ -96,21 +134,4 @@ int	read_lines(const char *filename, char ***lines, int *line_count)
 	*lines = temp;
 	*line_count = count;
 	return (0);
-}
-
-void	draw_pixels(t_app *app, int x, t_draw *draw)
-{
-	int	y;
-	int	d;
-	int	ty;
-
-	y = draw->ds;
-	while (y < draw->de)
-	{
-		d = y * 256 - HEIGHT * 128 + draw->lh * 128;
-		ty = ((d * draw->tex->height) / draw->lh) / 256;
-		mlx_put_pixel(app->image, x, y,
-			((uint32_t *)draw->tex->pixels)[ty * draw->tex->width + draw->tx]);
-		y++;
-	}
 }

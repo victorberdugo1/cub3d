@@ -6,12 +6,23 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/01 23:54:55 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/03 12:17:33 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Parses an RGB color string into an integer array.                        */
+/*                                                                            */
+/*   - Skips leading spaces and tabs.                                         */
+/*   - Extracts three integer values using `ft_atoi()`.                       */
+/*   - Ensures values are in the range [0, 255].                              */
+/*   - Verifies correct formatting (e.g., commas between values).             */
+/*   - Exits with an error message if the format is invalid.                  */
+/*                                                                            */
+/* ************************************************************************** */
 static void	parse_color(char *line, int color[3])
 {
 	int		i;
@@ -41,6 +52,14 @@ static void	parse_color(char *line, int color[3])
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Checks if a texture type has already been assigned to prevent duplicates.*/
+/*                                                                            */
+/*   - Compares the given `texture_type` string with known texture labels.    */
+/*   - Returns `1` (true) if the texture has already been set, otherwise `0`. */
+/*                                                                            */
+/* ************************************************************************** */
 static int	check_texture_duplicate(t_game *game, const char *texture_type)
 {
 	if (!ft_strncmp(texture_type, "NO", 2) && game->texture_no)
@@ -54,6 +73,15 @@ static int	check_texture_duplicate(t_game *game, const char *texture_type)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Processes a texture or color directive from the map file.                */
+/*                                                                            */
+/*   - Checks for duplicate texture definitions.                              */
+/*   - Assigns texture paths to their respective variables.                   */
+/*   - Calls `parse_color()` for floor (F) and ceiling (C) colors.            */
+/*                                                                            */
+/* ************************************************************************** */
 static void	process_texture(char *trimmed, t_game *game)
 {
 	if (check_texture_duplicate(game, trimmed))
@@ -74,6 +102,18 @@ static void	process_texture(char *trimmed, t_game *game)
 		parse_color(skip_spaces(trimmed + 1), game->ceiling_color);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Processes a line from the map file, classifying it as:                   */
+/*                                                                            */
+/*   - A map row (if it starts with '1' or if map parsing has started).       */
+/*   - A texture or color definition.                                         */
+/*   - An empty line (ignored).                                               */
+/*                                                                            */
+/*   - Stores map lines dynamically using `ft_realloc()` and `ft_strdup()`.   */
+/*   - Calls `process_texture()` for texture/color definitions.               */
+/*                                                                            */
+/* ************************************************************************** */
 static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 		int *lines)
 {
@@ -96,6 +136,17 @@ static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 		process_texture(trimmed, game);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Processes all lines from the map file and validates the final structure. */
+/*                                                                            */
+/*   - Reads and classifies each line.                                        */
+/*   - Stores the map as a dynamic array (`temp_map`).                        */
+/*   - Calls `validate_map()` to ensure the map's correctness.                */
+/*   - Checks that all required textures are present.                         */
+/*   - Ensures floor and ceiling colors are properly defined.                 */
+/*                                                                            */
+/* ************************************************************************** */
 void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
 {
 	int		lines_count;
