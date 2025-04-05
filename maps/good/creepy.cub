@@ -1,7 +1,7 @@
-NO ./textures/N.png
-SO ./textures/S.png
-WE ./textures/W.png
-EA ./textures/E.png
+NO ./textures/wall.png
+SO ./textures/wall.png
+WE ./textures/brick.png
+EA ./textures/brick.png
 
 C 35,19,73
 F 15,6,40
