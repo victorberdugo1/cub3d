@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:08:55 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/10 17:34:51 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,27 +46,22 @@ static int	check_usage(int argc, char **argv)
 /* ************************************************************************** */
 static int	init_mlx_and_image(t_app *app)
 {
-	mlx_t			*mlx_instance;
-	mlx_image_t		*img;
-
-	mlx_instance = mlx_init(WIDTH, HEIGHT, "cub3D", true);
-	if (!mlx_instance)
+	app->mlx = mlx_init(WIDTH, HEIGHT, "cub3D", true);
+	if (!app->mlx)
 	{
 		printf("Error: %s\n", mlx_strerror(mlx_errno));
 		return (-1);
 	}
-	app->mlx = mlx_instance;
-	img = mlx_new_image(mlx_instance, WIDTH, HEIGHT);
-	if (!img)
+	app->image = mlx_new_image(app->mlx, WIDTH, HEIGHT);
+	if (!app->image)
 	{
-		mlx_terminate(mlx_instance);
+		mlx_terminate(app->mlx);
 		printf("Error: %s\n", mlx_strerror(mlx_errno));
 		return (-1);
 	}
-	app->image = img;
-	if (mlx_image_to_window(mlx_instance, img, 0, 0) == -1)
+	if (mlx_image_to_window(app->mlx, app->image, 0, 0) == -1)
 	{
-		mlx_terminate(mlx_instance);
+		mlx_terminate(app->mlx);
 		printf("Error: %s\n", mlx_strerror(mlx_errno));
 		return (-1);
 	}
