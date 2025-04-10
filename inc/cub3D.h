@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/01 22:13:31 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/10 17:10:36 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 # include <stdio.h>
 # include <string.h>
 # include <math.h>
-# include "../libft/libft.h"
-# include "../MLX42/include/MLX42/MLX42.h"
+# include "libft.h"
+# include "MLX42.h"
 
-# define WIDTH 1024
-# define HEIGHT 1024
+# define WIDTH 2048
+# define HEIGHT 1200
 # define COLLISION_RADIUS 0.2
 
 typedef struct s_vec2

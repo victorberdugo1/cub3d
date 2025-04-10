@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/03/29 13:52:36 by victor           ###   ########.fr        #
+#    Updated: 2025/04/10 17:13:22 by aescande         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,8 +33,8 @@ BONUS_OBJ = $(BONUS_SRC:$(SRC_DIR_BONUS)/%.c=$(OBJ_DIR)/%.o)
 DEP = $(OBJ:.o=.d)
 BONUS_DEP = $(BONUS_OBJ:.o=.d)
 
-INCLUDE = -Iinc -Ilibft -IMLX42/include/MLX42
-BONUS_INCLUDE = -Iinc/bonus
+INCLUDE = -I./inc -I./libft -I./MLX42/include/MLX42
+BONUS_INCLUDE = -I./inc/bonus
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -MMD -MP $(INCLUDE)
