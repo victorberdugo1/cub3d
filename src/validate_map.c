@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:48:50 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 00:41:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,15 +97,15 @@ static void	validate_borders(char *line, int is_border)
 /*     - West ('W') has direction (-1, 0) and plane (0, -0.66).              */
 /*   - The camera's direction vector defines which way it faces.             */
 /*   - The plane vector helps in calculating the view direction for the ray. */
-/*                                                                            */
+/*                                     // dir * tan(FOV/2), dir = 1          */
 /* ************************************************************************** */
 static void	set_camera(t_camera *camera, char dir, int x, int y)
 {
-	double	FOV;
+	double	fov;
 	double	plane;
 
-	FOV = 60 * (M_PI/180);
-	plane = tan(FOV/2); // dir * tan(FOV/2), dir = 1
+	fov = 60 * (M_PI / 180);
+	plane = tan(fov / 2);
 	camera->pos.x = x + 0.5;
 	camera->pos.y = y + 0.5;
 	if (dir == 'N')
@@ -176,6 +176,7 @@ void	validate_map(t_game *game, t_camera *camera)
 {
 	int		i;
 	int		spawn_count;
+	int		len;
 
 	check_empty_line(game);
 	spawn_count = 0;
@@ -189,4 +190,12 @@ void	validate_map(t_game *game, t_camera *camera)
 	}
 	if (spawn_count != 1)
 		exit(write(2, "Error\nMap must have only one spawn point\n", 42));
+	game->map_width = 0;
+	i = -1;
+	while (++i < game->map_height)
+	{
+		len = ft_strlen(game->map[i]);
+		if (len > game->map_width)
+			game->map_width = len;
+	}
 }
