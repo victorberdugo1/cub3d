@@ -44,6 +44,7 @@ typedef struct s_camera
 typedef struct s_ray
 {
 	t_vec2	raydir;
+	double	raydir_mod;
 	int		map_x;
 	int		map_y;
 	t_vec2	deltadist;

@@ -101,27 +101,32 @@ static void	validate_borders(char *line, int is_border)
 /* ************************************************************************** */
 static void	set_camera(t_camera *camera, char dir, int x, int y)
 {
+	double	FOV;
+	double	plane;
+
+	FOV = 80 * (M_PI/180);
+	plane = tan(FOV/2); // dir * tan(FOV/2), dir = 1
 	camera->pos.x = x + 0.5;
 	camera->pos.y = y + 0.5;
 	if (dir == 'N')
 	{
 		camera->dir = (t_vec2){0, -1};
-		camera->plane = (t_vec2){0.66, 0};
+		camera->plane = (t_vec2){plane, 0};
 	}
 	else if (dir == 'S')
 	{
 		camera->dir = (t_vec2){0, 1};
-		camera->plane = (t_vec2){-0.66, 0};
+		camera->plane = (t_vec2){-plane, 0};
 	}
 	else if (dir == 'E')
 	{
 		camera->dir = (t_vec2){1, 0};
-		camera->plane = (t_vec2){0, 0.66};
+		camera->plane = (t_vec2){0, plane};
 	}
 	else if (dir == 'W')
 	{
 		camera->dir = (t_vec2){-1, 0};
-		camera->plane = (t_vec2){0, -0.66};
+		camera->plane = (t_vec2){0, -plane};
 	}
 }
 

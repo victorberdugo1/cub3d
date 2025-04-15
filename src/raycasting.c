@@ -34,6 +34,7 @@
 /*       deltadist.y = |1 / raydir.y|                                         */
 /*                                                                            */
 /* ************************************************************************** */
+
 void	init_ray(t_app *app, int x, t_ray *ray)
 {
 	double	camx;
@@ -43,8 +44,9 @@ void	init_ray(t_app *app, int x, t_ray *ray)
 	ray->raydir.y = app->camera.dir.y + app->camera.plane.y * camx;
 	ray->map_x = (int)app->camera.pos.x;
 	ray->map_y = (int)app->camera.pos.y;
-	ray->deltadist.x = fabs(1 / ray->raydir.x);
-	ray->deltadist.y = fabs(1 / ray->raydir.y);
+	ray->raydir_mod = sqrt(pow(ray->raydir.x, 2) + pow(ray->raydir.y, 2));
+	ray->deltadist.x = fabs(ray->raydir_mod / ray->raydir.x);
+	ray->deltadist.y = fabs(ray->raydir_mod / ray->raydir.y);
 }
 
 /* ************************************************************************** */

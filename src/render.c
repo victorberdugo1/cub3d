@@ -27,11 +27,13 @@
 static double	get_wall_x(t_app *app, t_ray *ray)
 {
 	double	wx;
+	double	mod;
 
+	mod = ray->raydir_mod;
 	if (ray->side == 0)
-		wx = app->camera.pos.y + ray->perpwalldist * ray->raydir.y;
+		wx = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y)/mod;
 	else
-		wx = app->camera.pos.x + ray->perpwalldist * ray->raydir.x;
+		wx = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x)/mod;
 	return (wx - floor(wx));
 }
 
