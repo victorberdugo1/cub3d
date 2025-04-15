@@ -171,7 +171,7 @@ void move_camera(void *param)
     if (mlx_is_key_down(mlx, MLX_KEY_A)) { new_x += -app->camera.dir.y * move_speed; new_y += app->camera.dir.x * move_speed; }
     if (mlx_is_key_down(mlx, MLX_KEY_D)) { new_x += app->camera.dir.y * move_speed; new_y += -app->camera.dir.x * move_speed; }
     
-    double view_speed = 5.0;
+    double view_speed = 10.0;
     if (mlx_is_key_down(mlx, MLX_KEY_UP)) app->camera.view_z = fmin(app->camera.view_z + view_speed, HEIGHT/2);
     if (mlx_is_key_down(mlx, MLX_KEY_DOWN)) app->camera.view_z = fmax(app->camera.view_z - view_speed, -HEIGHT/2);
     

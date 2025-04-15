@@ -20,7 +20,7 @@ OBJ_DIR      = obj
 SRC_DIR      = src
 SRC_DIR_BONUS = src/bonus
 
-# Listas de archivos fuente definidas de forma explícita
+# List of source files defined explicitly
 SRC =	$(SRC_DIR)/cub3D.c \
 		$(SRC_DIR)/camera.c \
 		$(SRC_DIR)/collition.c \
@@ -34,7 +34,7 @@ SRC =	$(SRC_DIR)/cub3D.c \
 
 BONUS_SRC = $(SRC_DIR_BONUS)/cub3D_bonus.c
 
-# Conversión manual de las fuentes a archivos objeto
+# Manual conversion of sources to object files
 OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 BONUS_OBJ = $(BONUS_SRC:$(SRC_DIR_BONUS)/%.c=$(OBJ_DIR)/%.o)
 
@@ -45,28 +45,21 @@ CC      = gcc
 CFLAGS  = -Wall -Wextra -Werror -g -fsanitize=address -MMD -MP $(INCLUDE)
 LDFLAGS = $(LIBFT) $(MINI) -lglfw -lm
 
-# Colores para los mensajes
+# Colors for messages
 GREEN  = \033[0;32m
 RED    = \033[0;91m
 RESET  = \033[0m
 
-all: prepare_libft prepare_mlx libs mlx $(NAME)
+all: prepare_mlx libs mlx $(NAME)
 
-# Prepara la libft (si no existe el directorio .git, se clona)
-prepare_libft:
-	@if [ ! -d "libft/.git" ]; then \
-		echo "$(RESET)Clonando libft..."; \
-		git clone git@github.com:victorberdugo1/libft.git libft; \
-	fi
-
-# Prepara MLX42 (si no existe el directorio .git, se clona)
+# Prepares MLX42 (if .git dir doesn't exists, then it's cloned)
 prepare_mlx:
 	@if [ ! -d "MLX42/.git" ]; then \
-		echo "$(RESET)Clonando MLX42..."; \
+		echo "$(RESET)Cloning MLX42..."; \
 		git clone https://github.com/codam-coding-college/MLX42.git MLX42; \
 	fi
 
-libs: prepare_libft
+libs:
 	@make -C libft
 
 mlx: prepare_mlx
@@ -74,42 +67,42 @@ mlx: prepare_mlx
 
 $(NAME): $(LIBFT) $(MINI) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
-	@echo "$(GREEN)Ejecutable $(NAME) creado con éxito.$(RESET)"
+	@echo "$(GREEN)Executable $(NAME) successfully created.$(RESET)"
 
 $(NAME_BONUS): $(LIBFT) $(MINI) $(BONUS_OBJ)
 	$(CC) $(CFLAGS) $(BONUS_INCLUDE) $(BONUS_OBJ) -o $(NAME_BONUS) $(LDFLAGS)
-	@echo "$(GREEN)Ejecutable $(NAME_BONUS) creado con éxito.$(RESET)"
+	@echo "$(GREEN)Executable $(NAME_BONUS) successfully created.$(RESET)"
 
-# La regla bonus depende directamente del ejecutable bonus
+# Bonus rule directly depends on the executable bonus
 bonus: libs mlx $(NAME_BONUS)
 
-# Regla para compilar los archivos fuente del programa principal
+# Rule for compiling source files of the main program
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "$(GREEN)Compilado: $<$(RESET)"
+	@echo "$(GREEN)Compiled: $<$(RESET)"
 
-# Regla para compilar los archivos fuente del bonus
+# Rule for compiling source files of bonus
 $(OBJ_DIR)/%.o: $(SRC_DIR_BONUS)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(BONUS_INCLUDE) -c $< -o $@
-	@echo "$(GREEN)Compilado (bonus): $<$(RESET)"
+	@echo "$(GREEN)Compiled (bonus): $<$(RESET)"
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
-# Inclusión automática de las dependencias generadas (-MMD -MP)
+# Automatic inclusion of generated dependencies (-MMD -MP)
 -include $(OBJ:.o=.d) $(BONUS_OBJ:.o=.d)
 
 clean:
 	@make -C libft clean
 	@make -C MLX42/build clean
 	rm -rf $(OBJ_DIR)
-	@echo "$(RED)Archivos objeto eliminados.$(RESET)"
+	@echo "$(RED)Object files deleted.$(RESET)"
 
 fclean: clean
 	@make -C libft fclean
 	rm -rf MLX42/build
 	rm -f $(NAME) $(NAME_BONUS)
-	@echo "$(RED)Ejecutables eliminados.$(RESET)"
+	@echo "$(RED)Executables deleted.$(RESET)"
 
 re: fclean all
 

@@ -30,8 +30,8 @@
 /*                                                                            */
 /*   - Computes `deltadist`, the distance the ray travels between grid        */
 /*     lines in each axis. It is calculated as:                               */
-/*       deltadist.x = |1 / raydir.x|                                         */
-/*       deltadist.y = |1 / raydir.y|                                         */
+/*       deltadist.x = |raydir_modulus / raydir.x|                            */
+/*       deltadist.y = |raydir_modulus / raydir.y|                            */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,12 @@ void	do_dda(t_app *app, t_ray *ray)
 /*   Computes the vertical drawing boundaries for the wall slice.             */
 /*                                                                            */
 /*   - Uses `perpwalldist` to determine the height of the projected wall:     */
-/*       line_height = HEIGHT / perpwalldist                                  */
+/*       line_height = HEIGHT / (perpwalldist / raydir_modulus)               */
+/*   Here we need to divide by raydir_modulus as we want to get the distance  */
+/*   d the ray travelled from the camera position until the wall for some	  */
+/*   axis. So perp = deltadist * (a + n), where n is the number of blocks     */
+/*	 until hitting the wall and a is the distance between camera position and */
+/*   the next grid, so d = (a + n).											  */
 /*                                                                            */
 /*   - Calculates the top (`draw_start`) and bottom (`draw_end`) positions    */
 /*     on the screen, centering the wall slice:                               */
@@ -176,7 +181,7 @@ void	do_dda(t_app *app, t_ray *ray)
 /*                                                                            */
 /* ************************************************************************** */
 void	compute_draw_boundaries(t_draw *draw, t_ray *ray)
-{
+{	
 	draw->lh = (int)((HEIGHT / (ray->perpwalldist / ray->raydir_mod)));
 	draw->ds = -draw->lh / 2 + HEIGHT / 2;
 	if (draw->ds < 0)

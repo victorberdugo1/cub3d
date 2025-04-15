@@ -121,7 +121,7 @@ static void	run_loop(t_app *app)
 /*   Entry point of the program. It validates usage, loads the map,           */
 /*   initializes the application and MLX, loads textures, sets camera         */
 /*   parameters, and finally enters the main loop. Cleans up resources before */
-/*   exiting.                                                                 */
+/*   exiting. Camera rot speed and move speed are mesured in units/second.    */
 /*                                                                            */
 /* ************************************************************************** */
 int	main(int argc, char **argv)
@@ -139,8 +139,8 @@ int	main(int argc, char **argv)
 	if (init_app_struct(&app, lines, line_count) != 0)
 		return (EXIT_FAILURE);
 	free_map_lines(lines, line_count);
-	app.camera.move_speed = 0.05;
-	app.camera.rot_speed = 0.05;
+	app.camera.move_speed = 3.;
+	app.camera.rot_speed = 3.;
 	if (init_mlx_and_image(&app) == -1)
 		return (EXIT_FAILURE);
 	if (load_game_textures(&app) == -1)

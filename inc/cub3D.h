@@ -22,8 +22,8 @@
 # include "libft.h"
 # include "MLX42.h"
 
-# define WIDTH 800
-# define HEIGHT 800
+# define WIDTH 1000
+# define HEIGHT 1000
 # define COLLISION_RADIUS 0.2
 
 typedef struct s_vec2

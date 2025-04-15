@@ -42,7 +42,7 @@ static void	check_escape(t_app *app)
 /*     - Right (D) is along the positive perpendicular vector (dir.y, -dir.x) */
 /*                                                                            */
 /* ************************************************************************** */
-static void	update_camera_movement(t_app *app)
+static void	update_camera_movement(t_app *app, double delta_time)
 {
 	double	new_x;
 	double	new_y;
@@ -50,7 +50,7 @@ static void	update_camera_movement(t_app *app)
 
 	new_x = app->camera.pos.x;
 	new_y = app->camera.pos.y;
-	speed = app->camera.move_speed;
+	speed = app->camera.move_speed * delta_time;
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_SHIFT))
 		speed *= 2;
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
@@ -115,24 +115,18 @@ static void	rotate_camera(t_app *app, double rotation)
 /*   - Right Arrow (→) rotates clockwise (positive rotation).                 */
 /*                                                                            */
 /* ************************************************************************** */
-static void	update_camera_rotation(t_app *app)
+static void	update_camera_rotation(t_app *app, double delta_time)
 {
-	double	rotation;/*
-	double			delta_time;
-	double			current_time;
-	static double	last_time = 0;
+	double	rotation;
 
-	current_time = mlx_get_time();
-	delta_time = current_time - last_time;
-	last_time = current_time;*/
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT))
 	{
-		rotation = -app->camera.rot_speed;
+		rotation = -app->camera.rot_speed * delta_time;
 		rotate_camera(app, rotation);
 	}
 	else if (mlx_is_key_down(app->mlx, MLX_KEY_RIGHT))
 	{
-		rotation = app->camera.rot_speed;
+		rotation = app->camera.rot_speed * delta_time;
 		rotate_camera(app, rotation);
 	}
 }
@@ -144,10 +138,16 @@ static void	update_camera_rotation(t_app *app)
 /* ************************************************************************** */
 void	move_camera(void *param)
 {
+	static double	last_time = 0;
+	double			current_time;
+	double			delta_time;
 	t_app	*app;
-
+	
 	app = (t_app *)param;
+	current_time = mlx_get_time();
+	delta_time = current_time - last_time;
+	last_time = current_time;	
 	check_escape(app);
-	update_camera_movement(app);
-	update_camera_rotation(app);
+	update_camera_movement(app, delta_time);
+	update_camera_rotation(app, delta_time);
 }
