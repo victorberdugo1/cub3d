@@ -51,6 +51,8 @@ static void	update_camera_movement(t_app *app)
 	new_x = app->camera.pos.x;
 	new_y = app->camera.pos.y;
 	speed = app->camera.move_speed;
+	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_SHIFT))
+		speed *= 2;
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
 			- mlx_is_key_down(app->mlx, MLX_KEY_S))
 		* app->camera.dir.x * speed;
