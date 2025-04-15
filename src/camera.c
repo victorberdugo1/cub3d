@@ -117,8 +117,14 @@ static void	rotate_camera(t_app *app, double rotation)
 /* ************************************************************************** */
 static void	update_camera_rotation(t_app *app)
 {
-	double	rotation;
+	double	rotation;/*
+	double			delta_time;
+	double			current_time;
+	static double	last_time = 0;
 
+	current_time = mlx_get_time();
+	delta_time = current_time - last_time;
+	last_time = current_time;*/
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT))
 	{
 		rotation = -app->camera.rot_speed;

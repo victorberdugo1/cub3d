@@ -177,7 +177,7 @@ void	do_dda(t_app *app, t_ray *ray)
 /* ************************************************************************** */
 void	compute_draw_boundaries(t_draw *draw, t_ray *ray)
 {
-	draw->lh = (int)(HEIGHT / ray->perpwalldist);
+	draw->lh = (int)((HEIGHT / (ray->perpwalldist / ray->raydir_mod)));
 	draw->ds = -draw->lh / 2 + HEIGHT / 2;
 	if (draw->ds < 0)
 		draw->ds = 0;
