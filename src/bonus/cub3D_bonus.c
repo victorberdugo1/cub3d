@@ -6,255 +6,190 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 20:07:32 by victor            #+#    #+#             */
-/*   Updated: 2025/03/26 18:33:21 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/15 17:55:49 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3D.h"
+#include "bonus/cub3D_bonus.h"
 
-int32_t	ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
+int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
 {
-	return (r << 24 | g << 16 | b << 8 | a);
+    return (r << 24 | g << 16 | b << 8 | a);
 }
 
-void	ft_draw_background(t_app *app)
+uint32_t	convert_pixel(uint32_t px)
 {
-	int32_t		floor_color;
-	int32_t		ceiling_color;
-	uint32_t	x;
-	uint32_t	y;
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
+	uint8_t	alpha;
 
-	floor_color = ft_pixel(app->game.floor_color[0],
-			app->game.floor_color[1], app->game.floor_color[2], 255);
-	ceiling_color = ft_pixel(app->game.ceiling_color[0],
-			app->game.ceiling_color[1], app->game.ceiling_color[2], 255);
-	x = 0;
-	while (++x < WIDTH)
-	{
-		y = 0;
-		while (++y < HEIGHT / 2)
-			mlx_put_pixel(app->image, x, y, ceiling_color);
-		y = HEIGHT / 2;
-		while (++y < HEIGHT)
-			mlx_put_pixel(app->image, x, y, floor_color);
-	}
+	red = (px >> 16) & 0xFF;
+	green = (px >> 8) & 0xFF;
+	blue = px & 0xFF;
+	alpha = (px >> 24) & 0xFF;
+	return (ft_pixel(blue, green, red, alpha));
 }
 
-char	safe_get_tile(t_game *game, int x, int y)
+void ft_draw_background(t_app *app)
 {
-	int	len;
+    int32_t floor_color = ft_pixel(app->game.floor_color[0], app->game.floor_color[1], app->game.floor_color[2], 255);
+    int32_t ceiling_color = ft_pixel(app->game.ceiling_color[0], app->game.ceiling_color[1], app->game.ceiling_color[2], 255);
 
-	if (y < 0 || y >= game->map_height)
-		return ('1');
-	len = strlen(game->map[y]);
-	if (x < 0 || x >= len)
-		return ('1');
-	return (game->map[y][x]);
+    int32_t horizon = HEIGHT / 2 - app->camera.view_z;
+
+    // Aseguramos que el horizonte no se salga de pantalla
+    if (horizon < 0) horizon = 0;
+    if (horizon > HEIGHT) horizon = HEIGHT;
+
+    for (uint32_t x = 0; x < WIDTH; x++) {
+        // cielo
+        for (int32_t y = 0; y < horizon; y++)
+            mlx_put_pixel(app->image, x, y, ceiling_color);
+        // suelo
+        for (uint32_t y = horizon; y < HEIGHT; y++)
+            mlx_put_pixel(app->image, x, y, floor_color);
+    }
 }
 
-int	collides(t_game *game, double new_x, double new_y)
+char safe_get_tile(t_game *game, int x, int y)
 {
-	t_collision	c;
-	int			i;
-	int			j;
+    if (y < 0 || y >= game->map_height) return '1';
+    int len = strlen(game->map[y]);
+    return (x < 0 || x >= len) ? '1' : game->map[y][x];
+}
 
-	c.r = COLLISION_RADIUS;
-	c.min_i = (int)floor(new_y - c.r);
-	c.max_i = (int)ceil(new_y + c.r);
-	c.min_j = (int)floor(new_x - c.r);
-	c.max_j = (int)ceil(new_x + c.r);
-	i = c.min_i;
-	while (i <= c.max_i)
-	{
-		j = c.min_j;
-		while (j <= c.max_j)
-		{
-			if (safe_get_tile(game, j, i) == '1')
-			{
-				c.closest_x = new_x;
-				if (new_x < j)
-					c.closest_x = j;
-				else if (new_x > j + 1)
-					c.closest_x = j + 1;
-				c.closest_y = new_y;
-				if (new_y < i)
-					c.closest_y = i;
-				else if (new_y > i + 1)
-					c.closest_y = i + 1;
-				c.dx = new_x - c.closest_x;
-				c.dy = new_y - c.closest_y;
-				if ((c.dx * c.dx + c.dy * c.dy) < c.r * c.r)
-					return (1);
+int collides(t_game *game, double new_x, double new_y)
+{
+    t_collision c = {
+        .r = COLLISION_RADIUS,
+        .min_i = (int)floor(new_y - COLLISION_RADIUS),
+        .max_i = (int)ceil(new_y + COLLISION_RADIUS),
+        .min_j = (int)floor(new_x - COLLISION_RADIUS),
+        .max_j = (int)ceil(new_x + COLLISION_RADIUS)
+    };
+
+    for (int i = c.min_i; i <= c.max_i; i++) {
+        for (int j = c.min_j; j <= c.max_j; j++) {
+            if (safe_get_tile(game, j, i) == '1') {
+                double closest_x = fmax(j, fmin(new_x, j + 1));
+                double closest_y = fmax(i, fmin(new_y, i + 1));
+                double dx = new_x - closest_x;
+                double dy = new_y - closest_y;
+                if ((dx*dx + dy*dy) < c.r*c.r) return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+void render_scene(void *param)
+{
+    t_app *app = param;
+    ft_draw_background(app);
+
+    for (int x = 0; x < WIDTH; x++) {
+        double cameraX = 2 * x / (double)WIDTH - 1;
+        t_vec2 rayDir = {
+            app->camera.dir.x + app->camera.plane.x * cameraX,
+            app->camera.dir.y + app->camera.plane.y * cameraX
+        };
+
+        int mapX = (int)app->camera.pos.x;
+        int mapY = (int)app->camera.pos.y;
+        t_vec2 deltaDist = {fabs(1 / rayDir.x), fabs(1 / rayDir.y)};
+        t_vec2 sideDist, step;
+        int hit = 0, side = 0;
+
+        step.x = (rayDir.x < 0) ? -1 : 1;
+        sideDist.x = (rayDir.x < 0) ? (app->camera.pos.x - mapX) * deltaDist.x : (mapX + 1.0 - app->camera.pos.x) * deltaDist.x;
+        step.y = (rayDir.y < 0) ? -1 : 1;
+        sideDist.y = (rayDir.y < 0) ? (app->camera.pos.y - mapY) * deltaDist.y : (mapY + 1.0 - app->camera.pos.y) * deltaDist.y;
+
+        while (!hit) {
+            if (sideDist.x < sideDist.y) {
+                sideDist.x += deltaDist.x;
+                mapX += step.x;
+                side = 0;
+            } else {
+                sideDist.y += deltaDist.y;
+                mapY += step.y;
+                side = 1;
+            }
+            if (mapY < 0 || mapY >= app->game.map_height || mapX < 0 || mapX >= (int)strlen(app->game.map[mapY]) || 
+                safe_get_tile(&app->game, mapX, mapY) == '1') hit = 1;
+        }
+
+        double perpWallDist = (side == 0) ? (sideDist.x - deltaDist.x) : (sideDist.y - deltaDist.y);
+        int lineHeight = (int)(HEIGHT / perpWallDist);
+        int drawStart = -lineHeight / 2 + HEIGHT / 2 - app->camera.view_z;
+        drawStart = (drawStart < 0) ? 0 : drawStart;
+        int drawEnd = lineHeight / 2 + HEIGHT / 2 - app->camera.view_z;
+        drawEnd = (drawEnd >= HEIGHT) ? HEIGHT - 1 : drawEnd;
+
+        double wallX = (side == 0) ? app->camera.pos.y + perpWallDist * rayDir.y : app->camera.pos.x + perpWallDist * rayDir.x;
+        wallX -= floor(wallX);
+
+        mlx_texture_t *tex = NULL;
+        if (side == 0) tex = (rayDir.x < 0) ? app->game.tex_we : app->game.tex_ea;
+        else tex = (rayDir.y < 0) ? app->game.tex_no : app->game.tex_so;
+
+		if (tex) {
+			int texX = (int)(wallX * tex->width);
+			if ((side == 0 && rayDir.x > 0) || (side == 1 && rayDir.y < 0)) texX = tex->width - texX - 1;
+			texX = texX % tex->width;
+			if (texX < 0) texX += tex->width;
+
+			for (int y = drawStart; y < drawEnd; y++) {
+				int d = (y + app->camera.view_z) * 256 - HEIGHT * 128 + lineHeight * 128;
+				int texY = ((d * tex->height) / lineHeight) / 256;
+				texY = texY % tex->height;
+				if (texY < 0) texY += tex->height;
+
+				uint32_t color = ((uint32_t *)tex->pixels)[texY * tex->width + texX];
+				color = convert_pixel(color);
+				mlx_put_pixel(app->image, x, y, color);
 			}
-			j++;
 		}
-		i++;
-	}
-	return (0);
+
+    }
 }
 
-void	render_scene(void *param)
+void move_camera(void *param)
 {
-	t_app *app = (t_app *)param;
-	ft_draw_background(app);
-	for (int x = 0; x < WIDTH; x++)
-	{
-		double cameraX = 2 * x / (double)WIDTH - 1;
-		t_vec2 rayDir = {app->camera.dir.x + app->camera.plane.x * cameraX,
-			app->camera.dir.y + app->camera.plane.y * cameraX};
-		int map_x = (int)app->camera.pos.x;
-		int map_y = (int)app->camera.pos.y;
-		t_vec2 deltaDist = {fabs(1 / rayDir.x), fabs(1 / rayDir.y)};
-		t_vec2 sideDist;
-		t_vec2 step;
-		int hit = 0, side;
-		if (rayDir.x < 0)
-		{
-			step.x = -1;
-			sideDist.x = (app->camera.pos.x - map_x) * deltaDist.x;
-		}
-		else
-		{
-			step.x = 1;
-			sideDist.x = (map_x + 1.0 - app->camera.pos.x) * deltaDist.x;
-		}
-		if (rayDir.y < 0)
-		{
-			step.y = -1;
-			sideDist.y = (app->camera.pos.y - map_y) * deltaDist.y;
-		}
-		else
-		{
-			step.y = 1;
-			sideDist.y = (map_y + 1.0 - app->camera.pos.y) * deltaDist.y;
-		}
-		while (!hit)
-		{
-			if (sideDist.x < sideDist.y)
-			{
-				sideDist.x += deltaDist.x;
-				map_x += step.x;
-				side = 0;
-			}
-			else
-			{
-				sideDist.y += deltaDist.y;
-				map_y += step.y;
-				side = 1;
-			}
-			if (map_y < 0 || map_y >= app->game.map_height)
-			{
-				hit = 1;
-				break;
-			}
-			size_t line_length = strlen(app->game.map[map_y]);
-			if (map_x < 0 || map_x >= (int)line_length)
-			{
-				hit = 1;
-				break;
-			}
-			if (safe_get_tile(&app->game, map_x, map_y) == '1')
-				hit = 1;
-		}
-		double perpWallDist = (side == 0) ? (sideDist.x - deltaDist.x)
-			: (sideDist.y - deltaDist.y);
-		int lineHeight = (int)(HEIGHT / perpWallDist);
-		int drawStart = -lineHeight / 2 + HEIGHT / 2;
-		if (drawStart < 0)
-			drawStart = 0;
-		int drawEnd = lineHeight / 2 + HEIGHT / 2;
-		if (drawEnd >= HEIGHT)
-			drawEnd = HEIGHT - 1;
-		double wallX;
-		if (side == 0)
-			wallX = app->camera.pos.y + perpWallDist * rayDir.y;
-		else
-			wallX = app->camera.pos.x + perpWallDist * rayDir.x;
-		wallX -= floor(wallX);
-		mlx_texture_t *tex;
-		if (side == 0)
-			tex = (rayDir.x < 0) ? app->game.tex_we : app->game.tex_ea;
-		else
-			tex = (rayDir.y < 0) ? app->game.tex_no : app->game.tex_so;
-		if (!tex)
-		{
-			fprintf(stderr, "Error: Textura no disponible.\n");
-			continue;
-		}
-		int texWidth = tex->width;
-		int texHeight = tex->height;
-		int texX = (int)(wallX * texWidth);
-		if (side == 0 && rayDir.x > 0)
-			texX = texWidth - texX - 1;
-		if (side == 1 && rayDir.y < 0)
-			texX = texWidth - texX - 1;
-		for (int y = drawStart; y < drawEnd; y++)
-		{
-			int d = y * 256 - HEIGHT * 128 + lineHeight * 128;
-			int texY = ((d * texHeight) / lineHeight) / 256;
-			uint32_t color = ((uint32_t *)tex->pixels)[texY * texWidth + texX];
-			mlx_put_pixel(app->image, x, y, color);
-		}
-	}
+    t_app *app = param;
+    mlx_t *mlx = app->mlx;
+
+    if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE)) mlx_close_window(mlx);
+    
+    double new_x = app->camera.pos.x;
+    double new_y = app->camera.pos.y;
+    double move_speed = app->camera.move_speed;
+    
+    if (mlx_is_key_down(mlx, MLX_KEY_W)) { new_x += app->camera.dir.x * move_speed; new_y += app->camera.dir.y * move_speed; }
+    if (mlx_is_key_down(mlx, MLX_KEY_S)) { new_x -= app->camera.dir.x * move_speed; new_y -= app->camera.dir.y * move_speed; }
+    if (mlx_is_key_down(mlx, MLX_KEY_A)) { new_x += -app->camera.dir.y * move_speed; new_y += app->camera.dir.x * move_speed; }
+    if (mlx_is_key_down(mlx, MLX_KEY_D)) { new_x += app->camera.dir.y * move_speed; new_y += -app->camera.dir.x * move_speed; }
+    
+    double view_speed = 5.0;
+    if (mlx_is_key_down(mlx, MLX_KEY_UP)) app->camera.view_z = fmin(app->camera.view_z + view_speed, HEIGHT/2);
+    if (mlx_is_key_down(mlx, MLX_KEY_DOWN)) app->camera.view_z = fmax(app->camera.view_z - view_speed, -HEIGHT/2);
+    
+    if (!collides(&app->game, new_x, new_y)) {
+        app->camera.pos.x = new_x;
+        app->camera.pos.y = new_y;
+    }
+    
+    double rot = app->camera.rot_speed * (mlx_is_key_down(mlx, MLX_KEY_LEFT) ? -1 : mlx_is_key_down(mlx, MLX_KEY_RIGHT) ? 1 : 0);
+    if (rot != 0) {
+        double oldDirX = app->camera.dir.x;
+        app->camera.dir.x = app->camera.dir.x * cos(rot) - app->camera.dir.y * sin(rot);
+        app->camera.dir.y = oldDirX * sin(rot) + app->camera.dir.y * cos(rot);
+        double oldPlaneX = app->camera.plane.x;
+        app->camera.plane.x = app->camera.plane.x * cos(rot) - app->camera.plane.y * sin(rot);
+        app->camera.plane.y = oldPlaneX * sin(rot) + app->camera.plane.y * cos(rot);
+    }
 }
-
-void	move_camera(void *param)
-{
-	t_app *app = (t_app *)param;
-	mlx_t *mlx = app->mlx;
-	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(mlx);
-
-	double new_x = app->camera.pos.x;
-	double new_y = app->camera.pos.y;
-	if (mlx_is_key_down(mlx, MLX_KEY_W))
-	{
-		new_x += app->camera.dir.x * app->camera.move_speed;
-		new_y += app->camera.dir.y * app->camera.move_speed;
-	}
-	if (mlx_is_key_down(mlx, MLX_KEY_S))
-	{
-		new_x -= app->camera.dir.x * app->camera.move_speed;
-		new_y -= app->camera.dir.y * app->camera.move_speed;
-	}
-	if (mlx_is_key_down(mlx, MLX_KEY_A))
-	{
-		new_x += -app->camera.dir.y * app->camera.move_speed;
-		new_y += app->camera.dir.x * app->camera.move_speed;
-	}
-	if (mlx_is_key_down(mlx, MLX_KEY_D))
-	{
-		new_x += app->camera.dir.y * app->camera.move_speed;
-		new_y += -app->camera.dir.x * app->camera.move_speed;
-	}
-
-	if (!collides(&app->game, new_x, new_y))
-	{
-		app->camera.pos.x = new_x;
-		app->camera.pos.y = new_y;
-	}
-	if (mlx_is_key_down(mlx, MLX_KEY_LEFT))
-	{
-		double rot = -app->camera.rot_speed;
-		double oldDirX = app->camera.dir.x;
-		app->camera.dir.x = app->camera.dir.x * cos(rot) - app->camera.dir.y * sin(rot);
-		app->camera.dir.y = oldDirX * sin(rot) + app->camera.dir.y * cos(rot);
-		double oldPlaneX = app->camera.plane.x;
-		app->camera.plane.x = app->camera.plane.x * cos(rot) - app->camera.plane.y * sin(rot);
-		app->camera.plane.y = oldPlaneX * sin(rot) + app->camera.plane.y * cos(rot);
-	}
-	if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
-	{
-		double rot = app->camera.rot_speed;
-		double oldDirX = app->camera.dir.x;
-		app->camera.dir.x = app->camera.dir.x * cos(rot) - app->camera.dir.y * sin(rot);
-		app->camera.dir.y = oldDirX * sin(rot) + app->camera.dir.y * cos(rot);
-		double oldPlaneX = app->camera.plane.x;
-		app->camera.plane.x = app->camera.plane.x * cos(rot) - app->camera.plane.y * sin(rot);
-		app->camera.plane.y = oldPlaneX * sin(rot) + app->camera.plane.y * cos(rot);
-	}
-}
-
 void	validate_map(t_game *game, t_camera *camera)
 {
 	int spawn_count = 0;
