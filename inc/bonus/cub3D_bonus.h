@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D.h                                            :+:      :+:    :+:   */
+/*   cub3D_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/03/26 18:40:33 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/15 17:24:02 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <stdio.h>
 # include <string.h>
 # include <math.h>
-# include "../libft/libft.h"
-# include "../MLX42/include/MLX42/MLX42.h"
+# include "libft.h"
+# include "MLX42.h"
 
 # define WIDTH 1024
 # define HEIGHT 1024
@@ -39,6 +39,7 @@ typedef struct s_camera
 	t_vec2	plane;
 	double	move_speed;
 	double	rot_speed;
+	double	view_z;
 }	t_camera;
 
 typedef struct s_game
