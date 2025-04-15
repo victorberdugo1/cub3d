@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:49:14 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 00:34:33 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ static double	get_wall_x(t_app *app, t_ray *ray)
 
 	mod = ray->raydir_mod;
 	if (ray->side == 0)
-		wx = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y)/mod;
+		wx = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y) / mod;
 	else
-		wx = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x)/mod;
+		wx = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x) / mod;
 	return (wx - floor(wx));
 }
 

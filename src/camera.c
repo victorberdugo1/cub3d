@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:05:57 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 00:27:52 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,24 +47,32 @@ static void	update_camera_movement(t_app *app, double delta_time)
 	double	new_x;
 	double	new_y;
 	double	speed;
+	int		in_bounds;
 
 	new_x = app->camera.pos.x;
 	new_y = app->camera.pos.y;
 	speed = app->camera.move_speed * delta_time;
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_SHIFT))
 		speed *= 2;
-	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
-			- mlx_is_key_down(app->mlx, MLX_KEY_S))
-		* app->camera.dir.x * speed;
-	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_W)
-			- mlx_is_key_down(app->mlx, MLX_KEY_S))
-		* app->camera.dir.y * speed;
-	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_A)
-			- mlx_is_key_down(app->mlx, MLX_KEY_D))
-		* app->camera.dir.y * speed;
-	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_D)
-			- mlx_is_key_down(app->mlx, MLX_KEY_A))
-		* app->camera.dir.x * speed;
+	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W) - mlx_is_key_down
+			(app->mlx, MLX_KEY_S)) * app->camera.dir.x * speed;
+	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_W) - mlx_is_key_down
+			(app->mlx, MLX_KEY_S)) * app->camera.dir.y * speed;
+	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_A) - mlx_is_key_down
+			(app->mlx, MLX_KEY_D)) * app->camera.dir.y * speed;
+	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_D) - mlx_is_key_down
+			(app->mlx, MLX_KEY_A)) * app->camera.dir.x * speed;
+	in_bounds = (new_x >= 0 && new_x < app->game.map_width && new_y >= 0
+			&& new_y < app->game.map_height);
+	if (!in_bounds)
+	{
+		new_x = fmod(new_x, app->game.map_width);
+		new_y = fmod(new_y, app->game.map_height);
+		if (new_x < 0)
+			new_x += app->game.map_width;
+		if (new_y < 0)
+			new_y += app->game.map_height;
+	}
 	app->camera.pos.x = new_x;
 	app->camera.pos.y = new_y;
 }
@@ -138,12 +146,12 @@ void	move_camera(void *param)
 	static double	last_time = 0;
 	double			current_time;
 	double			delta_time;
-	t_app	*app;
-	
+	t_app			*app;
+
 	app = (t_app *)param;
 	current_time = mlx_get_time();
 	delta_time = current_time - last_time;
-	last_time = current_time;	
+	last_time = current_time;
 	check_escape(app);
 	update_camera_movement(app, delta_time);
 	update_camera_rotation(app, delta_time);

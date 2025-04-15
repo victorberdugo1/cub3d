@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:55:00 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 00:28:24 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ void	do_dda(t_app *app, t_ray *ray)
 /*                                                                            */
 /* ************************************************************************** */
 void	compute_draw_boundaries(t_draw *draw, t_ray *ray)
-{	
+{
 	draw->lh = (int)((HEIGHT / (ray->perpwalldist / ray->raydir_mod)));
 	draw->ds = -draw->lh / 2 + HEIGHT / 2;
 	if (draw->ds < 0)
