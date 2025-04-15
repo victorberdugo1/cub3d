@@ -17,13 +17,13 @@ LIBFT        = libft/libft.a
 MINI         = MLX42/build/libmlx42.a
 
 OBJ_DIR      = obj
+OBJ_DIR_BONUS = obj_bonus
 SRC_DIR      = src
 SRC_DIR_BONUS = src/bonus
 
 # List of source files defined explicitly
-SRC =	$(SRC_DIR)/cub3D.c \
+SRC =   $(SRC_DIR)/cub3D.c \
 		$(SRC_DIR)/camera.c \
-		$(SRC_DIR)/collition.c \
 		$(SRC_DIR)/parse.c \
 		$(SRC_DIR)/render.c \
 		$(SRC_DIR)/cub3D_utils.c \
@@ -32,17 +32,26 @@ SRC =	$(SRC_DIR)/cub3D.c \
 		$(SRC_DIR)/render_utils.c \
 		$(SRC_DIR)/raycasting.c
 
-BONUS_SRC = $(SRC_DIR_BONUS)/cub3D_bonus.c
+BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D.c \
+			$(SRC_DIR_BONUS)/camera.c \
+			$(SRC_DIR_BONUS)/collition.c \
+			$(SRC_DIR_BONUS)/parse.c \
+			$(SRC_DIR_BONUS)/render.c \
+			$(SRC_DIR_BONUS)/cub3D_utils.c \
+			$(SRC_DIR_BONUS)/validate_map.c \
+			$(SRC_DIR_BONUS)/parse_utils.c \
+			$(SRC_DIR_BONUS)/render_utils.c \
+			$(SRC_DIR_BONUS)/raycasting.c
 
 # Manual conversion of sources to object files
 OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-BONUS_OBJ = $(BONUS_SRC:$(SRC_DIR_BONUS)/%.c=$(OBJ_DIR)/%.o)
+BONUS_OBJ = $(BONUS_SRC:$(SRC_DIR_BONUS)/%.c=$(OBJ_DIR_BONUS)/%.o)
 
 INCLUDE      = -Iinc -Ilibft -IMLX42/include/MLX42
 BONUS_INCLUDE = -Iinc/bonus
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -g -fsanitize=address -MMD -MP $(INCLUDE)
+CFLAGS  = -Wall -Wextra -Werror -g -fsanitize=address -MMD -MP $(INCLUDE) 
 LDFLAGS = $(LIBFT) $(MINI) -lglfw -lm
 
 # Colors for messages
@@ -82,12 +91,15 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@echo "$(GREEN)Compiled: $<$(RESET)"
 
 # Rule for compiling source files of bonus
-$(OBJ_DIR)/%.o: $(SRC_DIR_BONUS)/%.c | $(OBJ_DIR)
+$(OBJ_DIR_BONUS)/%.o: $(SRC_DIR_BONUS)/%.c | $(OBJ_DIR_BONUS)
 	$(CC) $(CFLAGS) $(BONUS_INCLUDE) -c $< -o $@
 	@echo "$(GREEN)Compiled (bonus): $<$(RESET)"
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR_BONUS):
+	@mkdir -p $(OBJ_DIR_BONUS)
 
 # Automatic inclusion of generated dependencies (-MMD -MP)
 -include $(OBJ:.o=.d) $(BONUS_OBJ:.o=.d)
@@ -96,6 +108,7 @@ clean:
 	@make -C libft clean
 	@make -C MLX42/build clean
 	rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR_BONUS)
 	@echo "$(RED)Object files deleted.$(RESET)"
 
 fclean: clean

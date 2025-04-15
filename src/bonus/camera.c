@@ -65,8 +65,11 @@ static void	update_camera_movement(t_app *app, double delta_time)
 	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_D)
 			- mlx_is_key_down(app->mlx, MLX_KEY_A))
 		* app->camera.dir.x * speed;
-	app->camera.pos.x = new_x;
-	app->camera.pos.y = new_y;
+	if (!collides(&app->game, new_x, new_y))
+	{
+		app->camera.pos.x = new_x;
+		app->camera.pos.y = new_y;
+	}
 }
 
 /* ************************************************************************** */

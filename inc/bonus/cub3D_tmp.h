@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D.h                                            :+:      :+:    :+:   */
+/*   cub3D_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/10 17:10:36 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/15 17:24:02 by vberdugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include "libft.h"
 # include "MLX42.h"
 
-# define WIDTH 1000
-# define HEIGHT 1000
+# define WIDTH 1024
+# define HEIGHT 1024
 # define COLLISION_RADIUS 0.2
 
 typedef struct s_vec2
@@ -39,29 +39,8 @@ typedef struct s_camera
 	t_vec2	plane;
 	double	move_speed;
 	double	rot_speed;
+	double	view_z;
 }	t_camera;
-
-typedef struct s_ray
-{
-	t_vec2	raydir;
-	double	raydir_mod;
-	int		map_x;
-	int		map_y;
-	t_vec2	deltadist;
-	t_vec2	sidedist;
-	t_vec2	step;
-	int		side;
-	double	perpwalldist;
-}	t_ray;
-
-typedef struct s_draw
-{
-	int				lh;
-	int				ds;
-	int				de;
-	int				tx;
-	mlx_texture_t	*tex;
-}	t_draw;
 
 typedef struct s_game
 {
@@ -77,7 +56,6 @@ typedef struct s_game
 	mlx_texture_t	*tex_so;
 	mlx_texture_t	*tex_we;
 	mlx_texture_t	*tex_ea;
-	int				map_started;
 }	t_game;
 
 typedef struct s_app
@@ -103,23 +81,11 @@ typedef struct s_collision
 	double	dy;
 }	t_collision;
 
-void	process_lines(char **lines, int count, t_game *game, t_camera *camera);
+void	process_lines(char **lines, int line_count, t_game *game, t_camera *camera);
 int		read_lines(const char *filename, char ***lines, int *line_count);
 char	safe_get_tile(t_game *game, int x, int y);
 int		collides(t_game *game, double new_x, double new_y);
 void	render_scene(void *param);
 void	move_camera(void *param);
-void	close_window(void *param);
-int		load_map(char *filename, char ***lines, int *line_count);
-void	free_map_lines(char **lines, int line_count);
-int		init_app_struct(t_app *app, char **lines, int line_count);
-void	cleanup(t_app *app);
-void	validate_map(t_game *game, t_camera *camera);
-void	ft_draw_background(t_app *app);
-void	draw_pixels(t_app *app, int x, t_draw *draw);
-void	init_ray(t_app *app, int x, t_ray *ray);
-void	do_dda(t_app *app, t_ray *ray);
-void	compute_draw_boundaries(t_draw *draw, t_ray *ray);
-char	*skip_spaces(char *s);
 
 #endif

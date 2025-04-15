@@ -114,11 +114,7 @@ static void	dda_loop(t_app *app, t_ray *ray)
 			ray->map_y += ray->step.y;
 			ray->side = 1;
 		}
-		if (ray->map_y < 0
-			|| ray->map_y >= app->game.map_height
-			|| ray->map_x < 0
-			|| ray->map_x >= (int)ft_strlen(app->game.map[ray->map_y])
-			|| app->game.map[ray->map_y][ray->map_x] == '1')
+		if (safe_get_tile(&app->game, ray->map_x, ray->map_y) == '1')
 			break ;
 	}
 }
