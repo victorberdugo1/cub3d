@@ -110,6 +110,7 @@ static int	load_game_textures(t_app *app)
 /* ************************************************************************** */
 static void	run_loop(t_app *app)
 {
+	mlx_set_cursor_mode(app->mlx, MLX_MOUSE_HIDDEN);
 	mlx_loop_hook(app->mlx, render_scene, app);
 	mlx_loop_hook(app->mlx, move_camera, app);
 	mlx_close_hook(app->mlx, close_window, app);
@@ -145,6 +146,7 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (load_game_textures(&app) == -1)
 		return (EXIT_FAILURE);
+	mlx_set_mouse_pos(app.mlx, WIDTH/2, HEIGHT/2);
 	run_loop(&app);
 	return (cleanup(&app), EXIT_SUCCESS);
 }

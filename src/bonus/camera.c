@@ -115,27 +115,16 @@ static void	rotate_camera(t_app *app, double rotation)
 /*   - Right Arrow (→) rotates clockwise (positive rotation).                 */
 /*                                                                            */
 /* ************************************************************************** */
-static void	update_camera_rotation(t_app *app, double delta_time)
+static void	update_camera_rotation(t_app *app, double delta_time, double xspeed, double yspeed)
 {
 	double	rotation;
 	double	view_speed;
 
-	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT))
-	{
-		rotation = -app->camera.rot_speed * delta_time;
-		rotate_camera(app, rotation);
-	}
-	else if (mlx_is_key_down(app->mlx, MLX_KEY_RIGHT))
-	{
-		rotation = app->camera.rot_speed * delta_time;
-		rotate_camera(app, rotation);
-	}
-	view_speed = 1500. * delta_time;
-    if (mlx_is_key_down(app->mlx, MLX_KEY_UP))
-		app->camera.view_z = fmax(app->camera.view_z - view_speed,-HEIGHT/2);
-	else if (mlx_is_key_down(app->mlx, MLX_KEY_DOWN))
-		app->camera.view_z = fmin(app->camera.view_z + view_speed, HEIGHT/2);
-
+	rotation = xspeed * delta_time / 2;
+	rotate_camera(app, rotation);
+	view_speed = yspeed * delta_time * 150;
+	if (!(fabs(app->camera.view_z) >= HEIGHT && app->camera.view_z * view_speed > 0))
+		app->camera.view_z += view_speed;
 }
 
 /* ************************************************************************** */
@@ -143,18 +132,23 @@ static void	update_camera_rotation(t_app *app, double delta_time)
 /*   Handles camera movement and rotation each frame.                         */
 /*                                                                            */
 /* ************************************************************************** */
+
 void	move_camera(void *param)
 {
 	static double	last_time = 0;
 	double			current_time;
 	double			delta_time;
-	t_app	*app;
-	
+	int32_t			xpos;
+	int32_t			ypos;
+
+	t_app	*app;	
 	app = (t_app *)param;
 	current_time = mlx_get_time();
 	delta_time = current_time - last_time;
 	last_time = current_time;	
 	check_escape(app);
 	update_camera_movement(app, delta_time);
-	update_camera_rotation(app, delta_time);
+	mlx_get_mouse_pos(app->mlx, &xpos, &ypos);
+	update_camera_rotation(app, delta_time, xpos - WIDTH/2, ypos - HEIGHT/2);
+	mlx_set_mouse_pos(app->mlx, WIDTH/2, HEIGHT/2);
 }
