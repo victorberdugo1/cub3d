@@ -47,7 +47,6 @@ void	init_ray(t_app *app, int x, t_ray *ray)
 	ray->raydir_mod = sqrt(pow(ray->raydir.x, 2) + pow(ray->raydir.y, 2));
 	ray->deltadist.x = fabs(ray->raydir_mod / ray->raydir.x);
 	ray->deltadist.y = fabs(ray->raydir_mod / ray->raydir.y);
-	ray->view_z = app->camera.view_z;
 }
 
 /* ************************************************************************** */
@@ -134,8 +133,10 @@ static void	dda_loop(t_app *app, t_ray *ray)
 /*     which is essential for perspective projection.                         */
 /*                                                                            */
 /*     Formula:                                                               */
-/*       perpwalldist = sidedist_x - deltadist_x  (if hit was on x-side)      */
-/*       perpwalldist = sidedist_y - deltadist_y  (if hit was on y-side)      */
+/*       perpwalldist = (sidedist_x - deltadist_x)/raydir_mod  (if hit		  */
+/*       was on x-side)														  */
+/*       perpwalldist = (sidedist_y - deltadist_y)/raydir_mod  (if hit		  */
+/*       was on y-side)														  */
 /*                                                                            */
 /* ************************************************************************** */
 void	do_dda(t_app *app, t_ray *ray)
@@ -152,9 +153,12 @@ void	do_dda(t_app *app, t_ray *ray)
 	ray->sidedist.y = steps.y;
 	dda_loop(app, ray);
 	if (ray->side == 0)
-		ray->perpwalldist = ray->sidedist.x - ray->deltadist.x;
+		ray->perpwalldist = (ray->sidedist.x - ray->deltadist.x) / ray->raydir_mod;
 	else
-		ray->perpwalldist = ray->sidedist.y - ray->deltadist.y;
+		ray->perpwalldist = (ray->sidedist.y - ray->deltadist.y) / ray->raydir_mod;
+	//printf("sidedist.y: %lf, sidedist.x: %lf\n", ray->sidedist.y/ray->deltadist.y, ray->sidedist.x/ray->deltadist.x);
+	//printf("raydir.y: %lf, raydir.x: %lf\n", ray->raydir.y, ray->raydir.x);
+	//printf("product: %lf, normal: %lf\n", ray->perpwalldist*ray->raydir.y, ray->perpwalldist);
 }
 
 /* ************************************************************************** */
@@ -163,11 +167,7 @@ void	do_dda(t_app *app, t_ray *ray)
 /*                                                                            */
 /*   - Uses `perpwalldist` to determine the height of the projected wall:     */
 /*       line_height = HEIGHT / (perpwalldist / raydir_modulus)               */
-/*   Here we need to divide by raydir_modulus as we want to get the distance  */
-/*   d the ray travelled from the camera position until the wall for some	  */
-/*   axis. So perp = deltadist * (a + n), where n is the number of blocks     */
-/*	 until hitting the wall and a is the distance between camera position and */
-/*   the next grid, so d = (a + n).											  */
+
 /*                                                                            */
 /*   - Calculates the top (`draw_start`) and bottom (`draw_end`) positions    */
 /*     on the screen, centering the wall slice:                               */
@@ -177,13 +177,4 @@ void	do_dda(t_app *app, t_ray *ray)
 /*   - Ensures the values stay within screen limits.                          */
 /*                                                                            */
 /* ************************************************************************** */
-void	compute_draw_boundaries(t_draw *draw, t_ray *ray)
-{	
-	draw->lh = (int)((HEIGHT / (ray->perpwalldist / ray->raydir_mod)));
-	draw->ds = -draw->lh / 2 + HEIGHT / 2;
-	if (draw->ds < 0)
-		draw->ds = 0;
-	draw->de = draw->lh / 2 + HEIGHT / 2;
-	if (draw->de >= HEIGHT)
-		draw->de = HEIGHT - 1;
-}
+

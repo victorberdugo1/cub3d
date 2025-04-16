@@ -24,11 +24,7 @@
 /* ************************************************************************** */
 static void compute_draw_boundaries(t_draw *draw, t_ray *ray, t_app *app)
 {
-	double perpWallDist;
-
-	perpWallDist = (ray->side == 0) ? 
-		(ray->sidedist.x - ray->deltadist.x) : (ray->sidedist.y - ray->deltadist.y);
-	draw->lh = (int)(HEIGHT / perpWallDist);
+	draw->lh = (int)(HEIGHT / ray->perpwalldist);
 	draw->ds = -draw->lh / 2 + HEIGHT / 2 - app->camera.view_z;
 	if (draw->ds < 0)
 		draw->ds = 0;
@@ -41,11 +37,11 @@ static void compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
 {
 	double wallX;
 	mlx_texture_t *tex = NULL;
-
-	if (ray->side == 0)
-		wallX = app->camera.pos.y + ((ray->sidedist.x - ray->deltadist.x) * ray->raydir.y);
+ 
+ 	if (ray->side == 0)
+ 		wallX = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y);
 	else
-		wallX = app->camera.pos.x + ((ray->sidedist.y - ray->deltadist.y) * ray->raydir.x);
+ 		wallX = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x);
 	wallX -= floor(wallX); 
 	if (ray->side == 0)
 		tex = (ray->raydir.x < 0) ? app->game.tex_we : app->game.tex_ea;

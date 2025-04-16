@@ -53,7 +53,6 @@ typedef struct s_ray
 	t_vec2	step;
 	int		side;
 	double	perpwalldist;
-	double	view_z;
 }	t_ray;
 
 typedef struct s_draw

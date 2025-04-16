@@ -128,6 +128,7 @@ static void	set_camera(t_camera *camera, char dir, int x, int y)
 		camera->dir = (t_vec2){-1, 0};
 		camera->plane = (t_vec2){0, -plane};
 	}
+	camera->view_z = 0;
 }
 
 /* ************************************************************************** */

@@ -118,6 +118,7 @@ static void	rotate_camera(t_app *app, double rotation)
 static void	update_camera_rotation(t_app *app, double delta_time)
 {
 	double	rotation;
+	double	view_speed;
 
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT))
 	{
@@ -129,7 +130,7 @@ static void	update_camera_rotation(t_app *app, double delta_time)
 		rotation = app->camera.rot_speed * delta_time;
 		rotate_camera(app, rotation);
 	}
-	double view_speed = 10.0;
+	view_speed = 1500. * delta_time;
     if (mlx_is_key_down(app->mlx, MLX_KEY_UP))
 		app->camera.view_z = fmax(app->camera.view_z - view_speed,-HEIGHT/2);
 	else if (mlx_is_key_down(app->mlx, MLX_KEY_DOWN))

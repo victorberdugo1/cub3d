@@ -77,8 +77,8 @@ void	draw_pixels(t_app *app, int x, t_draw *draw)
 	int			d;
 	int			ty;
 	uint32_t	px;
-
-    y = draw->ds;
+	
+	y = draw->ds;
     while (y < draw->de)
     {
         d = (y + app->camera.view_z) * 256 - HEIGHT * 128 + draw->lh * 128;
