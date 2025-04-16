@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/16 21:53:03 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/16 23:01:22 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,5 +120,6 @@ void	draw_pixels(t_app *app, int x, t_draw *draw);
 void	init_ray(t_app *app, int x, t_ray *ray);
 void	do_dda(t_app *app, t_ray *ray);
 char	*skip_spaces(char *s);
-
+void	get_down(t_app *app, double *speed);
+void	jump(t_app *app);
 #endif

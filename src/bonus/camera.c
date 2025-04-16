@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 22:05:01 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/16 23:02:20 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,20 @@ static void	check_escape(t_app *app)
 /*     - Right (D) is along the positive perpendicular vector (dir.y, -dir.x) */
 /*                                                                            */
 /* ************************************************************************** */
+
 static void	update_camera_movement(t_app *app, double delta_time)
 {
-	double	new_x;
-	double	new_y;
-	double	speed;
+	double		new_x;
+	double		new_y;
+	double		speed;
 
 	new_x = app->camera.pos.x;
 	new_y = app->camera.pos.y;
 	speed = app->camera.move_speed * delta_time;
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_SHIFT))
 		speed *= 2;
+	get_down(app, &speed);
+	jump(app);
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
 			- mlx_is_key_down(app->mlx, MLX_KEY_S))
 		* app->camera.dir.x * speed;
