@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/16 11:56:42 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 21:53:03 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_camera
 	t_vec2	dir;
 	t_vec2	plane;
 	double	move_speed;
-	double	rot_speed;
 	double	view_z;
 }	t_camera;
 

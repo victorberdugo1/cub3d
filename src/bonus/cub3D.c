@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 11:00:57 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 21:52:49 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,12 +140,11 @@ int	main(int argc, char **argv)
 	if (init_app_struct(&app, lines, line_count) != 0)
 		return (EXIT_FAILURE);
 	free_map_lines(lines, line_count);
-	app.camera.move_speed = 3.;
-	app.camera.rot_speed = 3.;
 	if (init_mlx_and_image(&app) == -1)
 		return (EXIT_FAILURE);
 	if (load_game_textures(&app) == -1)
 		return (EXIT_FAILURE);
+	app.camera.move_speed = 3.;
 	mlx_set_mouse_pos(app.mlx, WIDTH/2, HEIGHT/2);
 	run_loop(&app);
 	return (cleanup(&app), EXIT_SUCCESS);
