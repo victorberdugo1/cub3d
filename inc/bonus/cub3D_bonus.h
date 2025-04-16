@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D.h                                            :+:      :+:    :+:   */
+/*   cub3D_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/10 17:10:36 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/16 11:56:42 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CUB3D_H
-# define CUB3D_H
+#ifndef CUB3D_BONUS_H
+# define CUB3D_BONUS_H
 
 # include <stdlib.h>
 # include <fcntl.h>
@@ -39,6 +39,7 @@ typedef struct s_camera
 	t_vec2	plane;
 	double	move_speed;
 	double	rot_speed;
+	double	view_z;
 }	t_camera;
 
 typedef struct s_ray
@@ -52,6 +53,7 @@ typedef struct s_ray
 	t_vec2	step;
 	int		side;
 	double	perpwalldist;
+	double	view_z;
 }	t_ray;
 
 typedef struct s_draw
@@ -119,7 +121,6 @@ void	ft_draw_background(t_app *app);
 void	draw_pixels(t_app *app, int x, t_draw *draw);
 void	init_ray(t_app *app, int x, t_ray *ray);
 void	do_dda(t_app *app, t_ray *ray);
-void	compute_draw_boundaries(t_draw *draw, t_ray *ray);
 char	*skip_spaces(char *s);
 
 #endif

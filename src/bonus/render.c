@@ -6,74 +6,11 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:49:14 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 11:50:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3D.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Retrieves the X coordinate of the wall intersection (texture position).  */
-/*                                                                            */
-/*   - Uses the perpendicular wall distance (`perpwalldist`) and the ray's   */
-/*     direction to compute the intersection's position on the wall.          */
-/*   - If the ray is hitting a vertical wall (side == 0), it calculates the   */
-/*     intersection along the y-axis, otherwise along the x-axis.            */
-/*   - The function returns a value between 0 and 1 that represents the      */
-/*     position along the wall's texture for rendering.                       */
-/*                                                                            */
-/* ************************************************************************** */
-static double	get_wall_x(t_app *app, t_ray *ray)
-{
-	double	wx;
-	double	mod;
-
-	mod = ray->raydir_mod;
-	if (ray->side == 0)
-		wx = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y)/mod;
-	else
-		wx = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x)/mod;
-	return (wx - floor(wx));
-}
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Selects the correct texture based on the ray's side and direction.       */
-/*                                                                            */
-/*   - Checks whether the ray is hitting a vertical or horizontal wall.      */
-/*   - Depending on the direction of the ray, it assigns the appropriate     */
-/*     texture (North, South, East, West).                                   */
-/*   - Calculates the texture's horizontal coordinate (`tx`) based on the   */
-/*     `wx` value (wall intersection coordinate).                            */
-/*   - If the ray is hitting a wall from the opposite direction, the texture */
-/*     coordinate is mirrored (reversed).                                    */
-/*                                                                            */
-/* ************************************************************************** */
-static void	select_texture(t_app *app, t_ray *ray, t_draw *draw, double wx)
-{
-	if (ray->side == 0)
-	{
-		if (ray->raydir.x < 0)
-			draw->tex = app->game.tex_we;
-		else
-			draw->tex = app->game.tex_ea;
-	}
-	else
-	{
-		if (ray->raydir.y < 0)
-			draw->tex = app->game.tex_no;
-		else
-			draw->tex = app->game.tex_so;
-	}
-	if (!draw->tex)
-		return ;
-	draw->tx = (int)(wx * draw->tex->width);
-	if (ray->side == 0 && ray->raydir.x > 0)
-		draw->tx = draw->tex->width - draw->tx - 1;
-	else if (ray->side == 1 && ray->raydir.y < 0)
-		draw->tx = draw->tex->width - draw->tx - 1;
-}
+#include "cub3D_bonus.h"
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -85,12 +22,42 @@ static void	select_texture(t_app *app, t_ray *ray, t_draw *draw, double wx)
 /*     direction using `select_texture()`.                                    */
 /*                                                                            */
 /* ************************************************************************** */
-static void	compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
+static void compute_draw_boundaries(t_draw *draw, t_ray *ray, t_app *app)
 {
-	double	wx;
+	double perpWallDist;
 
-	wx = get_wall_x(app, ray);
-	select_texture(app, ray, draw, wx);
+	perpWallDist = (ray->side == 0) ? 
+		(ray->sidedist.x - ray->deltadist.x) : (ray->sidedist.y - ray->deltadist.y);
+	draw->lh = (int)(HEIGHT / perpWallDist);
+	draw->ds = -draw->lh / 2 + HEIGHT / 2 - app->camera.view_z;
+	if (draw->ds < 0)
+		draw->ds = 0;
+	draw->de = draw->lh / 2 + HEIGHT / 2 - app->camera.view_z;
+	if (draw->de >= HEIGHT)
+		draw->de = HEIGHT - 1;
+}
+
+static void compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
+{
+	double wallX;
+	mlx_texture_t *tex = NULL;
+
+	if (ray->side == 0)
+		wallX = app->camera.pos.y + ((ray->sidedist.x - ray->deltadist.x) * ray->raydir.y);
+	else
+		wallX = app->camera.pos.x + ((ray->sidedist.y - ray->deltadist.y) * ray->raydir.x);
+	wallX -= floor(wallX); 
+	if (ray->side == 0)
+		tex = (ray->raydir.x < 0) ? app->game.tex_we : app->game.tex_ea;
+	else
+		tex = (ray->raydir.y < 0) ? app->game.tex_no : app->game.tex_so;
+	draw->tex = tex;
+	draw->tx = (int)(wallX * tex->width);
+	if ((ray->side == 0 && ray->raydir.x > 0) || (ray->side == 1 && ray->raydir.y < 0))
+		draw->tx = tex->width - draw->tx - 1;
+	draw->tx %= tex->width;
+	if (draw->tx < 0)
+		draw->tx += tex->width;
 }
 
 /* ************************************************************************** */
@@ -108,7 +75,7 @@ static void	render_column(t_app *app, int x, t_ray *ray)
 {
 	t_draw	draw;
 
-	compute_draw_boundaries(&draw, ray);
+	compute_draw_boundaries(&draw, ray, app);
 	compute_texture_params(app, ray, &draw);
 	draw_pixels(app, x, &draw);
 }
