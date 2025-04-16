@@ -6,11 +6,11 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:05:57 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 11:56:46 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3D.h"
+#include "cub3D_bonus.h"
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -129,6 +129,12 @@ static void	update_camera_rotation(t_app *app, double delta_time)
 		rotation = app->camera.rot_speed * delta_time;
 		rotate_camera(app, rotation);
 	}
+	double view_speed = 10.0;
+    if (mlx_is_key_down(app->mlx, MLX_KEY_UP))
+		app->camera.view_z = fmax(app->camera.view_z - view_speed,-HEIGHT/2);
+	else if (mlx_is_key_down(app->mlx, MLX_KEY_DOWN))
+		app->camera.view_z = fmin(app->camera.view_z + view_speed, HEIGHT/2);
+
 }
 
 /* ************************************************************************** */

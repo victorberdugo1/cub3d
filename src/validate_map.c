@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 00:41:41 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 10:55:35 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,15 +97,13 @@ static void	validate_borders(char *line, int is_border)
 /*     - West ('W') has direction (-1, 0) and plane (0, -0.66).              */
 /*   - The camera's direction vector defines which way it faces.             */
 /*   - The plane vector helps in calculating the view direction for the ray. */
-/*                                     // dir * tan(FOV/2), dir = 1          */
+/*    double	fov; fov = 60 * (M_PI / 180);// dir * tan(FOV/2), dir = 1    */
 /* ************************************************************************** */
 static void	set_camera(t_camera *camera, char dir, int x, int y)
 {
-	double	fov;
 	double	plane;
 
-	fov = 60 * (M_PI / 180);
-	plane = tan(fov / 2);
+	plane = tan(60 * (M_PI / 180) / 2);
 	camera->pos.x = x + 0.5;
 	camera->pos.y = y + 0.5;
 	if (dir == 'N')

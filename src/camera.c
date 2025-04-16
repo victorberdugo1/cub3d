@@ -6,23 +6,11 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 00:27:52 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 11:22:37 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Checks if the Escape key is pressed. If so, it closes the MLX window,    */
-/*   effectively terminating the program.                                     */
-/*                                                                            */
-/* ************************************************************************** */
-static void	check_escape(t_app *app)
-{
-	if (mlx_is_key_down(app->mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(app->mlx);
-}
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -42,12 +30,27 @@ static void	check_escape(t_app *app)
 /*     - Right (D) is along the positive perpendicular vector (dir.y, -dir.x) */
 /*                                                                            */
 /* ************************************************************************** */
+static void	wrap_around_position(double *x, double *y, t_app *app)
+{
+	const int	in_bounds = (*x >= 0 && *x < app->game.map_width
+			&& *y >= 0 && *y < app->game.map_height);
+
+	if (!in_bounds)
+	{
+		*x = fmod(*x, app->game.map_width);
+		*y = fmod(*y, app->game.map_height);
+		if (*x < 0)
+			*x += app->game.map_width;
+		if (*y < 0)
+			*y += app->game.map_height;
+	}
+}
+
 static void	update_camera_movement(t_app *app, double delta_time)
 {
 	double	new_x;
 	double	new_y;
 	double	speed;
-	int		in_bounds;
 
 	new_x = app->camera.pos.x;
 	new_y = app->camera.pos.y;
@@ -62,17 +65,7 @@ static void	update_camera_movement(t_app *app, double delta_time)
 			(app->mlx, MLX_KEY_D)) * app->camera.dir.y * speed;
 	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_D) - mlx_is_key_down
 			(app->mlx, MLX_KEY_A)) * app->camera.dir.x * speed;
-	in_bounds = (new_x >= 0 && new_x < app->game.map_width && new_y >= 0
-			&& new_y < app->game.map_height);
-	if (!in_bounds)
-	{
-		new_x = fmod(new_x, app->game.map_width);
-		new_y = fmod(new_y, app->game.map_height);
-		if (new_x < 0)
-			new_x += app->game.map_width;
-		if (new_y < 0)
-			new_y += app->game.map_height;
-	}
+	wrap_around_position(&new_x, &new_y, app);
 	app->camera.pos.x = new_x;
 	app->camera.pos.y = new_y;
 }
@@ -152,7 +145,8 @@ void	move_camera(void *param)
 	current_time = mlx_get_time();
 	delta_time = current_time - last_time;
 	last_time = current_time;
-	check_escape(app);
+	if (mlx_is_key_down(app->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(app->mlx);
 	update_camera_movement(app, delta_time);
 	update_camera_rotation(app, delta_time);
 }

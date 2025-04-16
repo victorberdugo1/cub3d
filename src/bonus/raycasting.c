@@ -6,11 +6,11 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/03 12:55:00 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 11:37:32 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3D.h"
+#include "cub3D_bonus.h"
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -47,6 +47,7 @@ void	init_ray(t_app *app, int x, t_ray *ray)
 	ray->raydir_mod = sqrt(pow(ray->raydir.x, 2) + pow(ray->raydir.y, 2));
 	ray->deltadist.x = fabs(ray->raydir_mod / ray->raydir.x);
 	ray->deltadist.y = fabs(ray->raydir_mod / ray->raydir.y);
+	ray->view_z = app->camera.view_z;
 }
 
 /* ************************************************************************** */
