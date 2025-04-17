@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 11:54:28 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:27:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 	while (g->map[i][++j])
 	{
 		c = g->map[i][j];
-		if (!ft_strchr(" 01NSEW", c))
+		if (!ft_strchr(" 01NSEW23", c))
 			exit(write(2, "Error\nInvalid character in map\n", 31));
 		if (ft_strchr("NSEW", c))
 		{
@@ -160,6 +160,19 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 			(*count)++;
 			g->map[i][j] = '0';
 		}
+		if (c == '2' || c == '3') {
+            g->door_count++;
+            g->doors = realloc(g->doors, sizeof(t_door) * g->door_count);
+            g->doors[g->door_count - 1] = (t_door){
+                .x = j,
+                .y = i,
+                .is_open = 0,
+                .orientation = c,
+                .open_offset = 0.0,
+				.move_progress = DOOR_ANIM_DURATION
+            };
+            g->map[i][j] = '0';
+        }
 	}
 }
 
