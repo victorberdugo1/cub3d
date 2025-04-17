@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 02:15:56 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:34:06 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ static void	dda_loop(t_app *app, t_ray *ray)
             for (int i = 0; i < app->game.door_count; i++) {
                 t_door *door = &app->game.doors[i];
                 if (door->x == ray->map_x && door->y == ray->map_y) {
-					if(door->move_progress >= 0.25)
+					if(door->is_open && door->move_progress >= 0.2)
                     	is_closed = !door->is_open;
                     break;
                 }

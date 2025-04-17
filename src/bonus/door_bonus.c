@@ -6,23 +6,31 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 20:51:23 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 02:12:56 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:23:22 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
-void update_door_animation(t_app *app) {
+void update_door_animation(t_app *app, double dt) {
     for (int i = 0; i < app->game.door_count; i++) {
         t_door *door = &app->game.doors[i];
-        if (door->move_progress < 50.0) {
-            door->move_progress = fmin(door->move_progress + 0.08, 10.0);
-            double t = door->move_progress;
-            door->open_offset = door->open_offset * (t * t * (3 - 2 * t));
+        if (door->move_progress < DOOR_ANIM_DURATION) {
+            door->move_progress += dt;
+            if (door->move_progress > DOOR_ANIM_DURATION)
+                door->move_progress = DOOR_ANIM_DURATION;
+
+            double t = door->move_progress / DOOR_ANIM_DURATION;  // lineal 0→1
+
+            if (door->is_open)
+                door->open_offset = t;
+            else
+                door->open_offset = 1.0 - t;
         }
     }
 }
 
+// Inicia o invierte la animación al pulsar Espacio
 void toggle_doors(t_app *app) {
     static int last_space = 0;
     int current_space = mlx_is_key_down(app->mlx, MLX_KEY_SPACE);
@@ -36,13 +44,13 @@ void toggle_doors(t_app *app) {
             for (int i = 0; i < app->game.door_count; i++) {
                 t_door *door = &app->game.doors[i];
                 if (door->x == ray.map_x && door->y == ray.map_y) {
-					door->is_open = !door->is_open;
-					door->open_offset = door->is_open ? 50.0 : -50.0; // Offset completo del tile
-					door->move_progress = 0.0; // Reiniciar animación
-					break;
+                    door->is_open = 1;
+                    door->move_progress = 0.0;  // reset
+                    break;
                 }
             }
         }
     }
     last_space = current_space;
 }
+

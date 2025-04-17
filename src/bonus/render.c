@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 02:16:12 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:28:00 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,56 +61,77 @@ static void compute_texture_params(t_app *app, t_ray *ray, t_draw *draw) {
     mlx_texture_t *tex = NULL;
     t_door *door = NULL;
 
+    // 1) Cálculo base de wallX
     if (ray->side == 0)
-        wallX = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y);
+        wallX = app->camera.pos.y + ray->perpwalldist * ray->raydir.y;
     else
-        wallX = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x);
+        wallX = app->camera.pos.x + ray->perpwalldist * ray->raydir.x;
     wallX -= floor(wallX);
 
-    // Buscar puerta
+    // 2) Buscamos puerta (si golpeamos '2' o '3')
     if (ray->hit_tile == '2' || ray->hit_tile == '3') {
         for (int i = 0; i < app->game.door_count; i++) {
-            if (app->game.doors[i].x == ray->map_x && 
-                app->game.doors[i].y == ray->map_y) {
-                door = &app->game.doors[i];
+            t_door *d = &app->game.doors[i];
+            if (d->x == ray->map_x && d->y == ray->map_y) {
+                door = d;
                 break;
             }
         }
     }
 
     if (door) {
-        if (door->orientation == '2' || door->orientation == '3') { // Puerta NS
-            wallX += door->open_offset;
+        // ¿Panel o marco?
+        bool panel_face = (door->orientation == '2' && ray->side == 1)
+                       || (door->orientation == '3' && ray->side == 0);
+        if (panel_face) {
+            // Aplicar open_offset sólo al panel
+            double dir = (door->orientation == '2') ? -1.0 : +1.0;
+            wallX = fmod(wallX + dir * door->open_offset + 1.0, 1.0);
+            tex   = app->game.tex_door;
+        } else {
+            // Siempre marco en los lados
+            tex = app->game.tex_door_w;
         }
-
-        wallX = fmod(wallX, 1.0);
-        if (wallX < 0) wallX += 1.0;
-
-        int is_side = (door->orientation == '2' && ray->side == 0) || 
-                     (door->orientation == '3' && ray->side == 1);
-        
-        tex = is_side ? app->game.tex_door_w : app->game.tex_door;
-    } else {
-        if (ray->side == 0)
-            tex = (ray->raydir.x < 0) ? app->game.tex_we : app->game.tex_ea;
-        else
-            tex = (ray->raydir.y < 0) ? app->game.tex_no : app->game.tex_so;
+    }
+    // 3) Muro normal o pared contigua a una puerta
+    if (!tex) {
+        if (ray->hit_tile == '1') {
+            // Detectamos si es muro junto a puerta para usar marco
+            bool use_frame = false;
+            if (ray->side == 0) {
+                int adjX = ray->map_x - ray->step.x;
+                int adjY = ray->map_y;
+                char adj = safe_get_tile(&app->game, adjX, adjY);
+                if (adj == '2') use_frame = true;
+            } else {
+                int adjX = ray->map_x;
+                int adjY = ray->map_y - ray->step.y;
+                char adj = safe_get_tile(&app->game, adjX, adjY);
+                if (adj == '3') use_frame = true;
+            }
+            if (use_frame) {
+                tex = app->game.tex_door_w;
+            } else {
+                // Textura estándar de muros
+                if (ray->side == 0)
+                    tex = (ray->raydir.x < 0) ? app->game.tex_we : app->game.tex_ea;
+                else
+                    tex = (ray->raydir.y < 0) ? app->game.tex_no : app->game.tex_so;
+            }
+        }
     }
 
+    // 4) Asignar y calcular tx
     draw->tex = tex;
-    if (!tex) return;
-
+    if (!tex) return;          // nada que pintar
     draw->tx = (int)(wallX * tex->width);
-    
-    if ((ray->side == 0 && ray->raydir.x > 0) || 
+    if ((ray->side == 0 && ray->raydir.x > 0) ||
         (ray->side == 1 && ray->raydir.y < 0)) {
         draw->tx = tex->width - draw->tx - 1;
     }
-    
     draw->tx %= tex->width;
     if (draw->tx < 0) draw->tx += tex->width;
 }
-
 /* ************************************************************************** */
 /*                                                                            */
 /*   Renders a column of pixels for the given ray at the specified X.        */
@@ -128,6 +149,8 @@ static void	render_column(t_app *app, int x, t_ray *ray)
 
 	compute_draw_boundaries(&draw, ray, app);
 	compute_texture_params(app, ray, &draw);
+		if (!draw.tex)
+		return;
 	draw_pixels(app, x, &draw);
 }
 

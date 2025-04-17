@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 02:16:37 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:27:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,8 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
                 .y = i,
                 .is_open = 0,
                 .orientation = c,
-                .open_offset = 0.0
+                .open_offset = 0.0,
+				.move_progress = DOOR_ANIM_DURATION
             };
             g->map[i][j] = '0';
         }

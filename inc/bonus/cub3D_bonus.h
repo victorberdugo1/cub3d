@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/17 00:58:33 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:32:21 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define WIDTH 1920
 # define HEIGHT 1080
 # define COLLISION_RADIUS 0.2
+# define DOOR_ANIM_DURATION 0.25
 
 typedef struct s_vec2
 {
@@ -139,6 +140,6 @@ void	init_ray(t_app *app, int x, t_ray *ray);
 void	do_dda(t_app *app, t_ray *ray);
 char	*skip_spaces(char *s);
 void	toggle_doors(t_app *app);
-void	update_door_animation(t_app *app);
+void	update_door_animation(t_app *app, double dt);
 
 #endif

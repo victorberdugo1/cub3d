@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 02:11:19 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 12:21:35 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void	move_camera(void *param)
 	last_time = current_time;	
 	check_escape(app);
 	toggle_doors(app);
-	update_door_animation(app);
+	update_door_animation(app, delta_time);
 	update_camera_movement(app, delta_time);
 	mlx_get_mouse_pos(app->mlx, &xpos, &ypos);
 	update_camera_rotation(app, delta_time, xpos - WIDTH/2, ypos - HEIGHT/2);
