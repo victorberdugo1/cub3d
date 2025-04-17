@@ -75,6 +75,24 @@ typedef struct s_door
 	double			move_progress;
 }	t_door;
 
+typedef struct s_enemy
+{
+    int         x;
+    int         y;
+    double      pos_x;
+    double      pos_y;
+    double      speed;
+    int         is_active;
+	double		time_since_last_move;
+	    enum {
+        FRONT,
+        RIGHT,
+        LEFT,
+        BACK
+    } dir;
+    int anim_frame;
+} t_enemy;
+
 typedef struct s_game
 {
 	char			*texture_no;
@@ -94,8 +112,12 @@ typedef struct s_game
 	int				door_count;
 	char			*texture_door;
     char			*texture_door_w;
+    char			*texture_enemy;
 	mlx_texture_t	*tex_door;
 	mlx_texture_t	*tex_door_w;
+	mlx_texture_t	*tex_enemy;
+	t_enemy			*enemies;
+	int				enemy_count;
 }	t_game;
 
 typedef struct s_app
@@ -104,6 +126,7 @@ typedef struct s_app
 	mlx_image_t	*image;
 	t_camera	camera;
 	t_game		game;
+	double		z_buffer[WIDTH];
 }	t_app;
 
 typedef struct s_collision
@@ -120,6 +143,7 @@ typedef struct s_collision
 	double	dx;
 	double	dy;
 }	t_collision;
+
 
 void	process_lines(char **lines, int count, t_game *game, t_camera *camera);
 int		read_lines(const char *filename, char ***lines, int *line_count);
@@ -142,4 +166,8 @@ void	toggle_doors(t_app *app);
 void	update_door_animation(t_app *app, double dt);
 void	get_down(t_app *app, double *speed);
 void	jump(t_app *app);
+void	update_enemies(t_app *app, double delta_time);
+void	render_enemy(t_app *app, t_enemy *e);
+uint32_t	convert_pixel(uint32_t px);
+
 #endif

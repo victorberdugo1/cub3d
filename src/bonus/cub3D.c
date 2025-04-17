@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 21:52:49 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/18 00:01:53 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,16 @@ static int	load_game_textures(t_app *app)
 		printf("Error: Failed to load one or more textures.\n");
 		cleanup(app);
 		return (-1);
+	}
+	if (app->game.texture_enemy)
+	{
+		app->game.tex_enemy = mlx_load_png(app->game.texture_enemy);
+		if (!game->tex_enemy)
+		{
+			printf("Error: Failed to load enemy textures.\n");
+			cleanup(app);
+			return (-1);
+		}
 	}
 	if (app->game.texture_door) {
         app->game.tex_door = mlx_load_png(app->game.texture_door);

@@ -115,6 +115,13 @@ void	cleanup(t_app *app)
 			mlx_delete_texture(app->game.tex_door);
 	if (app->game.tex_door_w)
 			mlx_delete_texture(app->game.tex_door_w);
+	if (app->game.enemies) {
+		free(app->game.enemies);
+		app->game.enemies = NULL;
+	}
+	free(app->game.texture_enemy);
+	if (app->game.tex_enemy)
+			mlx_delete_texture(app->game.tex_enemy);
 	ft_free(app->game.map);
 	mlx_terminate(app->mlx);
 }

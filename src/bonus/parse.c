@@ -104,6 +104,8 @@ static void	process_texture(char *trimmed, t_game *game)
         game->texture_door = ft_strtrim(skip_spaces(trimmed + 1), " ");
     else if (!ft_strncmp(trimmed, "M", 1))
         game->texture_door_w = ft_strtrim(skip_spaces(trimmed + 1), " ");
+    else if (!ft_strncmp(trimmed, "B", 1))
+        game->texture_enemy = ft_strtrim(skip_spaces(trimmed + 1), " ");
 }
 
 /* ************************************************************************** */
@@ -137,7 +139,8 @@ static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 	else if (!ft_strncmp(trimmed, "NO", 2) || !ft_strncmp(trimmed, "SO", 2)
 		|| !ft_strncmp(trimmed, "WE", 2) || !ft_strncmp(trimmed, "EA", 2)
 		|| !ft_strncmp(trimmed, "F", 1) || !ft_strncmp(trimmed, "C", 1)
-		|| !ft_strncmp(trimmed, "D", 1) || !ft_strncmp(trimmed, "M", 1))
+		|| !ft_strncmp(trimmed, "D", 1) || !ft_strncmp(trimmed, "M", 1)
+		|| !ft_strncmp(trimmed, "B", 1))
 		process_texture(trimmed, game);
 }
 

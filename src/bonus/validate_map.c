@@ -152,7 +152,7 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 	while (g->map[i][++j])
 	{
 		c = g->map[i][j];
-		if (!ft_strchr(" 01NSEW23", c))
+		if (!ft_strchr(" 01NSEW23B", c))
 			exit(write(2, "Error\nInvalid character in map\n", 31));
 		if (ft_strchr("NSEW", c))
 		{
@@ -172,6 +172,22 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
 				.move_progress = DOOR_ANIM_DURATION
             };
             g->map[i][j] = '0';
+        }
+        if (c == 'B')
+		{
+            g->enemy_count++;
+            g->enemies = realloc(g->enemies, sizeof(t_enemy) * g->enemy_count);
+            g->enemies[g->enemy_count - 1] = (t_enemy){
+                .x = j,
+                .y = i,
+                .pos_x = j + 0.5,
+                .pos_y = i + 0.5,
+                .speed = 0.8,
+                .is_active = 1,
+                .anim_frame = 0.0,
+                .time_since_last_move = 0.0
+            };
+            g->map[i][j] = '0'; 
         }
 	}
 }
