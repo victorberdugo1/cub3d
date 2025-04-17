@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 11:37:32 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 02:15:56 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 /*       deltadist.y = |raydir_modulus / raydir.y|                            */
 /*                                                                            */
 /* ************************************************************************** */
-
 void	init_ray(t_app *app, int x, t_ray *ray)
 {
 	double	camx;
@@ -98,6 +97,7 @@ static t_vec2	init_step(double pos, int map, double deltadist, double raydir)
 /*   - This process repeats until a wall (`'1'`) is found or out of bounds.   */
 /*                                                                            */
 /* ************************************************************************** */
+/*
 static void	dda_loop(t_app *app, t_ray *ray)
 {
 	while (1)
@@ -114,11 +114,50 @@ static void	dda_loop(t_app *app, t_ray *ray)
 			ray->map_y += ray->step.y;
 			ray->side = 1;
 		}
-		if (safe_get_tile(&app->game, ray->map_x, ray->map_y) == '1')
+		if (ray->map_y < 0
+			|| ray->map_y >= app->game.map_height
+			|| ray->map_x < 0
+			|| ray->map_x >= (int)ft_strlen(app->game.map[ray->map_y])
+			|| app->game.map[ray->map_y][ray->map_x] == '1')
 			break ;
 	}
-}
+}*/
+static void	dda_loop(t_app *app, t_ray *ray)
+{
+	while (1)
+	{
+		if (ray->sidedist.x < ray->sidedist.y)
+		{
+			ray->sidedist.x += ray->deltadist.x;
+			ray->map_x += ray->step.x;
+			ray->side = 0;
+		}
+		else
+		{
+			ray->sidedist.y += ray->deltadist.y;
+			ray->map_y += ray->step.y;
+			ray->side = 1;
+		}
+		ray->hit_tile = safe_get_tile(&app->game, ray->map_x, ray->map_y);
 
+        // Verificar si es una puerta cerrada y no se pinta 
+        if (ray->hit_tile == '2' || ray->hit_tile == '3') {
+            int is_closed = 1;
+            for (int i = 0; i < app->game.door_count; i++) {
+                t_door *door = &app->game.doors[i];
+                if (door->x == ray->map_x && door->y == ray->map_y) {
+					if(door->move_progress >= 0.25)
+                    	is_closed = !door->is_open;
+                    break;
+                }
+            }
+            if (is_closed) break;
+        }
+        else if (ray->hit_tile == '1') {
+            break;
+        }
+	}
+}
 /* ************************************************************************** */
 /*                                                                            */
 /*   Executes the full DDA (raycasting) routine for a single ray.             */

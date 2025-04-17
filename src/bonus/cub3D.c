@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 11:00:57 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 02:12:09 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,20 @@ static int	load_game_textures(t_app *app)
 		cleanup(app);
 		return (-1);
 	}
+	if (app->game.texture_door) {
+        app->game.tex_door = mlx_load_png(app->game.texture_door);
+    }
+    if (app->game.texture_door_w) {
+        app->game.tex_door_w = mlx_load_png(app->game.texture_door_w);
+    }
+
+    // Verificar carga correcta
+    if ((app->game.tex_door && !app->game.tex_door_w) ||
+        (!app->game.tex_door && app->game.tex_door_w)) {
+        printf("Error\nBoth door textures (D/W) must be provided\n");
+        cleanup(app);
+        return (-1);
+    }
 	return (0);
 }
 

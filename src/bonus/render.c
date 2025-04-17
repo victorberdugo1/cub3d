@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 11:50:50 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 02:16:12 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void compute_draw_boundaries(t_draw *draw, t_ray *ray, t_app *app)
 	if (draw->de >= HEIGHT)
 		draw->de = HEIGHT - 1;
 }
-
+/*
 static void compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
 {
 	double wallX;
@@ -54,6 +54,61 @@ static void compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
 	draw->tx %= tex->width;
 	if (draw->tx < 0)
 		draw->tx += tex->width;
+}*/
+
+static void compute_texture_params(t_app *app, t_ray *ray, t_draw *draw) {
+    double wallX;
+    mlx_texture_t *tex = NULL;
+    t_door *door = NULL;
+
+    if (ray->side == 0)
+        wallX = app->camera.pos.y + (ray->perpwalldist * ray->raydir.y);
+    else
+        wallX = app->camera.pos.x + (ray->perpwalldist * ray->raydir.x);
+    wallX -= floor(wallX);
+
+    // Buscar puerta
+    if (ray->hit_tile == '2' || ray->hit_tile == '3') {
+        for (int i = 0; i < app->game.door_count; i++) {
+            if (app->game.doors[i].x == ray->map_x && 
+                app->game.doors[i].y == ray->map_y) {
+                door = &app->game.doors[i];
+                break;
+            }
+        }
+    }
+
+    if (door) {
+        if (door->orientation == '2' || door->orientation == '3') { // Puerta NS
+            wallX += door->open_offset;
+        }
+
+        wallX = fmod(wallX, 1.0);
+        if (wallX < 0) wallX += 1.0;
+
+        int is_side = (door->orientation == '2' && ray->side == 0) || 
+                     (door->orientation == '3' && ray->side == 1);
+        
+        tex = is_side ? app->game.tex_door_w : app->game.tex_door;
+    } else {
+        if (ray->side == 0)
+            tex = (ray->raydir.x < 0) ? app->game.tex_we : app->game.tex_ea;
+        else
+            tex = (ray->raydir.y < 0) ? app->game.tex_no : app->game.tex_so;
+    }
+
+    draw->tex = tex;
+    if (!tex) return;
+
+    draw->tx = (int)(wallX * tex->width);
+    
+    if ((ray->side == 0 && ray->raydir.x > 0) || 
+        (ray->side == 1 && ray->raydir.y < 0)) {
+        draw->tx = tex->width - draw->tx - 1;
+    }
+    
+    draw->tx %= tex->width;
+    if (draw->tx < 0) draw->tx += tex->width;
 }
 
 /* ************************************************************************** */

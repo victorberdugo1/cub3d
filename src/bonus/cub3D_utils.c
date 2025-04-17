@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 11:02:17 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 02:12:28 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,16 @@ void	cleanup(t_app *app)
 		free(app->game.map[i]);
 		i = i + 1;
 	}
+	if (app->game.doors) {
+		free(app->game.doors);
+		app->game.doors = NULL;
+	}
+	free(app->game.texture_door);
+	free(app->game.texture_door_w);
+	if (app->game.tex_door)
+			mlx_delete_texture(app->game.tex_door);
+	if (app->game.tex_door_w)
+			mlx_delete_texture(app->game.tex_door_w);
 	ft_free(app->game.map);
 	mlx_terminate(app->mlx);
 }

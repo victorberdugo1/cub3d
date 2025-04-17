@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/16 11:56:42 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/17 00:58:33 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_ray
 	t_vec2	step;
 	int		side;
 	double	perpwalldist;
+	char	hit_tile;
 }	t_ray;
 
 typedef struct s_draw
@@ -63,6 +64,16 @@ typedef struct s_draw
 	int				tx;
 	mlx_texture_t	*tex;
 }	t_draw;
+
+typedef struct s_door
+{
+    int				x;
+    int				y;
+    int				is_open;
+    int				orientation;
+	double			open_offset;
+	double			move_progress;
+}	t_door;
 
 typedef struct s_game
 {
@@ -79,6 +90,12 @@ typedef struct s_game
 	mlx_texture_t	*tex_we;
 	mlx_texture_t	*tex_ea;
 	int				map_started;
+	t_door			*doors;
+	int				door_count;
+	char			*texture_door;
+    char			*texture_door_w;
+	mlx_texture_t	*tex_door;
+	mlx_texture_t	*tex_door_w;
 }	t_game;
 
 typedef struct s_app
@@ -121,5 +138,7 @@ void	draw_pixels(t_app *app, int x, t_draw *draw);
 void	init_ray(t_app *app, int x, t_ray *ray);
 void	do_dda(t_app *app, t_ray *ray);
 char	*skip_spaces(char *s);
+void	toggle_doors(t_app *app);
+void	update_door_animation(t_app *app);
 
 #endif
