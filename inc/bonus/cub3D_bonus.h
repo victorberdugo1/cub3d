@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/17 12:32:21 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/16 23:01:22 by aescande         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_camera
 	t_vec2	dir;
 	t_vec2	plane;
 	double	move_speed;
-	double	rot_speed;
 	double	view_z;
 }	t_camera;
 
@@ -141,5 +140,6 @@ void	do_dda(t_app *app, t_ray *ray);
 char	*skip_spaces(char *s);
 void	toggle_doors(t_app *app);
 void	update_door_animation(t_app *app, double dt);
-
+void	get_down(t_app *app, double *speed);
+void	jump(t_app *app);
 #endif

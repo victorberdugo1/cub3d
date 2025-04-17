@@ -42,8 +42,9 @@ BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D.c \
 			$(SRC_DIR_BONUS)/parse_utils.c \
 			$(SRC_DIR_BONUS)/render_utils.c \
 			$(SRC_DIR_BONUS)/raycasting.c \
-			$(SRC_DIR_BONUS)/door_bonus.c
-
+			$(SRC_DIR_BONUS)/door_bonus.c \
+      $(SRC_DIR_BONUS)/movement.c
+      
 # Manual conversion of sources to object files
 OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 BONUS_OBJ = $(BONUS_SRC:$(SRC_DIR_BONUS)/%.c=$(OBJ_DIR_BONUS)/%.o)

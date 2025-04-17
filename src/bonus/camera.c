@@ -42,17 +42,20 @@ static void	check_escape(t_app *app)
 /*     - Right (D) is along the positive perpendicular vector (dir.y, -dir.x) */
 /*                                                                            */
 /* ************************************************************************** */
+
 static void	update_camera_movement(t_app *app, double delta_time)
 {
-	double	new_x;
-	double	new_y;
-	double	speed;
+	double		new_x;
+	double		new_y;
+	double		speed;
 
 	new_x = app->camera.pos.x;
 	new_y = app->camera.pos.y;
 	speed = app->camera.move_speed * delta_time;
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_SHIFT))
 		speed *= 2;
+	get_down(app, &speed);
+	jump(app);
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
 			- mlx_is_key_down(app->mlx, MLX_KEY_S))
 		* app->camera.dir.x * speed;
@@ -89,21 +92,21 @@ static void	update_camera_movement(t_app *app, double delta_time)
 /*   - Applying the rotation matrix rotates both vectors around the origin.   */
 /*                                                                            */
 /* ************************************************************************** */
-static void	rotate_camera(t_app *app, double rotation)
+static void	rotate_camera(t_app *app, double alpha)
 {
 	double	old_dir_x;
 	double	old_plane_x;
 
 	old_dir_x = app->camera.dir.x;
-	app->camera.dir.x = app->camera.dir.x * cos(rotation)
-		- app->camera.dir.y * sin(rotation);
-	app->camera.dir.y = old_dir_x * sin(rotation)
-		+ app->camera.dir.y * cos(rotation);
+	app->camera.dir.x = app->camera.dir.x * cos(alpha)
+		- app->camera.dir.y * sin(alpha);
+	app->camera.dir.y = old_dir_x * sin(alpha)
+		+ app->camera.dir.y * cos(alpha);
 	old_plane_x = app->camera.plane.x;
-	app->camera.plane.x = app->camera.plane.x * cos(rotation)
-		- app->camera.plane.y * sin(rotation);
-	app->camera.plane.y = old_plane_x * sin(rotation)
-		+ app->camera.plane.y * cos(rotation);
+	app->camera.plane.x = app->camera.plane.x * cos(alpha)
+		- app->camera.plane.y * sin(alpha);
+	app->camera.plane.y = old_plane_x * sin(alpha)
+		+ app->camera.plane.y * cos(alpha);
 }
 
 /* ************************************************************************** */
@@ -115,16 +118,21 @@ static void	rotate_camera(t_app *app, double rotation)
 /*   - Right Arrow (→) rotates clockwise (positive rotation).                 */
 /*                                                                            */
 /* ************************************************************************** */
-static void	update_camera_rotation(t_app *app, double delta_time, double xspeed, double yspeed)
+static void	update_camera_rotation(t_app *app, double delta_time)
 {
-	double	rotation;
-	double	view_speed;
+	int32_t	posx;
+	int32_t	posz;
+	double	alpha;
+	double	offset_z;
 
-	rotation = xspeed * delta_time / 2;
-	rotate_camera(app, rotation);
-	view_speed = yspeed * delta_time * 150;
-	if (!(fabs(app->camera.view_z) >= HEIGHT && app->camera.view_z * view_speed > 0))
-		app->camera.view_z += view_speed;
+	mlx_get_mouse_pos(app->mlx, &posx, &posz);
+	alpha = (posx - WIDTH / 2) * delta_time / 5;
+	offset_z = (posz - HEIGHT / 2) * delta_time * 120;
+	rotate_camera(app, alpha);
+	if (!(fabs(app->camera.view_z) >= HEIGHT &&
+			   	app->camera.view_z * offset_z > 0))
+		app->camera.view_z += offset_z;
+	mlx_set_mouse_pos(app->mlx, WIDTH/2, HEIGHT/2);
 }
 
 /* ************************************************************************** */
@@ -138,19 +146,15 @@ void	move_camera(void *param)
 	static double	last_time = 0;
 	double			current_time;
 	double			delta_time;
-	int32_t			xpos;
-	int32_t			ypos;
 
 	t_app	*app;	
 	app = (t_app *)param;
 	current_time = mlx_get_time();
 	delta_time = current_time - last_time;
-	last_time = current_time;	
+	last_time = current_time;
 	check_escape(app);
 	toggle_doors(app);
 	update_door_animation(app, delta_time);
 	update_camera_movement(app, delta_time);
-	mlx_get_mouse_pos(app->mlx, &xpos, &ypos);
-	update_camera_rotation(app, delta_time, xpos - WIDTH/2, ypos - HEIGHT/2);
-	mlx_set_mouse_pos(app->mlx, WIDTH/2, HEIGHT/2);
+	update_camera_rotation(app, delta_time);
 }
