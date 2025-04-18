@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 11:36:39 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 13:04:51 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 15:39:56 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ void render_minimap(t_app *app)
 		int center_x = MINI_X + (int)(rot_x * MINI_SCALE);
 		int center_y = MINI_Y + (int)(rot_y * MINI_SCALE);
 
-		for (int dy = -1; dy <= 1; dy++) {
-			for (int dx = -1; dx <= 1; dx++) {
+		for (int dy = -3; dy <= 3; dy++) {
+			for (int dx = -3; dx <= 3; dx++) {
 				double px = dx;
 				double py = dy;
 

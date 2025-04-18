@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/18 11:39:01 by victor           ###   ########.fr        #
+#    Updated: 2025/04/18 15:23:43 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,20 +32,21 @@ SRC =   $(SRC_DIR)/cub3D.c \
 		$(SRC_DIR)/render_utils.c \
 		$(SRC_DIR)/raycasting.c
 
-BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D.c \
-			$(SRC_DIR_BONUS)/camera.c \
-			$(SRC_DIR_BONUS)/collition.c \
+BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D_bonus.c \
+			$(SRC_DIR_BONUS)/camera_bonus.c \
+			$(SRC_DIR_BONUS)/collition_bonus.c \
 			$(SRC_DIR_BONUS)/parse.c \
 			$(SRC_DIR_BONUS)/render.c \
-			$(SRC_DIR_BONUS)/cub3D_utils.c \
+			$(SRC_DIR_BONUS)/cub3D_utils_bonus.c \
 			$(SRC_DIR_BONUS)/validate_map.c \
 			$(SRC_DIR_BONUS)/parse_utils.c \
 			$(SRC_DIR_BONUS)/render_utils.c \
 			$(SRC_DIR_BONUS)/raycasting.c \
 			$(SRC_DIR_BONUS)/door_bonus.c \
-     		$(SRC_DIR_BONUS)/movement.c \
+			$(SRC_DIR_BONUS)/movement.c \
 			$(SRC_DIR_BONUS)/enemies_bonus.c \
-			$(SRC_DIR_BONUS)/minimap_bonus.c
+			$(SRC_DIR_BONUS)/minimap_bonus.c \
+			$(SRC_DIR_BONUS)/textures_bonus.c 
       
 # Manual conversion of sources to object files
 OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 13:40:28 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 15:22:56 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,5 +176,7 @@ void		update_enemies(t_app *app, double delta_time);
 void		render_enemy(t_app *app, t_enemy *e);
 uint32_t	convert_pixel(uint32_t px);
 void		render_minimap(t_app *app);
+int			load_game_textures(t_app *app);
+void		safe_free(t_app *app);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 12:23:40 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 15:22:14 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,41 +87,13 @@ void	cleanup(t_app *app)
 {
 	int	i;
 
-	if (app->game.tex_no)
-		mlx_delete_texture(app->game.tex_no);
-	if (app->game.tex_so)
-		mlx_delete_texture(app->game.tex_so);
-	if (app->game.tex_we)
-		mlx_delete_texture(app->game.tex_we);
-	if (app->game.tex_ea)
-		mlx_delete_texture(app->game.tex_ea);
-	free(app->game.texture_no);
-	free(app->game.texture_so);
-	free(app->game.texture_we);
-	free(app->game.texture_ea);
+	safe_free(app);
 	i = 0;
 	while (i < app->game.map_height)
 	{
 		free(app->game.map[i]);
-		i = i + 1;
+		i++;
 	}
-	if (app->game.doors) {
-		free(app->game.doors);
-		app->game.doors = NULL;
-	}
-	free(app->game.texture_door);
-	free(app->game.texture_door_w);
-	if (app->game.tex_door)
-			mlx_delete_texture(app->game.tex_door);
-	if (app->game.tex_door_w)
-			mlx_delete_texture(app->game.tex_door_w);
-	if (app->game.enemies) {
-		free(app->game.enemies);
-		app->game.enemies = NULL;
-	}
-	free(app->game.texture_enemy);
-	if (app->game.tex_enemy)
-			mlx_delete_texture(app->game.tex_enemy);
 	ft_free(app->game.map);
 	mlx_terminate(app->mlx);
 }
