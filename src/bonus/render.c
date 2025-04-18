@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 10:20:24 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 11:41:45 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ void	render_scene(void *param)
 		render_column(app, x, &ray);
 		x++;
 	}
+	render_minimap(app);
 	t_enemy **sorted_enemies = malloc(app->game.enemy_count * sizeof(t_enemy*));
     for (int i = 0; i < app->game.enemy_count; i++)
         sorted_enemies[i] = &app->game.enemies[i];

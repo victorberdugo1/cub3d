@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 10:41:58 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 11:50:34 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@
 # define HEIGHT 1080
 # define COLLISION_RADIUS 0.2
 # define DOOR_ANIM_DURATION 0.25
+# define MINI_SCALE 10         // Escala: píxeles por celda del mapa
+# define MINI_VIEW_DIST 20    // Distancia visible en celdas
+// En cub3D_bonus.h
+#define MINI_X 200          // Debe ser mayor que MINI_RADIUS
+#define MINI_Y 200          // y menor que (WIDTH - MINI_RADIUS)
+#define MINI_RADIUS 200      // Radio máximo seguro para 1920x1080: ~100
 
 typedef struct s_vec2
 {
@@ -170,5 +176,6 @@ void	jump(t_app *app);
 void	update_enemies(t_app *app, double delta_time);
 void	render_enemy(t_app *app, t_enemy *e);
 uint32_t	convert_pixel(uint32_t px);
+void    render_minimap(t_app *app);
 
 #endif
