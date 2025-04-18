@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/16 23:01:22 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/18 10:41:58 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,6 @@ typedef struct s_door
 
 typedef struct s_enemy
 {
-    int         x;
-    int         y;
     double      pos_x;
     double      pos_y;
     double      speed;
@@ -91,6 +89,9 @@ typedef struct s_enemy
         BACK
     } dir;
     int anim_frame;
+	double facing_angle;
+	bool initialized;
+	double radius;
 } t_enemy;
 
 typedef struct s_game

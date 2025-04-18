@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 21:58:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 12:27:41 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:42:43 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,24 +171,23 @@ static void	process_row_chars(t_game *g, t_camera *cam, int i, int *count)
                 .open_offset = 0.0,
 				.move_progress = DOOR_ANIM_DURATION
             };
-            g->map[i][j] = '0';
-        }
-        if (c == 'B')
+			g->map[i][j] = '0';
+		}
+		if (c == 'B')
 		{
-            g->enemy_count++;
-            g->enemies = realloc(g->enemies, sizeof(t_enemy) * g->enemy_count);
-            g->enemies[g->enemy_count - 1] = (t_enemy){
-                .x = j,
-                .y = i,
-                .pos_x = j + 0.5,
-                .pos_y = i + 0.5,
-                .speed = 0.8,
-                .is_active = 1,
-                .anim_frame = 0.0,
-                .time_since_last_move = 0.0
-            };
-            g->map[i][j] = '0'; 
-        }
+			g->enemy_count++;
+			g->enemies = realloc(g->enemies, sizeof(t_enemy) * g->enemy_count);
+			g->enemies[g->enemy_count - 1] = (t_enemy){
+				.pos_x = j + 0.5,
+					.pos_y = i + 0.5,
+					.speed = 0.8,
+					.is_active = 1,
+					.anim_frame = 0.0,
+					.time_since_last_move = 0.0,
+					.radius = 0.7
+			};
+			g->map[i][j] = '0'; 
+		}
 	}
 }
 
