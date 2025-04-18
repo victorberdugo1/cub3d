@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 18:54:34 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 19:36:49 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,92 +33,6 @@ static void	compute_draw_boundaries(t_draw *draw, t_ray *ray, t_app *app)
 		draw->de = HEIGHT - 1;
 }
 
-static void	compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
-{
-	double			wallx;
-	mlx_texture_t	*tex;
-	t_door			*door;
-
-	tex = NULL;
-	door = NULL;
-	if (ray->side == 0)
-		wallx = app->camera.pos.y + ray->perpwalldist * ray->raydir.y;
-	else
-		wallx = app->camera.pos.x + ray->perpwalldist * ray->raydir.x;
-	wallx -= floor(wallx);
-	if (ray->hit_tile == '2' || ray->hit_tile == '3')
-	{
-		for (int i = 0; i < app->game.door_count; i++)
-		{
-			t_door *d = &app->game.doors[i];
-			if (d->x == ray->map_x && d->y == ray->map_y)
-			{
-				door = d;
-				break;
-			}
-		}
-	}
-	if (door)
-	{
-		bool panel_face = (door->orientation == '2' && ray->side == 1)
-			|| (door->orientation == '3' && ray->side == 0);
-		if (panel_face)
-		{
-			double dir = (door->orientation == '2') ? -1.0 : +1.0;
-			wallx = fmod(wallx + dir * door->open_offset + 1.0, 1.0);
-			tex   = app->game.tex_door;
-		}
-		else
-		{
-			tex = app->game.tex_door_w;
-		}
-	}
-	if (!tex)
-	{
-		if (ray->hit_tile == '1')
-		{
-			bool use_frame = false;
-			if (ray->side == 0)
-			{
-				int adjX = ray->map_x - ray->step.x;
-				int adjY = ray->map_y;
-				char adj = safe_get_tile(&app->game, adjX, adjY);
-				if (adj == '2')
-					use_frame = true;
-			}
-			else
-			{
-				int adjX = ray->map_x;
-				int adjY = ray->map_y - ray->step.y;
-				char adj = safe_get_tile(&app->game, adjX, adjY);
-				if (adj == '3')
-					use_frame = true;
-			}
-			if (use_frame)
-			{
-				tex = app->game.tex_door_w;
-			}
-			else
-			{
-				if (ray->side == 0)
-					tex = (ray->raydir.x < 0) ? app->game.tex_we : app->game.tex_ea;
-				else
-					tex = (ray->raydir.y < 0) ? app->game.tex_no : app->game.tex_so;
-			}
-		}
-	}
-	draw->tex = tex;
-	if (!tex)
-		return;
-	draw->tx = (int)(wallx * tex->width);
-	if ((ray->side == 0 && ray->raydir.x > 0) ||
-			(ray->side == 1 && ray->raydir.y < 0)) {
-		draw->tx = tex->width - draw->tx - 1;
-	}
-	draw->tx %= tex->width;
-	if (draw->tx < 0)
-		draw->tx += tex->width;
-}
 /* ************************************************************************** */
 /*                                                                            */
 /*   Renders a column of pixels for the given ray at the specified X.        */
@@ -137,7 +51,7 @@ static void	render_column(t_app *app, int x, t_ray *ray)
 	compute_draw_boundaries(&draw, ray, app);
 	compute_texture_params(app, ray, &draw);
 	if (!draw.tex)
-		return;
+		return ;
 	app->z_buffer[x] = ray->perpwalldist;
 	draw_pixels(app, x, &draw);
 }
