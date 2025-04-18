@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   movement.c                                         :+:      :+:    :+:   */
+/*   movement_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aescande <aescande@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 22:25:21 by aescande          #+#    #+#             */
-/*   Updated: 2025/04/16 23:54:19 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/18 18:21:20 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,30 +40,28 @@ void	get_down(t_app *app, double *speed)
 
 void	jump(t_app *app)
 {
-	double			v_i;
-	double			v;
-	static double	t_i;
-	double			dt;
+	static t_vec2	j = {0, 0};
 	static int		is_jumping = 0;
+	double			dt;
+	double			v;
 
 	if (mlx_is_key_down(app->mlx, MLX_KEY_SPACE) || is_jumping)
 	{
-		v_i = -50;
 		if (!is_jumping)
 		{
-			t_i = mlx_get_time();
 			is_jumping = 1;
+			j = (t_vec2){mlx_get_time(), -50};
 		}
-		dt = mlx_get_time() - t_i;
-		v = v_i + 200 * dt;
-		if (!(fabs(app->camera.view_z) > HEIGHT && app->camera.view_z * v/fabs(v) > 0))
+		dt = mlx_get_time() - j.x;
+		v = j.y + 200 * dt;
+		if (!(fabs(app->camera.view_z) > HEIGHT && app->camera.view_z * v > 0))
 		{
 			if (v >= 0)
-				app->camera.view_z -= (v_i * dt + 0.5 * 200 * pow(dt, 2));
+				app->camera.view_z -= j.y * dt + 100 * pow(dt, 2);
 			else
-				app->camera.view_z += (v_i * dt + 0.5 * 200 * pow(dt, 2));
+				app->camera.view_z += j.y * dt + 100 * pow(dt, 2);
 		}
-		if(fabs(v_i) <= fabs(v))
+		if (fabs(j.y) <= fabs(v))
 			is_jumping = 0;
 	}
 }

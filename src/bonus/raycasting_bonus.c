@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 12:34:06 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:44:12 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,67 +97,36 @@ static t_vec2	init_step(double pos, int map, double deltadist, double raydir)
 /*   - This process repeats until a wall (`'1'`) is found or out of bounds.   */
 /*                                                                            */
 /* ************************************************************************** */
-/*
-static void	dda_loop(t_app *app, t_ray *ray)
+static void	update_ray_position(t_ray *ray)
 {
-	while (1)
+	if (ray->sidedist.x < ray->sidedist.y)
 	{
-		if (ray->sidedist.x < ray->sidedist.y)
-		{
-			ray->sidedist.x += ray->deltadist.x;
-			ray->map_x += ray->step.x;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->sidedist.y += ray->deltadist.y;
-			ray->map_y += ray->step.y;
-			ray->side = 1;
-		}
-		if (ray->map_y < 0
-			|| ray->map_y >= app->game.map_height
-			|| ray->map_x < 0
-			|| ray->map_x >= (int)ft_strlen(app->game.map[ray->map_y])
-			|| app->game.map[ray->map_y][ray->map_x] == '1')
-			break ;
+		ray->sidedist.x += ray->deltadist.x;
+		ray->map_x += ray->step.x;
+		ray->side = 0;
 	}
-}*/
-static void	dda_loop(t_app *app, t_ray *ray)
-{
-	while (1)
+	else
 	{
-		if (ray->sidedist.x < ray->sidedist.y)
-		{
-			ray->sidedist.x += ray->deltadist.x;
-			ray->map_x += ray->step.x;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->sidedist.y += ray->deltadist.y;
-			ray->map_y += ray->step.y;
-			ray->side = 1;
-		}
-		ray->hit_tile = safe_get_tile(&app->game, ray->map_x, ray->map_y);
-
-        // Verificar si es una puerta cerrada y no se pinta 
-        if (ray->hit_tile == '2' || ray->hit_tile == '3') {
-            int is_closed = 1;
-            for (int i = 0; i < app->game.door_count; i++) {
-                t_door *door = &app->game.doors[i];
-                if (door->x == ray->map_x && door->y == ray->map_y) {
-					if(door->is_open && door->move_progress >= 0.2)
-                    	is_closed = !door->is_open;
-                    break;
-                }
-            }
-            if (is_closed) break;
-        }
-        else if (ray->hit_tile == '1') {
-            break;
-        }
+		ray->sidedist.y += ray->deltadist.y;
+		ray->map_y += ray->step.y;
+		ray->side = 1;
 	}
 }
+
+static void	dda_loop(t_app *app, t_ray *ray)
+{
+	while (1)
+	{
+		update_ray_position(ray);
+		ray->hit_tile = safe_get_tile(&app->game, ray->map_x, ray->map_y);
+		if (ray->hit_tile == '1')
+			break ;
+		if ((ray->hit_tile == '2' || ray->hit_tile == '3')
+			&& check_door_collision(app, ray))
+			break ;
+	}
+}
+
 /* ************************************************************************** */
 /*                                                                            */
 /*   Executes the full DDA (raycasting) routine for a single ray.             */
@@ -192,28 +161,9 @@ void	do_dda(t_app *app, t_ray *ray)
 	ray->sidedist.y = steps.y;
 	dda_loop(app, ray);
 	if (ray->side == 0)
-		ray->perpwalldist = (ray->sidedist.x - ray->deltadist.x) / ray->raydir_mod;
+		ray->perpwalldist = (ray->sidedist.x - ray->deltadist.x)
+			/ ray->raydir_mod;
 	else
-		ray->perpwalldist = (ray->sidedist.y - ray->deltadist.y) / ray->raydir_mod;
-	//printf("sidedist.y: %lf, sidedist.x: %lf\n", ray->sidedist.y/ray->deltadist.y, ray->sidedist.x/ray->deltadist.x);
-	//printf("raydir.y: %lf, raydir.x: %lf\n", ray->raydir.y, ray->raydir.x);
-	//printf("product: %lf, normal: %lf\n", ray->perpwalldist*ray->raydir.y, ray->perpwalldist);
+		ray->perpwalldist = (ray->sidedist.y - ray->deltadist.y)
+			/ ray->raydir_mod;
 }
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Computes the vertical drawing boundaries for the wall slice.             */
-/*                                                                            */
-/*   - Uses `perpwalldist` to determine the height of the projected wall:     */
-/*       line_height = HEIGHT / (perpwalldist / raydir_modulus)               */
-
-/*                                                                            */
-/*   - Calculates the top (`draw_start`) and bottom (`draw_end`) positions    */
-/*     on the screen, centering the wall slice:                               */
-/*       draw_start = -line_height / 2 + HEIGHT / 2                           */
-/*       draw_end = line_height / 2 + HEIGHT / 2                              */
-/*                                                                            */
-/*   - Ensures the values stay within screen limits.                          */
-/*                                                                            */
-/* ************************************************************************** */
-

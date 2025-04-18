@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 18:11:17 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:43:51 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,5 +199,6 @@ void		update_enemy(t_app *app, t_enemy *e, t_camera *cam, double dt);
 void		update_enemy_dir(t_app *app, t_enemy *enemy, double delta_time);
 void		draw_minimap_background(t_app *app);
 void		draw_map_features(t_app *app);
+int			check_door_collision(t_app *app, t_ray *ray);
 
 #endif
