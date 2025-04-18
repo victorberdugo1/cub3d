@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:17:00 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 11:31:26 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 14:16:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,19 @@
 char	safe_get_tile(t_game *game, int x, int y)
 {
 	int	len;
-	
-	for (int i = 0; i < game->door_count; i++) {
-        if (game->doors[i].x == x && game->doors[i].y == y) {
-            return (game->doors[i].orientation); // '2' o '3'
-        }
-    }
+	int	i;
+
+	i = -1;
+	while (++i < game->door_count)
+	{
+		if (game->doors[i].x == x && game->doors[i].y == y)
+			return (game->doors[i].orientation);
+	}
 	if (y < 0 || y >= game->map_height)
 		return ('1');
 	len = ft_strlen(game->map[y]);
 	if (x < 0 || x >= len)
 		return ('1');
-
 	return (game->map[y][x]);
 }
 
@@ -126,6 +127,7 @@ static int	check_cell_collision(double new_x, double new_y,
 int	collides(t_game *game, double new_x, double new_y)
 {
 	t_collision	c;
+	int			d;
 
 	init_collision(&c, new_x, new_y);
 	c.i = c.min_i - 1;
@@ -134,21 +136,17 @@ int	collides(t_game *game, double new_x, double new_y)
 		c.j = c.min_j - 1;
 		while (++c.j <= c.max_j)
 		{
-			if (safe_get_tile(game, c.j, c.i) == '1')
+			if (safe_get_tile(game, c.j, c.i) == '1'
+				&& check_cell_collision(new_x, new_y, &c))
+				return (1);
+			if (safe_get_tile(game, c.j, c.i) == '2'
+				|| safe_get_tile(game, c.j, c.i) == '3')
 			{
-				if (check_cell_collision(new_x, new_y, &c) == 1)
-					return (1);
-			}
-			//doors
-			char tile = safe_get_tile(game, c.j, c.i);
-			if (tile == '2' || tile == '3')
-			{
-				for (int d = 0; d < game->door_count; d++) {
-					if (game->doors[d].x == c.j && game->doors[d].y == c.i && !game->doors[d].is_open)
-					{
-						return 1;
-					}
-				}
+				d = -1;
+				while (++d < game->door_count)
+					if (game->doors[d].x == c.j && game->doors[d].y == c.i
+						&& !game->doors[d].is_open)
+						return (1);
 			}
 		}
 	}

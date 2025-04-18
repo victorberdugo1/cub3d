@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 12:28:00 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 11:41:45 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,9 @@ static void	render_column(t_app *app, int x, t_ray *ray)
 
 	compute_draw_boundaries(&draw, ray, app);
 	compute_texture_params(app, ray, &draw);
-		if (!draw.tex)
+    if (!draw.tex)
 		return;
+    app->z_buffer[x] = ray->perpwalldist;
 	draw_pixels(app, x, &draw);
 }
 
@@ -180,4 +181,32 @@ void	render_scene(void *param)
 		render_column(app, x, &ray);
 		x++;
 	}
+	render_minimap(app);
+	t_enemy **sorted_enemies = malloc(app->game.enemy_count * sizeof(t_enemy*));
+    for (int i = 0; i < app->game.enemy_count; i++)
+        sorted_enemies[i] = &app->game.enemies[i];
+    
+    // Bubble sort simple por distancia
+    for (int i = 0; i < app->game.enemy_count - 1; i++) {
+        for (int j = 0; j < app->game.enemy_count - i - 1; j++) {
+            double dist1 = hypot(sorted_enemies[j]->pos_x - app->camera.pos.x,
+                                sorted_enemies[j]->pos_y - app->camera.pos.y);
+            double dist2 = hypot(sorted_enemies[j+1]->pos_x - app->camera.pos.x,
+                                sorted_enemies[j+1]->pos_y - app->camera.pos.y);
+            if (dist1 < dist2) {
+                t_enemy *temp = sorted_enemies[j];
+                sorted_enemies[j] = sorted_enemies[j+1];
+                sorted_enemies[j+1] = temp;
+            }
+        }
+    }
+
+    // Renderizar en orden
+    for (int i = 0; i < app->game.enemy_count; i++) {
+        if (sorted_enemies[i]->is_active)
+            render_enemy(app, sorted_enemies[i]);
+    }
+    
+    free(sorted_enemies);
+
 }

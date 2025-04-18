@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 12:24:02 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 13:41:07 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ static void	process_texture(char *trimmed, t_game *game)
         game->texture_door = ft_strtrim(skip_spaces(trimmed + 1), " ");
     else if (!ft_strncmp(trimmed, "M", 1))
         game->texture_door_w = ft_strtrim(skip_spaces(trimmed + 1), " ");
+    else if (!ft_strncmp(trimmed, "B", 1))
+        game->texture_enemy = ft_strtrim(skip_spaces(trimmed + 1), " ");
 }
 
 /* ************************************************************************** */
@@ -137,7 +139,8 @@ static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 	else if (!ft_strncmp(trimmed, "NO", 2) || !ft_strncmp(trimmed, "SO", 2)
 		|| !ft_strncmp(trimmed, "WE", 2) || !ft_strncmp(trimmed, "EA", 2)
 		|| !ft_strncmp(trimmed, "F", 1) || !ft_strncmp(trimmed, "C", 1)
-		|| !ft_strncmp(trimmed, "D", 1) || !ft_strncmp(trimmed, "M", 1))
+		|| !ft_strncmp(trimmed, "D", 1) || !ft_strncmp(trimmed, "M", 1)
+		|| !ft_strncmp(trimmed, "B", 1))
 		process_texture(trimmed, game);
 }
 
@@ -152,7 +155,7 @@ static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 /*   - Ensures floor and ceiling colors are properly defined.                 */
 /*                                                                            */
 /* ************************************************************************** */
-void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
+void	process_lines(char **lines, int c, t_game *game, t_camera *camera)
 {
 	int		lines_count;
 	char	**temp_map;
@@ -161,7 +164,7 @@ void	process_lines(char **lines, int count, t_game *game, t_camera *camera)
 	lines_count = 0;
 	temp_map = NULL;
 	i = -1;
-	while (++i < count)
+	while (++i < c)
 		process_txt_col_map(lines[i], game, &temp_map, &lines_count);
 	game->map = temp_map;
 	game->map_height = lines_count;

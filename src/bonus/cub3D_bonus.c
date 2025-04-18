@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/16 21:52:49 by aescande         ###   ########.fr       */
+/*   Updated: 2025/04/18 14:29:23 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,54 +70,6 @@ static int	init_mlx_and_image(t_app *app)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Loads texture PNG files using the texture paths stored in the game       */
-/*   structure. If any texture path is missing or any texture fails to load,  */
-/*   prints an error message, terminates MLX, and returns -1. Otherwise,      */
-/*	 loads  all textures and returns 0.                                       */
-/*                                                                            */
-/* ************************************************************************** */
-static int	load_game_textures(t_app *app)
-{
-	t_game	*game;
-
-	game = &app->game;
-	if (!game->texture_no || !game->texture_so
-		|| !game->texture_we || !game->texture_ea)
-	{
-		printf("Error: Missing texture paths in map file.\n");
-		mlx_terminate(app->mlx);
-		return (-1);
-	}
-	game->tex_no = mlx_load_png(game->texture_no);
-	game->tex_so = mlx_load_png(game->texture_so);
-	game->tex_we = mlx_load_png(game->texture_we);
-	game->tex_ea = mlx_load_png(game->texture_ea);
-	if (!game->tex_no || !game->tex_so
-		|| !game->tex_we || !game->tex_ea)
-	{
-		printf("Error: Failed to load one or more textures.\n");
-		cleanup(app);
-		return (-1);
-	}
-	if (app->game.texture_door) {
-        app->game.tex_door = mlx_load_png(app->game.texture_door);
-    }
-    if (app->game.texture_door_w) {
-        app->game.tex_door_w = mlx_load_png(app->game.texture_door_w);
-    }
-
-    // Verificar carga correcta
-    if ((app->game.tex_door && !app->game.tex_door_w) ||
-        (!app->game.tex_door && app->game.tex_door_w)) {
-        printf("Error\nBoth door textures (D/W) must be provided\n");
-        cleanup(app);
-        return (-1);
-    }
-	return (0);
-}
-
-/* ************************************************************************** */
-/*                                                                            */
 /*   Sets up the MLX loop hooks for rendering, camera movement, and window    */
 /*   closing. Then enters the MLX main loop.                                  */
 /*                                                                            */
@@ -159,7 +111,7 @@ int	main(int argc, char **argv)
 	if (load_game_textures(&app) == -1)
 		return (EXIT_FAILURE);
 	app.camera.move_speed = 3.;
-	mlx_set_mouse_pos(app.mlx, WIDTH/2, HEIGHT/2);
+	mlx_set_mouse_pos(app.mlx, WIDTH / 2, HEIGHT / 2);
 	run_loop(&app);
 	return (cleanup(&app), EXIT_SUCCESS);
 }
