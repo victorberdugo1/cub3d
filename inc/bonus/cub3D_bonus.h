@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 11:50:34 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 13:40:28 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@
 # define DOOR_ANIM_DURATION 0.25
 # define MINI_SCALE 10         // Escala: píxeles por celda del mapa
 # define MINI_VIEW_DIST 20    // Distancia visible en celdas
-// En cub3D_bonus.h
-#define MINI_X 200          // Debe ser mayor que MINI_RADIUS
-#define MINI_Y 200          // y menor que (WIDTH - MINI_RADIUS)
-#define MINI_RADIUS 200      // Radio máximo seguro para 1920x1080: ~100
+# define MINI_X 150          // Debe ser mayor que MINI_RADIUS
+# define MINI_Y 150          // y menor que (WIDTH - MINI_RADIUS)
+# define MINI_RADIUS 150      // Radio máximo seguro para 1920x1080: ~100
 
 typedef struct s_vec2
 {
@@ -73,32 +72,33 @@ typedef struct s_draw
 
 typedef struct s_door
 {
-    int				x;
-    int				y;
-    int				is_open;
-    int				orientation;
+	int				x;
+	int				y;
+	int				is_open;
+	int				orientation;
 	double			open_offset;
 	double			move_progress;
 }	t_door;
 
 typedef struct s_enemy
 {
-    double      pos_x;
-    double      pos_y;
-    double      speed;
-    int         is_active;
-	double		time_since_last_move;
-	    enum {
-        FRONT,
-        RIGHT,
-        LEFT,
-        BACK
-    } dir;
-    int anim_frame;
-	double facing_angle;
-	bool initialized;
-	double radius;
-} t_enemy;
+	double	pos_x;
+	double	pos_y;
+	double	speed;
+	int		is_active;
+	double	time_since_last_move;
+	enum
+	{
+		FRONT,
+		RIGHT,
+		LEFT,
+		BACK
+	} e_dir;
+	int		anim_frame;
+	double	facing_angle;
+	bool	initialized;
+	double	radius;
+}	t_enemy;
 
 typedef struct s_game
 {
@@ -118,8 +118,8 @@ typedef struct s_game
 	t_door			*doors;
 	int				door_count;
 	char			*texture_door;
-    char			*texture_door_w;
-    char			*texture_enemy;
+	char			*texture_door_w;
+	char			*texture_enemy;
 	mlx_texture_t	*tex_door;
 	mlx_texture_t	*tex_door_w;
 	mlx_texture_t	*tex_enemy;
@@ -151,31 +151,30 @@ typedef struct s_collision
 	double	dy;
 }	t_collision;
 
-
-void	process_lines(char **lines, int count, t_game *game, t_camera *camera);
-int		read_lines(const char *filename, char ***lines, int *line_count);
-char	safe_get_tile(t_game *game, int x, int y);
-int		collides(t_game *game, double new_x, double new_y);
-void	render_scene(void *param);
-void	move_camera(void *param);
-void	close_window(void *param);
-int		load_map(char *filename, char ***lines, int *line_count);
-void	free_map_lines(char **lines, int line_count);
-int		init_app_struct(t_app *app, char **lines, int line_count);
-void	cleanup(t_app *app);
-void	validate_map(t_game *game, t_camera *camera);
-void	ft_draw_background(t_app *app);
-void	draw_pixels(t_app *app, int x, t_draw *draw);
-void	init_ray(t_app *app, int x, t_ray *ray);
-void	do_dda(t_app *app, t_ray *ray);
-char	*skip_spaces(char *s);
-void	toggle_doors(t_app *app);
-void	update_door_animation(t_app *app, double dt);
-void	get_down(t_app *app, double *speed);
-void	jump(t_app *app);
-void	update_enemies(t_app *app, double delta_time);
-void	render_enemy(t_app *app, t_enemy *e);
+void		process_lines(char **lines, int c, t_game *game, t_camera *camera);
+int			read_lines(const char *filename, char ***lines, int *line_count);
+char		safe_get_tile(t_game *game, int x, int y);
+int			collides(t_game *game, double new_x, double new_y);
+void		render_scene(void *param);
+void		move_camera(void *param);
+void		close_window(void *param);
+int			load_map(char *filename, char ***lines, int *line_count);
+void		free_map_lines(char **lines, int line_count);
+int			init_app_struct(t_app *app, char **lines, int line_count);
+void		cleanup(t_app *app);
+void		validate_map(t_game *game, t_camera *camera);
+void		ft_draw_background(t_app *app);
+void		draw_pixels(t_app *app, int x, t_draw *draw);
+void		init_ray(t_app *app, int x, t_ray *ray);
+void		do_dda(t_app *app, t_ray *ray);
+char		*skip_spaces(char *s);
+void		toggle_doors(t_app *app);
+void		update_door_animation(t_app *app, double dt);
+void		get_down(t_app *app, double *speed);
+void		jump(t_app *app);
+void		update_enemies(t_app *app, double delta_time);
+void		render_enemy(t_app *app, t_enemy *e);
 uint32_t	convert_pixel(uint32_t px);
-void    render_minimap(t_app *app);
+void		render_minimap(t_app *app);
 
 #endif

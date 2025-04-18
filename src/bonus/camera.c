@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/17 23:59:18 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 13:46:36 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,13 @@ static void	update_camera_movement(t_app *app, double delta_time)
 	get_down(app, &speed);
 	jump(app);
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
-			- mlx_is_key_down(app->mlx, MLX_KEY_S))
-		* app->camera.dir.x * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_S)) * app->camera.dir.x * speed;
 	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_W)
-			- mlx_is_key_down(app->mlx, MLX_KEY_S))
-		* app->camera.dir.y * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_S)) * app->camera.dir.y * speed;
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_A)
-			- mlx_is_key_down(app->mlx, MLX_KEY_D))
-		* app->camera.dir.y * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_D)) * app->camera.dir.y * speed;
 	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_D)
-			- mlx_is_key_down(app->mlx, MLX_KEY_A))
-		* app->camera.dir.x * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_A)) * app->camera.dir.x * speed;
 	if (!collides(&app->game, new_x, new_y))
 	{
 		app->camera.pos.x = new_x;
@@ -129,10 +125,10 @@ static void	update_camera_rotation(t_app *app, double delta_time)
 	alpha = (posx - WIDTH / 2) * delta_time / 5;
 	offset_z = (posz - HEIGHT / 2) * delta_time * 120;
 	rotate_camera(app, alpha);
-	if (!(fabs(app->camera.view_z) >= HEIGHT &&
-			   	app->camera.view_z * offset_z > 0))
+	if (!(fabs(app->camera.view_z) >= HEIGHT
+			&& app->camera.view_z * offset_z > 0))
 		app->camera.view_z += offset_z;
-	mlx_set_mouse_pos(app->mlx, WIDTH/2, HEIGHT/2);
+	mlx_set_mouse_pos(app->mlx, WIDTH / 2, HEIGHT / 2);
 }
 
 /* ************************************************************************** */
@@ -146,8 +142,8 @@ void	move_camera(void *param)
 	static double	last_time = 0;
 	double			current_time;
 	double			delta_time;
+	t_app			*app;
 
-	t_app	*app;	
 	app = (t_app *)param;
 	current_time = mlx_get_time();
 	delta_time = current_time - last_time;
@@ -155,7 +151,7 @@ void	move_camera(void *param)
 	check_escape(app);
 	toggle_doors(app);
 	update_door_animation(app, delta_time);
-    update_enemies(app, delta_time);
+	update_enemies(app, delta_time);
 	update_camera_movement(app, delta_time);
 	update_camera_rotation(app, delta_time);
 }

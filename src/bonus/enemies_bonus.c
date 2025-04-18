@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:53:46 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 10:51:29 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 13:42:02 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ void update_enemy_direction(t_app *app, t_enemy *e, double delta_time)
     relative_angle = fmod(relative_angle + M_PI, 2 * M_PI) - M_PI;
 
     if (fabs(relative_angle) < M_PI_4)
-        e->dir = FRONT;   
+        e->e_dir = FRONT;   
     else if (relative_angle > M_PI_4 && relative_angle < 3*M_PI_4)
-        e->dir = LEFT;
+        e->e_dir = LEFT;
     else if (relative_angle < -M_PI_4 && relative_angle > -3*M_PI_4)
-        e->dir = RIGHT;
+        e->e_dir = RIGHT;
     else
-        e->dir = BACK;     
+        e->e_dir = BACK;     
 }
 
 void update_enemy_animation(t_enemy *e, double delta_time)
@@ -141,7 +141,7 @@ void render_enemy(t_app *app, t_enemy *e)
     const int frame_height = tex_height / 4;
 
     const int tex_offset_x = e->anim_frame * frame_width;
-    const int tex_offset_y = e->dir * frame_height;
+    const int tex_offset_y = e->e_dir * frame_height;
 
     for (int x = draw_start_x; x < draw_end_x; x++)
     {
