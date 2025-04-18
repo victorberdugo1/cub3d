@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   parse_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 13:41:07 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:24:48 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,11 @@ static void	process_texture(char *trimmed, t_game *game)
 	else if (!ft_strncmp(trimmed, "C", 1))
 		parse_color(skip_spaces(trimmed + 1), game->ceiling_color);
 	else if (!ft_strncmp(trimmed, "D", 1))
-        game->texture_door = ft_strtrim(skip_spaces(trimmed + 1), " ");
-    else if (!ft_strncmp(trimmed, "M", 1))
-        game->texture_door_w = ft_strtrim(skip_spaces(trimmed + 1), " ");
-    else if (!ft_strncmp(trimmed, "B", 1))
-        game->texture_enemy = ft_strtrim(skip_spaces(trimmed + 1), " ");
+		game->texture_door = ft_strtrim(skip_spaces(trimmed + 1), " ");
+	else if (!ft_strncmp(trimmed, "M", 1))
+		game->texture_door_w = ft_strtrim(skip_spaces(trimmed + 1), " ");
+	else if (!ft_strncmp(trimmed, "B", 1))
+		game->texture_enemy = ft_strtrim(skip_spaces(trimmed + 1), " ");
 }
 
 /* ************************************************************************** */

@@ -6,11 +6,26 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 20:51:23 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 15:31:55 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 18:43:59 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
+
+int	check_door_collision(t_app *app, t_ray *ray)
+{
+	int	i;
+
+	i = -1;
+	while (++i < app->game.door_count)
+	{
+		if (app->game.doors[i].x == ray->map_x
+			&& app->game.doors[i].y == ray->map_y)
+			return (!(app->game.doors[i].is_open
+					&& app->game.doors[i].move_progress >= 0.2));
+	}
+	return (1);
+}
 
 void	update_door_animation(t_app *app, double dt)
 {
