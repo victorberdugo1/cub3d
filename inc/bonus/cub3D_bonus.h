@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 15:22:56 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 17:40:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,23 @@ typedef struct s_collision
 	double	dy;
 }	t_collision;
 
+typedef struct s_draw_data
+{
+	int		sprite_height;
+	int		sprite_width;
+	int		start_x;
+	int		end_x;
+	int		start_y;
+	int		end_y;
+	int		tex_width;
+	int		tex_height;
+	int		width;
+	int		height;
+	int		offset_x;
+	int		offset_y;
+	double	transform_y;
+}	t_draw_data;
+
 void		process_lines(char **lines, int c, t_game *game, t_camera *camera);
 int			read_lines(const char *filename, char ***lines, int *line_count);
 char		safe_get_tile(t_game *game, int x, int y);
@@ -178,5 +195,7 @@ uint32_t	convert_pixel(uint32_t px);
 void		render_minimap(t_app *app);
 int			load_game_textures(t_app *app);
 void		safe_free(t_app *app);
+void		update_enemy(t_app *app, t_enemy *e, t_camera *cam, double dt);
+void		update_enemy_dir(t_app *app, t_enemy *enemy, double delta_time);
 
 #endif
