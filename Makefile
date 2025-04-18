@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/18 19:17:37 by victor           ###   ########.fr        #
+#    Updated: 2025/04/18 21:28:52 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,11 +36,11 @@ BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D_bonus.c \
 			$(SRC_DIR_BONUS)/camera_bonus.c \
 			$(SRC_DIR_BONUS)/collition_bonus.c \
 			$(SRC_DIR_BONUS)/parse_bonus.c \
-			$(SRC_DIR_BONUS)/render.c \
+			$(SRC_DIR_BONUS)/render_bonus.c \
 			$(SRC_DIR_BONUS)/cub3D_utils_bonus.c \
-			$(SRC_DIR_BONUS)/validate_map.c \
+			$(SRC_DIR_BONUS)/validate_map_bonus.c \
 			$(SRC_DIR_BONUS)/parse_utils_bonus.c \
-			$(SRC_DIR_BONUS)/render_utils.c \
+			$(SRC_DIR_BONUS)/render_utils_bonus.c \
 			$(SRC_DIR_BONUS)/raycasting_bonus.c \
 			$(SRC_DIR_BONUS)/door_bonus.c \
 			$(SRC_DIR_BONUS)/movement_bonus.c \

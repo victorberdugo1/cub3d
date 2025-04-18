@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 19:36:49 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/18 21:07:39 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,44 +66,65 @@ static void	render_column(t_app *app, int x, t_ray *ray)
 /*   - The function calls `render_column()` to draw each vertical line.      */
 /*                                                                            */
 /* ************************************************************************** */
-void	render_scene(void *param)
+static void	sort_enemies_by_distance(t_enemy **enemies, int count, t_app *a)
 {
-	t_app	*app;
-	int		x;
-	t_ray	ray;
+	int		i;
+	int		j;
+	t_enemy	*temp;
 
-	app = (t_app *)param;
-	ft_draw_background(app);
-	x = 0;
-	while (x < WIDTH)
+	i = -1;
+	while (++i < count - 1)
 	{
-		init_ray(app, x, &ray);
-		do_dda(app, &ray);
-		render_column(app, x, &ray);
-		x++;
-	}
-	render_minimap(app);
-	t_enemy **sorted_enemies = malloc(app->game.enemy_count * sizeof(t_enemy*));
-	for (int i = 0; i < app->game.enemy_count; i++)
-		sorted_enemies[i] = &app->game.enemies[i];
-
-	for (int i = 0; i < app->game.enemy_count - 1; i++) {
-		for (int j = 0; j < app->game.enemy_count - i - 1; j++) {
-			double dist1 = hypot(sorted_enemies[j]->pos_x - app->camera.pos.x,
-					sorted_enemies[j]->pos_y - app->camera.pos.y);
-			double dist2 = hypot(sorted_enemies[j+1]->pos_x - app->camera.pos.x,
-					sorted_enemies[j+1]->pos_y - app->camera.pos.y);
-			if (dist1 < dist2) {
-				t_enemy *temp = sorted_enemies[j];
-				sorted_enemies[j] = sorted_enemies[j+1];
-				sorted_enemies[j+1] = temp;
+		j = -1;
+		while (++j < count - i - 1)
+		{
+			if (hypot(enemies[j]->pos_x - a->camera.pos.x,
+					enemies[j]->pos_y - a->camera.pos.y)
+				< hypot(enemies[j + 1]->pos_x - a->camera.pos.x,
+					enemies[j + 1]->pos_y - a->camera.pos.y))
+			{
+				temp = enemies[j];
+				enemies[j] = enemies[j + 1];
+				enemies[j + 1] = temp;
 			}
 		}
 	}
-	for (int i = 0; i < app->game.enemy_count; i++) {
-		if (sorted_enemies[i]->is_active)
-			render_enemy(app, sorted_enemies[i]);
-	}
-	free(sorted_enemies);
+}
 
+static void	sort_and_render(t_app *a)
+{
+	t_enemy	**sorted;
+	int		i;
+
+	sorted = malloc(a->game.enemy_count * sizeof(t_enemy *));
+	if (!sorted)
+		return ;
+	i = -1;
+	while (++i < a->game.enemy_count)
+		sorted[i] = &a->game.enemies[i];
+	sort_enemies_by_distance(sorted, a->game.enemy_count, a);
+	i = -1;
+	while (++i < a->game.enemy_count)
+		if (sorted[i]->is_active)
+			render_enemy(a, sorted[i]);
+	free(sorted);
+}
+
+void	render_scene(void *param)
+{
+	t_app	*a;
+	int		x;
+	t_ray	r;
+
+	a = param;
+	ft_draw_background(a);
+	x = -1;
+	while (++x < WIDTH)
+	{
+		init_ray(a, x, &r);
+		do_dda(a, &r);
+		render_column(a, x, &r);
+	}
+	render_minimap(a);
+	sort_and_render(a);
 }

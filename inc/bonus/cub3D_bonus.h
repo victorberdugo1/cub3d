@@ -201,5 +201,7 @@ void		draw_minimap_background(t_app *app);
 void		draw_map_features(t_app *app);
 int			check_door_collision(t_app *app, t_ray *ray);
 void		compute_texture_params(t_app *app, t_ray *ray, t_draw *draw);
+void        init_door(t_game *g, int i, int j, char c);
+void	    init_enemy(t_game *g, int i, int j);
 
 #endif

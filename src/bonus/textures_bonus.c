@@ -110,3 +110,19 @@ int	load_game_textures(t_app *app)
 		return (-1);
 	return (0);
 }
+
+void	init_enemy(t_game *g, int i, int j)
+{
+	g->enemy_count++;
+	g->enemies = realloc(g->enemies, sizeof(t_enemy) * g->enemy_count);
+	g->enemies[g->enemy_count - 1] = (t_enemy){
+		.pos_x = j + 0.5,
+		.pos_y = i + 0.5,
+		.speed = 0.8,
+		.is_active = 1,
+		.anim_frame = 0.0,
+		.time_since_last_move = 0.0,
+		.radius = 0.7
+	};
+	g->map[i][j] = '0';
+}
