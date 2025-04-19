@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:17:00 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 20:38:20 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/19 23:02:54 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ static int	check_collision(t_game *g, int j, int i, t_vec2 pos)
 	int			d;
 	t_collision	c;
 
+	init_collision(&c, pos.x, pos.y);
 	c.j = j;
 	c.i = i;
 	d = -1;

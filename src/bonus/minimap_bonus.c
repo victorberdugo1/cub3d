@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 11:36:39 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 18:10:45 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/19 23:29:35 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ static void	draw_enemy(t_vec2 pos, t_app *app)
 	int		dx;
 	int		dy;
 	t_vec2	pixel;
+	t_vec2	center;
 
+	center = (t_vec2){MINI_X, MINI_Y};
 	dx = -3;
 	while (++dx < 4)
 	{
@@ -42,7 +44,8 @@ static void	draw_enemy(t_vec2 pos, t_app *app)
 		{
 			pixel.x = MINI_X + (pos.x * MINI_SCALE) + dx;
 			pixel.y = MINI_Y + (pos.y * MINI_SCALE) + dy;
-			mlx_put_pixel(app->image, pixel.x, pixel.y, 0xFF0000FF);
+			if (hypot(pixel.x - center.x, pixel.y - center.y) <= MINI_RADIUS)
+				mlx_put_pixel(app->image, pixel.x, pixel.y, 0xFF0000FF);
 		}
 	}
 }

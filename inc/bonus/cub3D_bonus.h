@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 19:16:26 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/19 23:32:22 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define HEIGHT 1080
 # define COLLISION_RADIUS 0.2
 # define DOOR_ANIM_DURATION 0.25
-# define MINI_SCALE 10         // Escala: píxeles por celda del mapa
+# define MINI_SCALE 17       // Escala: píxeles por celda del mapa
 # define MINI_VIEW_DIST 20    // Distancia visible en celdas
 # define MINI_X 150          // Debe ser mayor que MINI_RADIUS
 # define MINI_Y 150          // y menor que (WIDTH - MINI_RADIUS)
@@ -201,7 +201,7 @@ void		draw_minimap_background(t_app *app);
 void		draw_map_features(t_app *app);
 int			check_door_collision(t_app *app, t_ray *ray);
 void		compute_texture_params(t_app *app, t_ray *ray, t_draw *draw);
-void        init_door(t_game *g, int i, int j, char c);
-void	    init_enemy(t_game *g, int i, int j);
+void		init_door(t_game *g, int i, int j, char c);
+void		init_enemy(t_game *g, int i, int j);
 
 #endif

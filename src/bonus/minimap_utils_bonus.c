@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 18:06:16 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 18:11:30 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/19 23:31:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ static void	draw_rotated_pixels(t_app *app, int cx, int cy, uint32_t color)
 	double	angle;
 
 	angle = -atan2(app->camera.dir.y, app->camera.dir.x) - M_PI / 2.0;
-	dx = -3;
-	while (++dx < 6)
+	dx = -5;
+	while (++dx < 10)
 	{
-		dy = -3;
-		while (++dy < 6)
+		dy = -5;
+		while (++dy < 10)
 		{
 			rot_x = dx * cos(angle) - dy * sin(angle);
 			rot_y = dx * sin(angle) + dy * cos(angle);
