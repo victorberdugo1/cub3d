@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/19 23:32:22 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/19 23:34:33 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 # define HEIGHT 1080
 # define COLLISION_RADIUS 0.2
 # define DOOR_ANIM_DURATION 0.25
-# define MINI_SCALE 17       // Escala: píxeles por celda del mapa
+# define MINI_SCALE 17        // Escala: píxeles por celda del mapa
 # define MINI_VIEW_DIST 20    // Distancia visible en celdas
-# define MINI_X 150          // Debe ser mayor que MINI_RADIUS
-# define MINI_Y 150          // y menor que (WIDTH - MINI_RADIUS)
+# define MINI_X 150           // Debe ser mayor que MINI_RADIUS
+# define MINI_Y 150           // y menor que (WIDTH - MINI_RADIUS)
 # define MINI_RADIUS 150      // Radio máximo seguro para 1920x1080: ~100
 
 typedef struct s_vec2
