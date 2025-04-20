@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/19 23:34:33 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/20 23:25:24 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,22 +82,40 @@ typedef struct s_door
 
 typedef struct s_enemy
 {
+	enum
+	{
+		ENEMY_MOVE,
+		ENEMY_ATTACK,
+		ENEMY_COOLDOWN,
+		ENEMY_HIT,
+		ENEMY_DEAD
+	} e_state;
+	enum
+	{
+		FRONT,
+		FRONT_RIGHT,
+		RIGHT,
+		BACK_RIGHT,
+		BACK,
+		BACK_LEFT,
+		LEFT,
+		FRONT_LEFT
+	} e_dir;
 	double	pos_x;
 	double	pos_y;
 	double	speed;
 	int		is_active;
 	double	time_since_last_move;
-	enum
-	{
-		FRONT,
-		RIGHT,
-		LEFT,
-		BACK
-	} e_dir;
 	int		anim_frame;
 	double	facing_angle;
 	bool	initialized;
 	double	radius;
+	double	anim_timer;
+	int		hit_count;
+	double	attack_cooldown;
+	int		hit_flash;
+	double	knockback_time;
+	t_vec2	knockback_dir;
 }	t_enemy;
 
 typedef struct s_game
@@ -127,13 +145,21 @@ typedef struct s_game
 	int				enemy_count;
 }	t_game;
 
+typedef struct s_hit_feedback
+{
+	bool	active;
+	double	timer;
+	double	duration;
+}	t_hit_feedback;
+
 typedef struct s_app
 {
-	mlx_t		*mlx;
-	mlx_image_t	*image;
-	t_camera	camera;
-	t_game		game;
-	double		z_buffer[WIDTH];
+	mlx_t			*mlx;
+	mlx_image_t		*image;
+	t_camera		camera;
+	t_game			game;
+	double			z_buffer[WIDTH];
+	t_hit_feedback	player_hit_feedback;
 }	t_app;
 
 typedef struct s_collision
@@ -155,14 +181,14 @@ typedef struct s_draw_data
 {
 	int		sprite_height;
 	int		sprite_width;
-	int		start_x;
+	int		st_x;
 	int		end_x;
-	int		start_y;
+	int		st_y;
 	int		end_y;
 	int		tex_width;
 	int		tex_height;
 	int		width;
-	int		height;
+	int		hgt;
 	int		offset_x;
 	int		offset_y;
 	double	transform_y;
@@ -203,5 +229,14 @@ int			check_door_collision(t_app *app, t_ray *ray);
 void		compute_texture_params(t_app *app, t_ray *ray, t_draw *draw);
 void		init_door(t_game *g, int i, int j, char c);
 void		init_enemy(t_game *g, int i, int j);
+void		init_collision(t_collision *c, double new_x, double new_y);
+void		apply_hit_to_enemy(t_app *app);
+void		check_enemy_attack_hit(t_app *app, t_enemy *e, t_camera *cam);
+void		update_hit_feedback(t_app *app, double dt);
+void		render_hit_feedback(t_app *app);
+void		handle_enemy_collision(t_app *app, t_enemy *e, t_camera *cam);
+void		move_towards_cam(t_app *app, t_enemy *e, t_camera *cam, double dt);
+void		process_knockback(t_app *a, t_enemy *e, double dt);
+void		apply_hit_flash(uint32_t *color, t_enemy *e);
 
 #endif

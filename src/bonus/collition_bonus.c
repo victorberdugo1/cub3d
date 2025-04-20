@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:17:00 by victor            #+#    #+#             */
-/*   Updated: 2025/04/19 23:02:54 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/20 12:51:02 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,31 +39,6 @@ char	safe_get_tile(t_game *game, int x, int y)
 	if (x < 0 || x >= len)
 		return ('1');
 	return (game->map[y][x]);
-}
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Initializes a collision structure (`t_collision`) for a given position.  */
-/*                                                                            */
-/*   - The collision system considers the player as a circular shape with a   */
-/*     radius `COLLISION_RADIUS`.                                             */
-/*   - This function calculates the bounding box around the circle to check   */
-/*     for potential collisions with walls.                                   */
-/*   - The bounding box is defined by:                                        */
-/*       - `min_i` and `max_i`: vertical range of tiles to check.             */
-/*       - `min_j` and `max_j`: horizontal range of tiles to check.           */
-/*                                                                            */
-/* ************************************************************************** */
-static void	init_collision(t_collision *c, double new_x, double new_y)
-{
-	double	r;
-
-	r = COLLISION_RADIUS;
-	c->r = r;
-	c->min_i = (int)floor(new_y - r);
-	c->max_i = (int)ceil(new_y + r);
-	c->min_j = (int)floor(new_x - r);
-	c->max_j = (int)ceil(new_x + r);
 }
 
 /* ************************************************************************** */

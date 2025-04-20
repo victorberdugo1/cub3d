@@ -6,26 +6,11 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 20:51:23 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 18:43:59 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/20 12:58:47 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
-
-void	init_door(t_game *g, int i, int j, char c)
-{
-	g->door_count++;
-	g->doors = realloc(g->doors, sizeof(t_door) * g->door_count);
-	g->doors[g->door_count - 1] = (t_door){
-		.x = j,
-		.y = i,
-		.is_open = 0,
-		.orientation = c,
-		.open_offset = 0.0,
-		.move_progress = DOOR_ANIM_DURATION
-	};
-	g->map[i][j] = c;
-}
 
 int	check_door_collision(t_app *app, t_ray *ray)
 {

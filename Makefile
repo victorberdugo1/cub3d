@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/18 21:28:52 by victor           ###   ########.fr        #
+#    Updated: 2025/04/20 23:18:31 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,11 @@ BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D_bonus.c \
 			$(SRC_DIR_BONUS)/textures_bonus.c \
 			$(SRC_DIR_BONUS)/enemies_utils_bonus.c \
 			$(SRC_DIR_BONUS)/minimap_utils_bonus.c \
-			$(SRC_DIR_BONUS)/render_txt_bonus.c
+			$(SRC_DIR_BONUS)/render_txt_bonus.c \
+			$(SRC_DIR_BONUS)/init_bonus.c \
+			$(SRC_DIR_BONUS)/enemy_movement_bonus.c \
+			$(SRC_DIR_BONUS)/enemy_combat_bonus.c \
+			$(SRC_DIR_BONUS)/enemy_rendering_bonus.c
       
 # Manual conversion of sources to object files
 OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

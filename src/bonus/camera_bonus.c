@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   camera.c                                           :+:      :+:    :+:   */
+/*   camera_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 13:47:12 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/20 19:50:02 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ void	move_camera(void *param)
 	toggle_doors(app);
 	update_door_animation(app, delta_time);
 	update_enemies(app, delta_time);
+	update_hit_feedback(app, delta_time);
 	update_camera_movement(app, delta_time);
 	update_camera_rotation(app, delta_time);
 }
