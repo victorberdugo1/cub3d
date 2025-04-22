@@ -1,52 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raycasting.c                                       :+:      :+:    :+:   */
+/*   raycasting_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 18:44:12 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:06:28 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Initializes a ray for the given screen column (x).                       */
-/*                                                                            */
-/*   - Computes `camx`, which represents the camera's x-coordinate in        */
-/*     normalized device coordinates (ranging from -1 to 1).                  */
-/*     Formula: camx = 2 * x / WIDTH - 1                                      */
-/*                                                                            */
-/*   - Calculates the ray direction `raydir` using the camera direction       */
-/*     (`dir`) and plane (`plane`):                                           */
-/*       raydir.x = dir.x + plane.x * camx                                    */
-/*       raydir.y = dir.y + plane.y * camx                                    */
-/*                                                                            */
-/*   - Determines `map_x` and `map_y`, which are the integer coordinates      */
-/*     of the current grid cell (truncated from `pos`).                       */
-/*                                                                            */
-/*   - Computes `deltadist`, the distance the ray travels between grid        */
-/*     lines in each axis. It is calculated as:                               */
-/*       deltadist.x = |raydir_modulus / raydir.x|                            */
-/*       deltadist.y = |raydir_modulus / raydir.y|                            */
-/*                                                                            */
-/* ************************************************************************** */
-void	init_ray(t_app *app, int x, t_ray *ray)
-{
-	double	camx;
-
-	camx = 2 * x / (double)WIDTH - 1;
-	ray->raydir.x = app->camera.dir.x + app->camera.plane.x * camx;
-	ray->raydir.y = app->camera.dir.y + app->camera.plane.y * camx;
-	ray->map_x = (int)app->camera.pos.x;
-	ray->map_y = (int)app->camera.pos.y;
-	ray->raydir_mod = sqrt(pow(ray->raydir.x, 2) + pow(ray->raydir.y, 2));
-	ray->deltadist.x = fabs(ray->raydir_mod / ray->raydir.x);
-	ray->deltadist.y = fabs(ray->raydir_mod / ray->raydir.y);
-}
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -151,11 +115,11 @@ void	do_dda(t_app *app, t_ray *ray)
 {
 	t_vec2	steps;
 
-	steps = init_step(app->camera.pos.x, ray->map_x, ray->deltadist.x,
+	steps = init_step(app->cam.pos.x, ray->map_x, ray->deltadist.x,
 			ray->raydir.x);
 	ray->step.x = steps.x;
 	ray->sidedist.x = steps.y;
-	steps = init_step(app->camera.pos.y, ray->map_y, ray->deltadist.y,
+	steps = init_step(app->cam.pos.y, ray->map_y, ray->deltadist.y,
 			ray->raydir.y);
 	ray->step.y = steps.x;
 	ray->sidedist.y = steps.y;

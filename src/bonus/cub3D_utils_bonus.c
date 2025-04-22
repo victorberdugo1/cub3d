@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D_utils.c                                      :+:      :+:    :+:   */
+/*   cub3D_utils_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 19:49:25 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 15:22:14 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/20 12:58:33 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,6 @@ void	free_map_lines(char **lines, int line_count)
 		i = i + 1;
 	}
 	ft_free(lines);
-}
-
-/* ************************************************************************** */
-/*                                                                            */
-/*   Initializes the t_app structure, setting default values and processing   */
-/*   the map lines to extract game and camera data.                           */
-/*                                                                            */
-/* ************************************************************************** */
-int	init_app_struct(t_app *app, char **lines, int line_count)
-{
-	ft_memset(app, 0, sizeof(*app));
-	ft_memset(app->game.floor_color, -1, sizeof(app->game.floor_color));
-	ft_memset(app->game.ceiling_color, -1, sizeof(app->game.ceiling_color));
-	process_lines(lines, line_count, &app->game, &app->camera);
-	return (0);
 }
 
 /* ************************************************************************** */

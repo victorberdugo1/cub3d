@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/18 18:43:51 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 02:13:17 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 # define HEIGHT 1080
 # define COLLISION_RADIUS 0.2
 # define DOOR_ANIM_DURATION 0.25
-# define MINI_SCALE 10         // Escala: píxeles por celda del mapa
+# define MINI_SCALE 17        // Escala: píxeles por celda del mapa
 # define MINI_VIEW_DIST 20    // Distancia visible en celdas
-# define MINI_X 150          // Debe ser mayor que MINI_RADIUS
-# define MINI_Y 150          // y menor que (WIDTH - MINI_RADIUS)
+# define MINI_X 150           // Debe ser mayor que MINI_RADIUS
+# define MINI_Y 150           // y menor que (WIDTH - MINI_RADIUS)
 # define MINI_RADIUS 150      // Radio máximo seguro para 1920x1080: ~100
 
 typedef struct s_vec2
@@ -82,22 +82,40 @@ typedef struct s_door
 
 typedef struct s_enemy
 {
+	enum
+	{
+		ENEMY_MOVE,
+		ENEMY_ATTACK,
+		ENEMY_COOLDOWN,
+		ENEMY_HIT,
+		ENEMY_DEAD
+	} e_state;
+	enum
+	{
+		FRONT,
+		FRONT_RIGHT,
+		RIGHT,
+		BACK_RIGHT,
+		BACK,
+		BACK_LEFT,
+		LEFT,
+		FRONT_LEFT
+	} e_dir;
 	double	pos_x;
 	double	pos_y;
 	double	speed;
 	int		is_active;
 	double	time_since_last_move;
-	enum
-	{
-		FRONT,
-		RIGHT,
-		LEFT,
-		BACK
-	} e_dir;
 	int		anim_frame;
 	double	facing_angle;
 	bool	initialized;
 	double	radius;
+	double	anim_timer;
+	int		hit_count;
+	double	attack_cooldown;
+	int		hit_flash;
+	double	knockback_time;
+	t_vec2	knockback_dir;
 }	t_enemy;
 
 typedef struct s_game
@@ -127,13 +145,21 @@ typedef struct s_game
 	int				enemy_count;
 }	t_game;
 
+typedef struct s_hit_feedback
+{
+	bool	active;
+	double	timer;
+	double	duration;
+}	t_hit_feedback;
+
 typedef struct s_app
 {
-	mlx_t		*mlx;
-	mlx_image_t	*image;
-	t_camera	camera;
-	t_game		game;
-	double		z_buffer[WIDTH];
+	mlx_t			*mlx;
+	mlx_image_t		*image;
+	t_camera		cam;
+	t_game			game;
+	double			z_buffer[WIDTH];
+	t_hit_feedback	player_hit_feedback;
 }	t_app;
 
 typedef struct s_collision
@@ -151,18 +177,27 @@ typedef struct s_collision
 	double	dy;
 }	t_collision;
 
+typedef struct s_ceiling
+{
+	t_vec2		wrd;
+	t_vec2		frac;
+	t_collision	col;
+	int			x;
+	int			y;
+}	t_ceiling;
+
 typedef struct s_draw_data
 {
 	int		sprite_height;
 	int		sprite_width;
-	int		start_x;
+	int		st_x;
 	int		end_x;
-	int		start_y;
+	int		st_y;
 	int		end_y;
 	int		tex_width;
 	int		tex_height;
 	int		width;
-	int		height;
+	int		hgt;
 	int		offset_x;
 	int		offset_y;
 	double	transform_y;
@@ -200,5 +235,22 @@ void		update_enemy_dir(t_app *app, t_enemy *enemy, double delta_time);
 void		draw_minimap_background(t_app *app);
 void		draw_map_features(t_app *app);
 int			check_door_collision(t_app *app, t_ray *ray);
+void		compute_texture_params(t_app *app, t_ray *ray, t_draw *draw);
+void		init_door(t_game *g, int i, int j, char c);
+void		init_enemy(t_game *g, int i, int j);
+void		init_collision(t_collision *c, double new_x, double new_y);
+void		apply_hit_to_enemy(t_app *app);
+void		check_enemy_attack_hit(t_app *app, t_enemy *e, t_camera *cam);
+void		update_hit_feedback(t_app *app, double dt);
+void		render_hit_feedback(t_app *app);
+void		handle_enemy_collision(t_app *app, t_enemy *e, t_camera *cam);
+void		move_towards_cam(t_app *app, t_enemy *e, t_camera *cam, double dt);
+void		process_knockback(t_app *a, t_enemy *e, double dt);
+void		apply_hit_flash(uint32_t *color, t_enemy *e);
+int32_t		ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
+void		init_background_tables(double *sx, double *cy,
+				double *cameraX_table, bool light_panel_pattern[15][15]);
+void		put_pixel_safe(mlx_image_t *img, int x, int y, uint32_t color);
+void		calculate_grid_coordinates(t_vec2 world, t_collision *col);
 
 #endif

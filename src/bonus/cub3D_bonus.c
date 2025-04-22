@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3D.c                                            :+:      :+:    :+:   */
+/*   cub3D_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 14:29:23 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 00:59:55 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,13 @@ static int	init_mlx_and_image(t_app *app)
 /* ************************************************************************** */
 static void	run_loop(t_app *app)
 {
+	app->cam.move_speed = 3.;
+	app->player_hit_feedback = (t_hit_feedback)
+	{
+		.active = false,
+		.timer = 0,
+		.duration = 0.4
+	};
 	mlx_set_cursor_mode(app->mlx, MLX_MOUSE_HIDDEN);
 	mlx_loop_hook(app->mlx, render_scene, app);
 	mlx_loop_hook(app->mlx, move_camera, app);
@@ -110,7 +117,6 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (load_game_textures(&app) == -1)
 		return (EXIT_FAILURE);
-	app.camera.move_speed = 3.;
 	mlx_set_mouse_pos(app.mlx, WIDTH / 2, HEIGHT / 2);
 	run_loop(&app);
 	return (cleanup(&app), EXIT_SUCCESS);
