@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 22:23:00 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 23:02:27 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:11:29 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,8 @@ static void	determine_enemy_direction(t_enemy *enemy, double angle_diff)
 
 void	update_enemy_dir(t_app *app, t_enemy *enemy, double delta_time)
 {
-	const double	target = atan2(app->camera.pos.y - enemy->pos_y,
-			app->camera.pos.x - enemy->pos_x);
+	const double	target = atan2(app->cam.pos.y - enemy->pos_y,
+			app->cam.pos.x - enemy->pos_x);
 	double			angle_diff;
 	double			max_turn;
 

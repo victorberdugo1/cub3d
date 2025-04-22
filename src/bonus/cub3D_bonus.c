@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:46:33 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 19:45:23 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 00:59:55 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static int	init_mlx_and_image(t_app *app)
 /* ************************************************************************** */
 static void	run_loop(t_app *app)
 {
-	app->camera.move_speed = 3.;
+	app->cam.move_speed = 3.;
 	app->player_hit_feedback = (t_hit_feedback)
 	{
 		.active = false,

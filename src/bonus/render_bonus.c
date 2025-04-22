@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 18:31:03 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:02:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 static void	compute_draw_boundaries(t_draw *draw, t_ray *ray, t_app *app)
 {
 	draw->lh = (int)(HEIGHT / ray->perpwalldist);
-	draw->ds = -draw->lh / 2 + HEIGHT / 2 - app->camera.view_z;
+	draw->ds = -draw->lh / 2 + HEIGHT / 2 - app->cam.view_z;
 	if (draw->ds < 0)
 		draw->ds = 0;
-	draw->de = draw->lh / 2 + HEIGHT / 2 - app->camera.view_z;
+	draw->de = draw->lh / 2 + HEIGHT / 2 - app->cam.view_z;
 	if (draw->de >= HEIGHT)
 		draw->de = HEIGHT - 1;
 }
@@ -78,10 +78,10 @@ static void	sort_enemies_by_distance(t_enemy **enemies, int count, t_app *a)
 		j = -1;
 		while (++j < count - i - 1)
 		{
-			if (hypot(enemies[j]->pos_x - a->camera.pos.x,
-					enemies[j]->pos_y - a->camera.pos.y)
-				< hypot(enemies[j + 1]->pos_x - a->camera.pos.x,
-					enemies[j + 1]->pos_y - a->camera.pos.y))
+			if (hypot(enemies[j]->pos_x - a->cam.pos.x,
+					enemies[j]->pos_y - a->cam.pos.y)
+				< hypot(enemies[j + 1]->pos_x - a->cam.pos.x,
+					enemies[j + 1]->pos_y - a->cam.pos.y))
 			{
 				temp = enemies[j];
 				enemies[j] = enemies[j + 1];

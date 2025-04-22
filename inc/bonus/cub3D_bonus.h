@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/20 23:25:24 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 02:13:17 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ typedef struct s_app
 {
 	mlx_t			*mlx;
 	mlx_image_t		*image;
-	t_camera		camera;
+	t_camera		cam;
 	t_game			game;
 	double			z_buffer[WIDTH];
 	t_hit_feedback	player_hit_feedback;
@@ -176,6 +176,15 @@ typedef struct s_collision
 	double	dx;
 	double	dy;
 }	t_collision;
+
+typedef struct s_ceiling
+{
+	t_vec2		wrd;
+	t_vec2		frac;
+	t_collision	col;
+	int			x;
+	int			y;
+}	t_ceiling;
 
 typedef struct s_draw_data
 {
@@ -238,5 +247,10 @@ void		handle_enemy_collision(t_app *app, t_enemy *e, t_camera *cam);
 void		move_towards_cam(t_app *app, t_enemy *e, t_camera *cam, double dt);
 void		process_knockback(t_app *a, t_enemy *e, double dt);
 void		apply_hit_flash(uint32_t *color, t_enemy *e);
+int32_t		ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
+void		init_background_tables(double *sx, double *cy,
+				double *cameraX_table, bool light_panel_pattern[15][15]);
+void		put_pixel_safe(mlx_image_t *img, int x, int y, uint32_t color);
+void		calculate_grid_coordinates(t_vec2 world, t_collision *col);
 
 #endif

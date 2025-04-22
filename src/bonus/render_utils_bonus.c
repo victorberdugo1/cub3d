@@ -6,62 +6,59 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:20:35 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 21:29:25 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 02:07:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
-static int32_t	ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
+int32_t	ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
 {
 	return (r << 24 | g << 16 | b << 8 | a);
 }
 
-void	ft_draw_background(t_app *app)
+void	init_background_tables(double *sx, double *cy,
+		double *cameraX_table, bool light_panel_pattern[15][15])
 {
-	int32_t		floor_color;
-	int32_t		ceiling_color;
-	int32_t		horizon;
-	int32_t		x;
-	int32_t		y;
+	static bool	init = false;
+	int			x;
+	int			y;
 
-	floor_color = ft_pixel(app->game.floor_color[0],
-			app->game.floor_color[1], app->game.floor_color[2], 255);
-	ceiling_color = ft_pixel(app->game.ceiling_color[0],
-			app->game.ceiling_color[1], app->game.ceiling_color[2], 255);
-	horizon = HEIGHT / 2 - app->camera.view_z;
-	if (horizon < 0)
-		horizon = 0;
-	if (horizon > HEIGHT)
-		horizon = HEIGHT;
+	if (init)
+		return ;
+	srand((unsigned int)(mlx_get_time() * 100.0));
 	x = -1;
 	while (++x < WIDTH)
 	{
-		y = -1;
-		while (++y < horizon)
-			mlx_put_pixel(app->image, x, y, ceiling_color);
-		y = horizon - 1;
-		while (++y < HEIGHT)
-			mlx_put_pixel(app->image, x, y, floor_color);
+		sx[x] = sin(x * 0.4) * 0.08;
+		cameraX_table[x] = 2.0 * (x + 0.5) / WIDTH - 1.0;
 	}
+	y = -1;
+	while (++y < HEIGHT)
+		cy[y] = cos(y * 0.6) * 0.08;
+	x = -1;
+	while (++x < 15)
+	{
+		y = -1;
+		while (++y < 15)
+			light_panel_pattern[x][y] = (rand() % 15) == 0;
+	}
+	init = true;
 }
 
-/* ************************************************************************** */
-/* Converts a pixel color value to a format suitable for rendering in the     */
-/* graphical context. Returns the converted pixel color as a uint32_t value. */
-/* ************************************************************************** */
-uint32_t	convert_pixel(uint32_t px)
+inline void	put_pixel_safe(mlx_image_t *img,
+		int x, int y, uint32_t color)
 {
-	uint8_t	red;
-	uint8_t	green;
-	uint8_t	blue;
-	uint8_t	alpha;
+	if (x >= 0 && x < (int)img->width && y >= 0 && y < (int)img->height)
+		mlx_put_pixel(img, x, y, color);
+}
 
-	red = (px >> 16) & 0xFF;
-	green = (px >> 8) & 0xFF;
-	blue = px & 0xFF;
-	alpha = (px >> 24) & 0xFF;
-	return (ft_pixel(blue, green, red, alpha));
+void	calculate_grid_coordinates(t_vec2 world, t_collision *col)
+{
+	col->dx = world.x - (int)world.x;
+	col->dy = world.y - (int)world.y;
+	col->i = ((int)world.x % 15 + 15) % 15;
+	col->j = ((int)world.y % 15 + 15) % 15;
 }
 
 /* ************************************************************************** */
@@ -84,7 +81,7 @@ void	draw_pixels(t_app *app, int x, t_draw *draw)
 	y = draw->ds;
 	while (y < draw->de)
 	{
-		d = (y + app->camera.view_z) * 256 - HEIGHT * 128 + draw->lh * 128;
+		d = (y + app->cam.view_z) * 256 - HEIGHT * 128 + draw->lh * 128;
 		ty = ((d * draw->tex->height) / draw->lh) / 256;
 		ty = ty % draw->tex->height;
 		if (ty < 0)

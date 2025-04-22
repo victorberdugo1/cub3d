@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 11:36:39 by victor            #+#    #+#             */
-/*   Updated: 2025/04/19 23:29:35 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:08:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ static t_vec2	calc_enemy_pos(t_enemy *e, t_app *app, double angle)
 	t_vec2	rel_pos;
 	t_vec2	rotated;
 
-	rel_pos.x = e->pos_x - app->camera.pos.x;
-	rel_pos.y = e->pos_y - app->camera.pos.y;
+	rel_pos.x = e->pos_x - app->cam.pos.x;
+	rel_pos.y = e->pos_y - app->cam.pos.y;
 	rotated.x = rel_pos.x * cos(angle) - rel_pos.y * sin(angle);
 	rotated.y = rel_pos.x * sin(angle) + rel_pos.y * cos(angle);
 	return (rotated);
@@ -68,7 +68,7 @@ void	draw_enemies(t_app *app)
 	double	angle;
 	t_vec2	pos;
 
-	angle = -atan2(app->camera.dir.y, app->camera.dir.x) - M_PI / 2.0;
+	angle = -atan2(app->cam.dir.y, app->cam.dir.x) - M_PI / 2.0;
 	i = -1;
 	while (++i < app->game.enemy_count)
 	{

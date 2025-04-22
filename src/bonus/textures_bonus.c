@@ -6,11 +6,29 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:27:08 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 12:52:35 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:57:30 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
+
+/* ************************************************************************** */
+/* Converts a pixel color value to a format suitable for rendering in the     */
+/* graphical context. Returns the converted pixel color as a uint32_t value. */
+/* ************************************************************************** */
+uint32_t	convert_pixel(uint32_t px)
+{
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
+	uint8_t	alpha;
+
+	red = (px >> 16) & 0xFF;
+	green = (px >> 8) & 0xFF;
+	blue = px & 0xFF;
+	alpha = (px >> 24) & 0xFF;
+	return (ft_pixel(blue, green, red, alpha));
+}
 
 void	safe_free(t_app *app)
 {

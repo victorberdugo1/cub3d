@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 19:15:16 by victor            #+#    #+#             */
-/*   Updated: 2025/04/18 19:19:33 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:10:08 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ void	compute_texture_params(t_app *app, t_ray *ray, t_draw *draw)
 	t_door			*d;
 
 	if (ray->side == 0)
-		w = app->camera.pos.y + ray->perpwalldist * ray->raydir.y;
+		w = app->cam.pos.y + ray->perpwalldist * ray->raydir.y;
 	else
-		w = app->camera.pos.x + ray->perpwalldist * ray->raydir.x;
+		w = app->cam.pos.x + ray->perpwalldist * ray->raydir.x;
 	w -= floor(w);
 	if (ray->hit_tile == '2' || ray->hit_tile == '3')
 		d = get_door(&app->game, ray->map_x, ray->map_y);

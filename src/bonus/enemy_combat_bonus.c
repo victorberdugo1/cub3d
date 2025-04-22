@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 22:50:54 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 23:19:10 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:12:01 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ static void	process_hit_on_enemy(t_app *app, t_enemy *e)
 	t_vec2	hit_dir;
 	double	dist;
 
-	d.x = e->pos_x - app->camera.pos.x;
-	d.y = e->pos_y - app->camera.pos.y;
+	d.x = e->pos_x - app->cam.pos.x;
+	d.y = e->pos_y - app->cam.pos.y;
 	dist = sqrt(d.x * d.x + d.y * d.y);
 	if (dist >= 1.2)
 		return ;

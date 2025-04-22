@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 18:06:16 by victor            #+#    #+#             */
-/*   Updated: 2025/04/19 23:34:36 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:09:36 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	draw_rotated_pixels(t_app *app, int cx, int cy, uint32_t color)
 	double	rot_y;
 	double	angle;
 
-	angle = -atan2(app->camera.dir.y, app->camera.dir.x) - M_PI / 2.0;
+	angle = -atan2(app->cam.dir.y, app->cam.dir.x) - M_PI / 2.0;
 	dx = -5;
 	while (++dx < 10)
 	{
@@ -83,15 +83,15 @@ void	draw_map_features(t_app *app)
 	uint32_t	color;
 	double		angle;
 
-	angle = -atan2(app->camera.dir.y, app->camera.dir.x) - M_PI / 2.0;
+	angle = -atan2(app->cam.dir.y, app->cam.dir.x) - M_PI / 2.0;
 	x = -MINI_VIEW_DIST - 1;
 	while (++x <= MINI_VIEW_DIST)
 	{
 		y = -MINI_VIEW_DIST - 1;
 		while (++y <= MINI_VIEW_DIST)
 		{
-			color = get_tile_color(app, (int)app->camera.pos.x + x,
-					(int)app->camera.pos.y + y);
+			color = get_tile_color(app, (int)app->cam.pos.x + x,
+					(int)app->cam.pos.y + y);
 			if (color)
 				draw_rotated_pixels(app,
 					MINI_X + (x * cos(angle) - y * sin(angle)) * MINI_SCALE,

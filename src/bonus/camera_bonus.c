@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:27:02 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 19:50:02 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:02:53 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,25 +49,25 @@ static void	update_camera_movement(t_app *app, double delta_time)
 	double		new_y;
 	double		speed;
 
-	new_x = app->camera.pos.x;
-	new_y = app->camera.pos.y;
-	speed = app->camera.move_speed * delta_time;
+	new_x = app->cam.pos.x;
+	new_y = app->cam.pos.y;
+	speed = app->cam.move_speed * delta_time;
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_SHIFT))
 		speed *= 2;
 	get_down(app, &speed);
 	jump(app);
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_W)
-			- mlx_is_key_down(app->mlx, MLX_KEY_S)) * app->camera.dir.x * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_S)) * app->cam.dir.x * speed;
 	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_W)
-			- mlx_is_key_down(app->mlx, MLX_KEY_S)) * app->camera.dir.y * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_S)) * app->cam.dir.y * speed;
 	new_x += (mlx_is_key_down(app->mlx, MLX_KEY_A)
-			- mlx_is_key_down(app->mlx, MLX_KEY_D)) * app->camera.dir.y * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_D)) * app->cam.dir.y * speed;
 	new_y += (mlx_is_key_down(app->mlx, MLX_KEY_D)
-			- mlx_is_key_down(app->mlx, MLX_KEY_A)) * app->camera.dir.x * speed;
+			- mlx_is_key_down(app->mlx, MLX_KEY_A)) * app->cam.dir.x * speed;
 	if (!collides(&app->game, new_x, new_y))
 	{
-		app->camera.pos.x = new_x;
-		app->camera.pos.y = new_y;
+		app->cam.pos.x = new_x;
+		app->cam.pos.y = new_y;
 	}
 }
 
@@ -93,16 +93,16 @@ static void	rotate_camera(t_app *app, double alpha)
 	double	old_dir_x;
 	double	old_plane_x;
 
-	old_dir_x = app->camera.dir.x;
-	app->camera.dir.x = app->camera.dir.x * cos(alpha)
-		- app->camera.dir.y * sin(alpha);
-	app->camera.dir.y = old_dir_x * sin(alpha)
-		+ app->camera.dir.y * cos(alpha);
-	old_plane_x = app->camera.plane.x;
-	app->camera.plane.x = app->camera.plane.x * cos(alpha)
-		- app->camera.plane.y * sin(alpha);
-	app->camera.plane.y = old_plane_x * sin(alpha)
-		+ app->camera.plane.y * cos(alpha);
+	old_dir_x = app->cam.dir.x;
+	app->cam.dir.x = app->cam.dir.x * cos(alpha)
+		- app->cam.dir.y * sin(alpha);
+	app->cam.dir.y = old_dir_x * sin(alpha)
+		+ app->cam.dir.y * cos(alpha);
+	old_plane_x = app->cam.plane.x;
+	app->cam.plane.x = app->cam.plane.x * cos(alpha)
+		- app->cam.plane.y * sin(alpha);
+	app->cam.plane.y = old_plane_x * sin(alpha)
+		+ app->cam.plane.y * cos(alpha);
 }
 
 /* ************************************************************************** */
@@ -125,9 +125,9 @@ static void	update_camera_rotation(t_app *app, double delta_time)
 	alpha = (posx - WIDTH / 2) * delta_time / 5;
 	offset_z = (posz - HEIGHT / 2) * delta_time * 120;
 	rotate_camera(app, alpha);
-	if (!(fabs(app->camera.view_z) >= HEIGHT
-			&& app->camera.view_z * offset_z > 0))
-		app->camera.view_z += offset_z;
+	if (!(fabs(app->cam.view_z) >= HEIGHT
+			&& app->cam.view_z * offset_z > 0))
+		app->cam.view_z += offset_z;
 	mlx_set_mouse_pos(app->mlx, WIDTH / 2, HEIGHT / 2);
 }
 

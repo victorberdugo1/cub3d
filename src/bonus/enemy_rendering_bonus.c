@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 23:07:08 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 23:28:56 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:30:17 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ static void	init_draw_data(t_app *app, t_draw_data *d,
 {
 	d->sprite_height = abs((int)(HEIGHT / transform_y));
 	d->sprite_width = d->sprite_height;
-	d->st_y = -d->sprite_height / 2 + HEIGHT / 2 - app->camera.view_z;
-	d->end_y = d->sprite_height / 2 + HEIGHT / 2 - app->camera.view_z;
+	d->st_y = -d->sprite_height / 2 + HEIGHT / 2 - app->cam.view_z;
+	d->end_y = d->sprite_height / 2 + HEIGHT / 2 - app->cam.view_z;
 	d->st_x = -d->sprite_width / 2 + screen_x;
 	d->end_x = d->sprite_width / 2 + screen_x;
 	d->tex_width = app->game.tex_enemy->width;
@@ -104,14 +104,14 @@ void	render_enemy(t_app *app, t_enemy *e)
 	double	inv_det;
 	int		screen_x;
 
-	rel.x = e->pos_x - app->camera.pos.x;
-	rel.y = e->pos_y - app->camera.pos.y;
-	inv_det = 1.0 / (app->camera.plane.x * app->camera.dir.y
-			- app->camera.dir.x * app->camera.plane.y);
-	transform.x = inv_det * (app->camera.dir.y * rel.x
-			- app->camera.dir.x * rel.y);
-	transform.y = inv_det * (-app->camera.plane.y * rel.x
-			+ app->camera.plane.x * rel.y);
+	rel.x = e->pos_x - app->cam.pos.x;
+	rel.y = e->pos_y - app->cam.pos.y;
+	inv_det = 1.0 / (app->cam.plane.x * app->cam.dir.y
+			- app->cam.dir.x * app->cam.plane.y);
+	transform.x = inv_det * (app->cam.dir.y * rel.x
+			- app->cam.dir.x * rel.y);
+	transform.y = inv_det * (-app->cam.plane.y * rel.x
+			+ app->cam.plane.x * rel.y);
 	if (transform.y <= 0)
 		return ;
 	screen_x = (int)((WIDTH / 2) * (1 + transform.x / transform.y));

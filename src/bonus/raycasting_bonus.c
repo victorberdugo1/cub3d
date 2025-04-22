@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 12:55:13 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:06:28 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,11 @@ void	do_dda(t_app *app, t_ray *ray)
 {
 	t_vec2	steps;
 
-	steps = init_step(app->camera.pos.x, ray->map_x, ray->deltadist.x,
+	steps = init_step(app->cam.pos.x, ray->map_x, ray->deltadist.x,
 			ray->raydir.x);
 	ray->step.x = steps.x;
 	ray->sidedist.x = steps.y;
-	steps = init_step(app->camera.pos.y, ray->map_y, ray->deltadist.y,
+	steps = init_step(app->cam.pos.y, ray->map_y, ray->deltadist.y,
 			ray->raydir.y);
 	ray->step.y = steps.x;
 	ray->sidedist.y = steps.y;

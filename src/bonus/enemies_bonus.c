@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:53:46 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 23:22:00 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:07:57 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	update_enemies(t_app *app, double delta_time)
 	int			i;
 
 	apply_hit_to_enemy(app);
-	cam = &app->camera;
+	cam = &app->cam;
 	i = -1;
 	while (++i < app->game.enemy_count)
 	{

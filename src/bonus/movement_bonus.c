@@ -6,7 +6,7 @@
 /*   By: aescande <aescande@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 22:25:21 by aescande          #+#    #+#             */
-/*   Updated: 2025/04/18 18:21:20 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:07:30 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ void	get_down(t_app *app, double *speed)
 
 	if (mlx_is_key_down(app->mlx, MLX_KEY_LEFT_CONTROL) && !is_down)
 	{
-		app->camera.view_z += 50;
+		app->cam.view_z += 50;
 		is_down = 1;
 	}
 	else if (!mlx_is_key_down(app->mlx, MLX_KEY_LEFT_CONTROL) && is_down)
 	{
-		app->camera.view_z -= 50;
+		app->cam.view_z -= 50;
 		is_down = 0;
 	}
 	if (is_down)
@@ -54,12 +54,12 @@ void	jump(t_app *app)
 		}
 		dt = mlx_get_time() - j.x;
 		v = j.y + 200 * dt;
-		if (!(fabs(app->camera.view_z) > HEIGHT && app->camera.view_z * v > 0))
+		if (!(fabs(app->cam.view_z) > HEIGHT && app->cam.view_z * v > 0))
 		{
 			if (v >= 0)
-				app->camera.view_z -= j.y * dt + 100 * pow(dt, 2);
+				app->cam.view_z -= j.y * dt + 100 * pow(dt, 2);
 			else
-				app->camera.view_z += j.y * dt + 100 * pow(dt, 2);
+				app->cam.view_z += j.y * dt + 100 * pow(dt, 2);
 		}
 		if (fabs(j.y) <= fabs(v))
 			is_jumping = 0;

@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 12:48:06 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 12:58:54 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 01:10:58 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	init_app_struct(t_app *app, char **lines, int line_count)
 	ft_memset(app, 0, sizeof(*app));
 	ft_memset(app->game.floor_color, -1, sizeof(app->game.floor_color));
 	ft_memset(app->game.ceiling_color, -1, sizeof(app->game.ceiling_color));
-	process_lines(lines, line_count, &app->game, &app->camera);
+	process_lines(lines, line_count, &app->game, &app->cam);
 	return (0);
 }
 
@@ -54,10 +54,10 @@ void	init_ray(t_app *app, int x, t_ray *ray)
 	double	camx;
 
 	camx = 2 * x / (double)WIDTH - 1;
-	ray->raydir.x = app->camera.dir.x + app->camera.plane.x * camx;
-	ray->raydir.y = app->camera.dir.y + app->camera.plane.y * camx;
-	ray->map_x = (int)app->camera.pos.x;
-	ray->map_y = (int)app->camera.pos.y;
+	ray->raydir.x = app->cam.dir.x + app->cam.plane.x * camx;
+	ray->raydir.y = app->cam.dir.y + app->cam.plane.y * camx;
+	ray->map_x = (int)app->cam.pos.x;
+	ray->map_y = (int)app->cam.pos.y;
 	ray->raydir_mod = sqrt(pow(ray->raydir.x, 2) + pow(ray->raydir.y, 2));
 	ray->deltadist.x = fabs(ray->raydir_mod / ray->raydir.x);
 	ray->deltadist.y = fabs(ray->raydir_mod / ray->raydir.y);
