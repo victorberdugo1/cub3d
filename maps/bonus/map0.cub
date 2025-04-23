@@ -1,16 +1,16 @@
-C    199, 183, 139
+C    151, 139, 74
 
 NO ./textures/backroomd.png
 SO ./textures/backroomd1.png
 WE ./textures/backroom.png
 
 
-F 255, 223, 140
+F 161, 147, 59
 EA ./textures/backroom1.png
 
-D ./textures/door.png
+D ./textures/door1.png
 M ./textures/doorw.png
-B ./textures/enemy.png
+B ./textures/zombie.png
 
         1111111111111111111111111
         1000000000110000000000001

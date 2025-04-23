@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 02:02:47 by victor            #+#    #+#             */
-/*   Updated: 2025/04/22 22:44:49 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/23 19:49:32 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static inline bool	handle_light_panel(t_app *app,
 		return (false);
 	if (fabs(d->col.dx - 0.5) < 0.3338 && fabs(d->col.dy - 0.5) < 0.3338)
 		return (mlx_put_pixel(app->image, d->x, d->y,
-				ft_pixel(255, 255, 255, 255)), true);
+				ft_pixel(240, 240, 245, 255)), true);
 	if (max_dist < 0.4338)
 	{
 		i = 1.0 - (max_dist - 0.3338) * 10.0;
@@ -48,8 +48,8 @@ static inline bool	handle_light_panel(t_app *app,
 		{
 			c = app->game.ceiling_color;
 			return (mlx_put_pixel(app->image, d->x, d->y, ft_pixel(c[0]
-						+ (int)((255 - c[0]) * i), c[1] + (int)((255 - c[1]
-					) * i), c[2] + (int)((255 - c[2]) * i), 255)), true);
+						+ (int)((235 - c[0]) * i), c[1] + (int)((235 - c[1]
+					) * i), c[2] + (int)((240 - c[2]) * i), 255)), true);
 		}
 	}
 	return (false);
