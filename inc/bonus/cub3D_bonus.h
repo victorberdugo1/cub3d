@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/22 02:13:17 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/22 22:46:18 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,8 +249,7 @@ void		process_knockback(t_app *a, t_enemy *e, double dt);
 void		apply_hit_flash(uint32_t *color, t_enemy *e);
 int32_t		ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 void		init_background_tables(double *sx, double *cy,
-				double *cameraX_table, bool light_panel_pattern[15][15]);
-void		put_pixel_safe(mlx_image_t *img, int x, int y, uint32_t color);
+				double *cameraX_table, bool light_panel_pattern[225]);
 void		calculate_grid_coordinates(t_vec2 world, t_collision *col);
 
 #endif
