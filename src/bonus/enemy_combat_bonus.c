@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 22:50:54 by victor            #+#    #+#             */
-/*   Updated: 2025/04/22 01:12:01 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/23 12:32:14 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static void	process_hit_on_enemy(t_app *app, t_enemy *e)
 	{
 		e->e_state = ENEMY_HIT;
 		e->anim_frame = 2;
-		e->anim_timer = 0;
+		e->anim_timer = -0.05;
 	}
 }
 
