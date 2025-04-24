@@ -6,31 +6,13 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:27:08 by victor            #+#    #+#             */
-/*   Updated: 2025/04/22 01:57:30 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/24 19:45:42 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
-/* ************************************************************************** */
-/* Converts a pixel color value to a format suitable for rendering in the     */
-/* graphical context. Returns the converted pixel color as a uint32_t value. */
-/* ************************************************************************** */
-uint32_t	convert_pixel(uint32_t px)
-{
-	uint8_t	red;
-	uint8_t	green;
-	uint8_t	blue;
-	uint8_t	alpha;
-
-	red = (px >> 16) & 0xFF;
-	green = (px >> 8) & 0xFF;
-	blue = px & 0xFF;
-	alpha = (px >> 24) & 0xFF;
-	return (ft_pixel(blue, green, red, alpha));
-}
-
-void	safe_free(t_app *app)
+static void	free_mlx_textures(t_app *app)
 {
 	if (app->game.tex_no)
 		mlx_delete_texture(app->game.tex_no);
@@ -46,6 +28,13 @@ void	safe_free(t_app *app)
 		mlx_delete_texture(app->game.tex_door_w);
 	if (app->game.tex_enemy)
 		mlx_delete_texture(app->game.tex_enemy);
+	if (app->game.tex_weapon)
+		mlx_delete_texture(app->game.tex_weapon);
+}
+
+void	safe_free(t_app *app)
+{
+	free_mlx_textures(app);
 	free(app->game.texture_no);
 	free(app->game.texture_so);
 	free(app->game.texture_we);
@@ -53,6 +42,7 @@ void	safe_free(t_app *app)
 	free(app->game.texture_door);
 	free(app->game.texture_door_w);
 	free(app->game.texture_enemy);
+	free(app->game.texture_weapon);
 	if (app->game.doors)
 		free(app->game.doors);
 	if (app->game.enemies)
@@ -86,21 +76,20 @@ static int	load_extra_textures(t_app *app)
 	{
 		g->tex_enemy = mlx_load_png(g->texture_enemy);
 		if (!g->tex_enemy)
-		{
-			printf("Error: Failed to load enemy textures.\n");
-			cleanup(app);
-			return (-1);
-		}
+			return (printf("Error: Fail load enemy txt.\n"), cleanup(app), -1);
 	}
 	if (g->texture_door)
 		g->tex_door = mlx_load_png(g->texture_door);
 	if (g->texture_door_w)
 		g->tex_door_w = mlx_load_png(g->texture_door_w);
 	if ((g->tex_door && !g->tex_door_w) || (!g->tex_door && g->tex_door_w))
+		return (printf("Error\nBoth door textures\n"), cleanup(app), -1);
+	if (g->texture_weapon)
 	{
-		printf("Error\nBoth door textures (D/W) must be provided\n");
-		cleanup(app);
-		return (-1);
+		g->tex_weapon = mlx_load_png(g->texture_weapon);
+		if (!g->tex_weapon)
+			return (printf("Error\n Weapon txt \n"), cleanup(app), -1);
+		app->weapon.texture = g->tex_weapon;
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/22 02:07:01 by victor           ###   ########.fr        #
+#    Updated: 2025/04/24 19:10:59 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,8 @@ BONUS_SRC =	$(SRC_DIR_BONUS)/cub3D_bonus.c \
 			$(SRC_DIR_BONUS)/enemy_movement_bonus.c \
 			$(SRC_DIR_BONUS)/enemy_combat_bonus.c \
 			$(SRC_DIR_BONUS)/enemy_rendering_bonus.c \
-			$(SRC_DIR_BONUS)/background_bonus.c
+			$(SRC_DIR_BONUS)/background_bonus.c \
+			$(SRC_DIR_BONUS)/hud_bonus.c
       
 # Manual conversion of sources to object files
 OBJ       = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

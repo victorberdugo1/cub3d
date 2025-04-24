@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/22 01:02:41 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/24 19:12:29 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,5 +127,6 @@ void	render_scene(void *param)
 	}
 	render_minimap(a);
 	sort_and_render(a);
+	render_weapon(a);
 	render_hit_feedback(a);
 }

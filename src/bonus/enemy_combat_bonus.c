@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 22:50:54 by victor            #+#    #+#             */
-/*   Updated: 2025/04/23 20:05:04 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/24 22:34:54 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,24 +83,29 @@ static void	process_hit_on_enemy(t_app *app, t_enemy *e)
 void	apply_hit_to_enemy(t_app *app)
 {
 	static double	last_hit_time = 0;
-	double			current_time;
+	static bool		prev_1 = false;
 	int				i;
 
-	current_time = mlx_get_time();
 	if (mlx_is_key_down(app->mlx, MLX_KEY_Q))
 	{
-		if ((current_time - last_hit_time) > 0.5)
+		if (!app->weapon.is_attacking)
 		{
-			last_hit_time = current_time;
+			app->weapon.is_attacking = true;
+			app->weapon.current_frame = 3;
+		}
+		if ((mlx_get_time() - last_hit_time) > 0.5)
+		{
+			last_hit_time = mlx_get_time();
 			i = -1;
 			while (++i < app->game.enemy_count)
-			{
 				if (app->game.enemies[i].is_active
 					&& app->game.enemies[i].e_state != ENEMY_DEAD)
 					process_hit_on_enemy(app, &app->game.enemies[i]);
-			}
 		}
 	}
+	if (mlx_is_key_down(app->mlx, MLX_KEY_1) && !prev_1)
+		app->weapon.alt_animation = !app->weapon.alt_animation;
+	prev_1 = mlx_is_key_down(app->mlx, MLX_KEY_1);
 }
 
 void	check_enemy_attack_hit(t_app *app, t_enemy *e, t_camera *cam)
