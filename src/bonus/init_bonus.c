@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 12:48:06 by victor            #+#    #+#             */
-/*   Updated: 2025/04/22 01:10:58 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/23 12:16:08 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	init_enemy(t_game *g, int i, int j)
 	g->enemies[g->enemy_count - 1] = (t_enemy){
 		.pos_x = j + 0.5,
 		.pos_y = i + 0.5,
-		.speed = 0.5,
+		.speed = 0.6,
 		.is_active = 1,
 		.anim_frame = 0.0,
 		.time_since_last_move = 0.0,

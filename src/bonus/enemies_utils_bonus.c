@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 17:29:36 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 23:34:52 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/23 20:16:56 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	handle_special_states(t_enemy *e)
 		if (e->anim_frame == 2)
 		{
 			e->e_state = ENEMY_COOLDOWN;
-			e->attack_cooldown = 1.0;
+			e->attack_cooldown = 0.6;
 		}
 	}
 	else if (e->e_state == ENEMY_DEAD)
@@ -61,7 +61,7 @@ void	update_enemy_animation(t_enemy *e, double delta_time)
 	else if (e->anim_timer > 0.2 && e->e_state != ENEMY_DEAD)
 	{
 		e->anim_frame = (e->anim_frame + 1) % 4;
-		e->anim_timer = 0.0;
+		e->anim_timer = 0.075;
 	}
 }
 
