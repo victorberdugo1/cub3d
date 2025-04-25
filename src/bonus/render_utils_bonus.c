@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:20:35 by victor            #+#    #+#             */
-/*   Updated: 2025/04/23 20:16:08 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/24 19:44:27 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,24 @@
 int32_t	ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
 {
 	return (r << 24 | g << 16 | b << 8 | a);
+}
+
+/* ************************************************************************** */
+/* Converts a pixel color value to a format suitable for rendering in the     */
+/* graphical context. Returns the converted pixel color as a uint32_t value. */
+/* ************************************************************************** */
+uint32_t	convert_pixel(uint32_t px)
+{
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
+	uint8_t	alpha;
+
+	red = (px >> 16) & 0xFF;
+	green = (px >> 8) & 0xFF;
+	blue = px & 0xFF;
+	alpha = (px >> 24) & 0xFF;
+	return (ft_pixel(blue, green, red, alpha));
 }
 
 void	init_background_tables(double *sx, double *cy, double *cam_x_table,

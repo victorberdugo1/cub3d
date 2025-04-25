@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/22 22:46:18 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/24 23:39:06 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@
 # include "libft.h"
 # include "MLX42.h"
 
-# define WIDTH 1920
-# define HEIGHT 1080
+# define WIDTH 1600
+# define HEIGHT 900
 # define COLLISION_RADIUS 0.2
 # define DOOR_ANIM_DURATION 0.25
-# define MINI_SCALE 17        // Escala: píxeles por celda del mapa
-# define MINI_VIEW_DIST 20    // Distancia visible en celdas
-# define MINI_X 150           // Debe ser mayor que MINI_RADIUS
-# define MINI_Y 150           // y menor que (WIDTH - MINI_RADIUS)
-# define MINI_RADIUS 150      // Radio máximo seguro para 1920x1080: ~100
+# define MINI_SCALE 10        // Escala: píxeles por celda del mapa
+# define MINI_VIEW_DIST 10      // Distancia visible en celdas
+# define MINI_X 100           // Debe ser mayor que MINI_RADIUS
+# define MINI_Y 100           // y menor que (WIDTH - MINI_RADIUS)
+# define MINI_RADIUS 100      // Radio máximo seguro para 1920x1080: ~100
 
 typedef struct s_vec2
 {
@@ -118,6 +118,17 @@ typedef struct s_enemy
 	t_vec2	knockback_dir;
 }	t_enemy;
 
+typedef struct s_weapon
+{
+	mlx_texture_t	*texture;
+	int				current_frame;
+	bool			is_attacking;
+	double			frame_timer;
+	int				total_idle_frames;
+	int				total_attack_frames;
+	bool			alt_animation;
+}	t_weapon;
+
 typedef struct s_game
 {
 	char			*texture_no;
@@ -143,6 +154,8 @@ typedef struct s_game
 	mlx_texture_t	*tex_enemy;
 	t_enemy			*enemies;
 	int				enemy_count;
+	char			*texture_weapon;
+	mlx_texture_t	*tex_weapon;
 }	t_game;
 
 typedef struct s_hit_feedback
@@ -160,6 +173,7 @@ typedef struct s_app
 	t_game			game;
 	double			z_buffer[WIDTH];
 	t_hit_feedback	player_hit_feedback;
+	t_weapon		weapon;
 }	t_app;
 
 typedef struct s_collision
@@ -251,5 +265,7 @@ int32_t		ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a);
 void		init_background_tables(double *sx, double *cy,
 				double *cameraX_table, bool light_panel_pattern[225]);
 void		calculate_grid_coordinates(t_vec2 world, t_collision *col);
+void		update_weapon_animation(t_app *app, double delta_time);
+void		render_weapon(t_app *app);
 
 #endif

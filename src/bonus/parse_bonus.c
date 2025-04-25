@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/20 12:29:04 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/24 19:17:41 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ static void	process_texture(char *trimmed, t_game *game)
 		game->texture_door_w = ft_strtrim(skip_spaces(trimmed + 1), " ");
 	else if (!ft_strncmp(trimmed, "B", 1))
 		game->texture_enemy = ft_strtrim(skip_spaces(trimmed + 1), " ");
+	else if (!ft_strncmp(trimmed, "WAP", 3))
+		game->texture_weapon = ft_strtrim(skip_spaces(trimmed + 3), " ");
 }
 
 /* ************************************************************************** */
@@ -140,7 +142,7 @@ static void	process_txt_col_map(char *line, t_game *game, char ***temp_map,
 		|| !ft_strncmp(trimmed, "WE", 2) || !ft_strncmp(trimmed, "EA", 2)
 		|| !ft_strncmp(trimmed, "F", 1) || !ft_strncmp(trimmed, "C", 1)
 		|| !ft_strncmp(trimmed, "D", 1) || !ft_strncmp(trimmed, "M", 1)
-		|| !ft_strncmp(trimmed, "B", 1))
+		|| !ft_strncmp(trimmed, "B", 1) || !ft_strncmp(trimmed, "WAP", 3))
 		process_texture(trimmed, game);
 }
 
