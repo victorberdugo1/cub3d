@@ -6,11 +6,27 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 19:05:57 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 23:50:19 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:52:39 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
+
+uint32_t	fog(const int *color, double r, double fog_dens, double min_factor)
+{
+	double	fog_factor;
+	int		dr;
+	int		dg;
+	int		db;
+
+	fog_factor = 1.0 / (1.0 + fog_dens * r);
+	if (fog_factor < min_factor)
+		fog_factor = min_factor;
+	dr = (int)(color[0] * fog_factor);
+	dg = (int)(color[1] * fog_factor);
+	db = (int)(color[2] * fog_factor);
+	return (ft_pixel(dr, dg, db, 255));
+}
 
 void	update_weapon_animation(t_app *app, double delta_time)
 {
@@ -85,6 +101,7 @@ void	update_weapon_animation(t_app *app, double delta_time)
 		}
 	}
 }
+
 void render_weapon(t_app *app)
 {
 	t_weapon *w = &app->weapon;
@@ -139,4 +156,3 @@ void render_weapon(t_app *app)
 		}
 	}
 }
-

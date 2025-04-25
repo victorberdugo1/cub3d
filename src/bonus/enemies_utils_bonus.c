@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 17:29:36 by victor            #+#    #+#             */
-/*   Updated: 2025/04/23 20:16:56 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:45:59 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,5 @@ void	update_enemy(t_app *a, t_enemy *e, t_camera *c, double dt)
 	if (e->e_state == ENEMY_ATTACK)
 		check_enemy_attack_hit(a, e, c);
 	update_enemy_animation(e, dt);
-	if (e->e_state != ENEMY_DEAD)
-		handle_enemy_collision(a, e, c);
+	handle_enemy_collision(a, e, c);
 }

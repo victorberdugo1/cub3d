@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:02:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 19:17:41 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 11:01:01 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static void	process_texture(char *trimmed, t_game *game)
 	else if (!ft_strncmp(trimmed, "F", 1))
 		parse_color(skip_spaces(trimmed + 1), game->floor_color);
 	else if (!ft_strncmp(trimmed, "C", 1))
-		parse_color(skip_spaces(trimmed + 1), game->ceiling_color);
+		parse_color(skip_spaces(trimmed + 1), game->c_color);
 	else if (!ft_strncmp(trimmed, "D", 1))
 		game->texture_door = ft_strtrim(skip_spaces(trimmed + 1), " ");
 	else if (!ft_strncmp(trimmed, "M", 1))
@@ -179,7 +179,7 @@ void	process_lines(char **lines, int c, t_game *game, t_camera *camera)
 	}
 	if ((game->floor_color[0] == -1 && game->floor_color[1] == -1
 			&& game->floor_color[2] == -1)
-		|| (game->ceiling_color[0] == -1 && game->ceiling_color[1] == -1
-			&& game->ceiling_color[2] == -1))
+		|| (game->c_color[0] == -1 && game->c_color[1] == -1
+			&& game->c_color[2] == -1))
 		exit(write(1, "Error\nMissing floor or ceiling color\n", 38));
 }

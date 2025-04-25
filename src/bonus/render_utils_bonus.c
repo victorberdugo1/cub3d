@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:20:35 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 19:44:27 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 14:48:59 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,19 @@ void	draw_pixels(t_app *app, int x, t_draw *draw)
 	int			d;
 	int			ty;
 	uint32_t	px;
+	double		fog_factor;
 
 	y = draw->ds;
 	while (y < draw->de)
 	{
 		d = (y + app->cam.view_z) * 256 - HEIGHT * 128 + draw->lh * 128;
-		ty = ((d * draw->tex->height) / draw->lh) / 256;
-		ty = ty % draw->tex->height;
+		ty = (((d * draw->tex->height) / draw->lh) / 256) % draw->tex->height;
 		if (ty < 0)
 			ty += draw->tex->height;
 		px = ((uint32_t *)draw->tex->pixels)[ty * draw->tex->width + draw->tx];
-		px = convert_pixel(px);
-		mlx_put_pixel(app->image, x, y, px);
-		y++;
+		fog_factor = fmax(1.0 / (1.0 + 0.25 * app->z_buffer[x]), 0.4);
+		mlx_put_pixel(app->image, x, y++, ft_pixel((px & 0xFF) * fog_factor,
+				((px >> 8) & 0xFF) * fog_factor, ((px >> 16) & 0xFF)
+				* fog_factor, convert_pixel(px) & 0xFF));
 	}
 }

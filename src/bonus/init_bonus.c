@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 12:48:06 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 20:41:47 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 11:01:47 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	init_app_struct(t_app *app, char **lines, int line_count)
 {
 	ft_memset(app, 0, sizeof(*app));
 	ft_memset(app->game.floor_color, -1, sizeof(app->game.floor_color));
-	ft_memset(app->game.ceiling_color, -1, sizeof(app->game.ceiling_color));
+	ft_memset(app->game.c_color, -1, sizeof(app->game.c_color));
 	process_lines(lines, line_count, &app->game, &app->cam);
 	return (0);
 }
