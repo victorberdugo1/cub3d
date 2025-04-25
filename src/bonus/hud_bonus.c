@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 19:05:57 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 21:55:21 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 23:08:47 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static bool	weapon_advance_loop(t_weapon *w, int start, int end, int steps)
 			if (w->is_attacking)
 			{
 				w->is_attacking = false;
-				w->current_frame = start;
+				w->current_frame = end;
 				ended = true;
 			}
 			else

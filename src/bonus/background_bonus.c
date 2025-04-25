@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 02:02:47 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 11:23:43 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 23:09:04 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,17 @@ static inline bool	handle_edge_case(t_app *app, int x, int y, t_vec2 frac)
 static inline bool	handle_light_panel(t_app *a, const bool *pattern,
 		t_ceiling *d)
 {
-	double		r;
-	double		max_dist;
-	double		i;
-	static int	wht[3] = {240, 240, 245};
+	double	r;
+	double	max_dist;
+	double	i;
+	int		wht[3];
 
 	if (!pattern[d->col.i * 15 + d->col.j])
 		return (false);
-	r = HEIGHT / (2.0 * (HEIGHT / 2 - a->cam.view_z - d->y));
+	r = HEIGHT / (2.0 * fmax(HEIGHT / 2 - a->cam.view_z - d->y, 0.01));
 	if (fabs(d->col.dx - 0.5) < 0.3338 && fabs(d->col.dy - 0.5) < 0.3338)
-		return (mlx_put_pixel(a->image, d->x, d->y, fog(wht, r, 0.08, 0.2)), 1);
+		return (mlx_put_pixel(a->image, d->x, d->y,
+				fog((int [3]){240, 240, 245}, r, 0.08, 0.2)), true);
 	max_dist = fmax(fabs(d->col.dx - 0.5), fabs(d->col.dy - 0.5));
 	if (max_dist < 0.4338)
 	{
