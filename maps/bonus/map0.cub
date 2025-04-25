@@ -11,7 +11,7 @@ EA ./textures/backroom1.png
 D ./textures/door1.png
 M ./textures/doorw.png
 B ./textures/zombie.png
-WAP ./textures/HUD.png
+WAP ./textures/transformed.png
 
         1111111111111111111111111
         1000000000110000000000001

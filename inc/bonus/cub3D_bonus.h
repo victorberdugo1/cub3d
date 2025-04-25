@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/24 23:39:06 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 21:54:50 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,17 @@
 # define HEIGHT 900
 # define COLLISION_RADIUS 0.2
 # define DOOR_ANIM_DURATION 0.25
-# define MINI_SCALE 10        // Escala: píxeles por celda del mapa
-# define MINI_VIEW_DIST 10      // Distancia visible en celdas
-# define MINI_X 100           // Debe ser mayor que MINI_RADIUS
-# define MINI_Y 100           // y menor que (WIDTH - MINI_RADIUS)
-# define MINI_RADIUS 100      // Radio máximo seguro para 1920x1080: ~100
+//minimap
+# define MINI_SCALE 10
+# define MINI_VIEW_DIST 10
+# define MINI_X 100
+# define MINI_Y 100
+# define MINI_RADIUS 100
+//HUD
+# define COLS      4
+# define ROWS      4
+# define SCALE     1.8f
+# define Y_OFFSET  10
 
 typedef struct s_vec2
 {
@@ -136,7 +142,7 @@ typedef struct s_game
 	char			*texture_we;
 	char			*texture_ea;
 	int				floor_color[3];
-	int				ceiling_color[3];
+	int				c_color[3];
 	char			**map;
 	int				map_height;
 	mlx_texture_t	*tex_no;
@@ -267,5 +273,7 @@ void		init_background_tables(double *sx, double *cy,
 void		calculate_grid_coordinates(t_vec2 world, t_collision *col);
 void		update_weapon_animation(t_app *app, double delta_time);
 void		render_weapon(t_app *app);
+uint32_t	fog(const int *color, double r, double fog_dens, double min_factor);
+void		weapon_initialize(t_weapon *w, bool *inited);
 
 #endif

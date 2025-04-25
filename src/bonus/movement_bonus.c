@@ -6,7 +6,7 @@
 /*   By: aescande <aescande@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 22:25:21 by aescande          #+#    #+#             */
-/*   Updated: 2025/04/22 01:07:30 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/25 21:46:46 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,20 @@ void	jump(t_app *app)
 		if (fabs(j.y) <= fabs(v))
 			is_jumping = 0;
 	}
+}
+
+uint32_t	fog(const int *color, double r, double fog_dens, double min_factor)
+{
+	double	fog_factor;
+	int		dr;
+	int		dg;
+	int		db;
+
+	fog_factor = 1.0 / (1.0 + fog_dens * r);
+	if (fog_factor < min_factor)
+		fog_factor = min_factor;
+	dr = (int)(color[0] * fog_factor);
+	dg = (int)(color[1] * fog_factor);
+	db = (int)(color[2] * fog_factor);
+	return (ft_pixel(dr, dg, db, 255));
 }
