@@ -6,12 +6,20 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 18:06:16 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 23:33:52 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 12:47:56 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws the circular background of the minimap.                            */
+/*                                                                            */
+/*   - Fills a circle centered at (MINI_X, MINI_Y) with a dark gray color.    */
+/*   - Only pixels inside the radius are colored.                             */
+/*                                                                            */
+/* ************************************************************************** */
 void	draw_minimap_background(t_app *app)
 {
 	int	i;
@@ -27,6 +35,15 @@ void	draw_minimap_background(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Determines the color to use for a given tile at (x, y) on the map.       */
+/*                                                                            */
+/*   - Walls ('1') are gray.                                                  */
+/*   - Doors ('2' or '3') are orange if closed and green if open.             */
+/*   - Other tiles are transparent (color 0).                                 */
+/*                                                                            */
+/* ************************************************************************** */
 static uint32_t	get_tile_color(t_app *app, int x, int y)
 {
 	char	tile;
@@ -53,6 +70,14 @@ static uint32_t	get_tile_color(t_app *app, int x, int y)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws a tile on the minimap with rotation based on the player's view.    */
+/*                                                                            */
+/*   - Draws a small square centered at (cx, cy), rotated by the view angle.  */
+/*   - Only draws pixels that are inside the minimap's circle.                */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_rotated_pixels(t_app *app, int cx, int cy, uint32_t color)
 {
 	int		dx;
@@ -76,6 +101,15 @@ static void	draw_rotated_pixels(t_app *app, int cx, int cy, uint32_t color)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws all visible map features (walls, doors) on the minimap.            */
+/*                                                                            */
+/*   - Iterates through the map tiles within view distance.                   */
+/*   - Calculates their rotated and scaled position on the minimap.           */
+/*   - Draws them with the appropriate color.                                 */
+/*                                                                            */
+/* ************************************************************************** */
 void	draw_map_features(t_app *app)
 {
 	int			x;

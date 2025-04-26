@@ -6,12 +6,21 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:27:08 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 19:45:42 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:11:05 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Frees all loaded MLX textures to avoid memory leaks.                     */
+/*                                                                            */
+/*   - Checks if each texture exists before calling `mlx_delete_texture()`.   */
+/*   - Handles wall textures (NO, SO, WE, EA), door textures, enemy texture,  */
+/*     and weapon texture.                                                    */
+/*                                                                            */
+/* ************************************************************************** */
 static void	free_mlx_textures(t_app *app)
 {
 	if (app->game.tex_no)
@@ -32,6 +41,15 @@ static void	free_mlx_textures(t_app *app)
 		mlx_delete_texture(app->game.tex_weapon);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Safely frees all allocated memory and textures in the game.              */
+/*                                                                            */
+/*   - Frees loaded MLX textures.                                             */
+/*   - Frees texture path strings.                                            */
+/*   - Frees dynamic arrays for doors and enemies if they exist.              */
+/*                                                                            */
+/* ************************************************************************** */
 void	safe_free(t_app *app)
 {
 	free_mlx_textures(app);
@@ -49,6 +67,14 @@ void	safe_free(t_app *app)
 		free(app->game.enemies);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Loads main wall textures (North, South, West, East) from PNG files.      */
+/*                                                                            */
+/*   - Loads using `mlx_load_png()` each path.                                */
+/*   - If any texture fails to load, prints error, calls cleanup, returns -1. */
+/*                                                                            */
+/* ************************************************************************** */
 static int	load_main_textures(t_app *app)
 {
 	t_game	*g;
@@ -67,6 +93,17 @@ static int	load_main_textures(t_app *app)
 	return (0);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Loads additional textures (enemies, doors, weapon).                      */
+/*                                                                            */
+/*   Steps:                                                                   */
+/*    - If enemy texture exists, load it. If fails, print error and cleanup.  */
+/*    - If door textures exist, load both door types (normal and wall).       */
+/*    - Ensure both door textures are loaded if one is present (consistency). */
+/*    - If weapon texture exists, load it and set it to the weapon struct.    */
+/*                                                                            */
+/* ************************************************************************** */
 static int	load_extra_textures(t_app *app)
 {
 	t_game	*g;
@@ -96,10 +133,14 @@ static int	load_extra_textures(t_app *app)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Loads texture PNG files using the texture paths stored in the game       */
-/*   structure. If any texture path is missing or any texture fails to load,  */
-/*   prints an error message, terminates MLX, and returns -1. Otherwise,      */
-/*	 loads  all textures and returns 0.                                       */
+/*   Loads all textures necessary for the game.                               */
+/*                                                                            */
+/*   Steps:                                                                   */
+/*    - Check if essential texture paths (NO, SO, WE, EA) exist.              */
+/*      If missing, print error and terminate MLX immediately.                */
+/*    - Load main wall textures.                                              */
+/*    - Load extra textures (enemies, doors, weapons).                        */
+/*    - If any loading fails, cleanup and return error.                       */
 /*                                                                            */
 /* ************************************************************************** */
 int	load_game_textures(t_app *app)

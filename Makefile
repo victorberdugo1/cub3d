@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/25 21:51:11 by victor           ###   ########.fr        #
+#    Updated: 2025/04/26 12:09:32 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@ INCLUDE      = -Iinc -Ilibft -IMLX42/include/MLX42
 BONUS_INCLUDE = -Iinc/bonus
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -g -fsanitize=address -MMD -MP $(INCLUDE) 
+CFLAGS  = -Wall -Wextra -Werror -MMD -MP $(INCLUDE) -g -fsanitize=address
 LDFLAGS = $(LIBFT) $(MINI) -lglfw -lm
 
 # Colors for messages
