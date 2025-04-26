@@ -1,9 +1,7 @@
 # cub3D
 
 <p align="center">
-  <a href="https://youtu.be/M5QY2_8704o">
-    <img src="https://img.youtube.com/vi/M5QY2_8704o/0.jpg" alt="Ver video en YouTube">
-  </a>
+<video src="https://github.com/user-attachments/assets/0e233f44-0c16-425f-a531-52519b08a03f" width=180/></video>
 </p>
 
 
