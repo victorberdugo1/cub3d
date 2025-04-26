@@ -1,18 +1,18 @@
-C 40, 40, 40
+C 45, 45, 45
 
 NO ./textures/dd1.png
-SO ./textures/dd4.png
+SO ./textures/dd3.png
 WE ./textures/dd2.png
 
-F 60, 60, 60
+F 55, 55, 55
 
 
-EA ./textures/dd3.png
+EA ./textures/dd4.png
 
 D ./textures/ddoor.png
 M ./textures/ddoorw.png
 B ./textures/enemy.png
-WAP ./textures/transformed.png
+WAP ./textures/HUD.png
 
         1111111111111111111111111
         1000000000110000000000001

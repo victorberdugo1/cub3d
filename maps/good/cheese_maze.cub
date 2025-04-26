@@ -1,7 +1,7 @@
-NO ./textures/N.png
-SO ./textures/S.png
-WE ./textures/W.png
-EA ./textures/E.png
+NO ./textures/cheese.png
+SO ./textures/cheese.png
+WE ./textures/cheese.png
+EA ./textures/cheese.png
 
 F 164,169,20
 C 153,204,255

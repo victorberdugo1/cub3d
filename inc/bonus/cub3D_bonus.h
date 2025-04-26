@@ -6,7 +6,7 @@
 /*   By: vberdugo <vberdugo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 11:48:08 by vberdugo          #+#    #+#             */
-/*   Updated: 2025/04/26 11:43:45 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 22:01:28 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ GAME CONSTANTS
 MINIMAP SETTINGS
 ------------------------------------------------------------------------------*/
 # define MINI_SCALE 10
-# define MINI_VIEW_DIST 10
-# define MINI_X 100
-# define MINI_Y 100
-# define MINI_RADIUS 100
+# define MINI_VIEW_DIST 9
+# define MINI_X 110
+# define MINI_Y 110
+# define MINI_RADIUS 90
 /*------------------------------------------------------------------------------
 HUD & WEAPON SETTINGS
 ------------------------------------------------------------------------------*/

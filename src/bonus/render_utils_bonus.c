@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:20:35 by victor            #+#    #+#             */
-/*   Updated: 2025/04/26 13:10:12 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 21:42:14 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,25 +141,31 @@ void	calculate_grid_coordinates(t_vec2 world, t_collision *col)
 /*     (minimum fog = 0.4, closer = clearer, farther = foggier)               */
 /*                                                                            */
 /* ************************************************************************** */
-void	draw_pixels(t_app *app, int x, t_draw *draw)
+void	draw_pixels(t_app *app, int x, t_draw *dr)
 {
-	int			y;
-	int			d;
-	int			ty;
+	uint8_t		*p[2];
+	uint32_t	*tpx;
 	uint32_t	px;
-	double		fog_factor;
+	double		f[1];
+	int			i[4];
 
-	y = draw->ds;
-	while (y < draw->de)
+	p[0] = app->image->pixels;
+	tpx = (uint32_t *)dr->tex->pixels;
+	f[0] = fmax(1.0 / (1.0 + 0.25 * app->z_buffer[x]), 0.4);
+	i[0] = dr->lh;
+	i[1] = dr->ds - 1;
+	while (++i[1] < dr->de)
 	{
-		d = (y + app->cam.view_z) * 256 - HEIGHT * 128 + draw->lh * 128;
-		ty = (((d * draw->tex->height) / draw->lh) / 256) % draw->tex->height;
-		if (ty < 0)
-			ty += draw->tex->height;
-		px = ((uint32_t *)draw->tex->pixels)[ty * draw->tex->width + draw->tx];
-		fog_factor = fmax(1.0 / (1.0 + 0.25 * app->z_buffer[x]), 0.4);
-		mlx_put_pixel(app->image, x, y++, ft_pixel((px & 0xFF) * fog_factor,
-				((px >> 8) & 0xFF) * fog_factor, ((px >> 16) & 0xFF)
-				* fog_factor, convert_pixel(px) & 0xFF));
+		if (i[1] >= 0 && i[1] < HEIGHT)
+		{
+			i[2] = (i[1] + app->cam.view_z) * 256 - HEIGHT * 128 + i[0] * 128;
+			i[3] = ((i[2] * dr->tex->height) / i[0]) >> 8;
+			i[3] = (i[3] + dr->tex->height) % dr->tex->height;
+			p[1] = p[0] + (i[1] * app->image->width + x) * 4;
+			px = tpx[i[3] * dr->tex->width + dr->tx];
+			p[1][0] = (px & 0xFF) * f[0];
+			p[1][1] = ((px >> 8) & 0xFF) * f[0];
+			p[1][2] = ((px >> 16) & 0xFF) * f[0];
+		}
 	}
 }

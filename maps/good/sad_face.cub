@@ -1,7 +1,7 @@
-NO ./textures/sad.png
-SO ./textures/sad.png
-WE ./textures/sad.png
-EA ./textures/sad.png
+NO ./textures/sad3.png
+SO ./textures/sad2.png
+WE ./textures/sad4.png
+EA ./textures/sad1.png
 
 C 53,41,34
 F 5,33,27
