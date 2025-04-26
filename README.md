@@ -1,8 +1,11 @@
 # cub3D
 
 <p align="center">
-  <img src="cub3d.jpg" alt="cub3D" style="width:60%; margin:auto;" />
+  <a href="https://youtu.be/M5QY2_8704o">
+    <img src="https://img.youtube.com/vi/M5QY2_8704o/0.jpg" alt="Ver video en YouTube">
+  </a>
 </p>
+
 
 ## Mandatory Part
 
