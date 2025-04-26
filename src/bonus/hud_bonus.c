@@ -6,13 +6,19 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 19:05:57 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 21:55:21 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:29:47 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
-// Attack parameters
+/* ************************************************************************** */
+/*                                                                            */
+/*   Determine attack animation frame range and delay based on weapon mode.   */
+/*   - If alt_animation: frames 11–15; else frames 3–7.                       */
+/*   - Delay between frames set to 0.05s.                                     */
+/*                                                                            */
+/* ************************************************************************** */
 static void	weapon_attack_params(const t_weapon *w,
 		int *start,
 		int *end,
@@ -31,7 +37,13 @@ static void	weapon_attack_params(const t_weapon *w,
 	*delay = 0.05;
 }
 
-// Idle parameters
+/* ************************************************************************** */
+/*                                                                            */
+/*   Determine idle animation frame range and delay based on weapon mode.     */
+/*   - If alt_animation: frames 8–10; else frames 0–2.                        */
+/*   - Delay between frames set to 0.1s.                                      */
+/*                                                                            */
+/* ************************************************************************** */
 static void	weapon_idle_params(const t_weapon *w,
 		int *start,
 		int *end,
@@ -50,7 +62,13 @@ static void	weapon_idle_params(const t_weapon *w,
 	*delay = 0.1;
 }
 
-// Compute how many steps to advance
+/* ************************************************************************** */
+/*                                                                            */
+/*   Compute number of animation steps to advance this frame.                 */
+/*   - steps = floor(frame_timer / delay).                                    */
+/*   - frame_timer wrapped modulo delay for leftover time.                    */
+/*                                                                            */
+/* ************************************************************************** */
 static int	weapon_compute_steps(t_weapon *w, double delay)
 {
 	int	steps;
@@ -60,7 +78,15 @@ static int	weapon_compute_steps(t_weapon *w, double delay)
 	return (steps);
 }
 
-// Advance frames loop; returns true if attack ended
+/* ************************************************************************** */
+/*                                                                            */
+/*   Advance current_frame by steps within [start,end] loop.                  */
+/*   - If current_frame exceeds end:                                          */
+/*       • If attacking, stop attack, set to end, and return ended=true.      */
+/*       • Else wrap to start.                                                */
+/*   - Returns true if an attack animation just ended.                        */
+/*                                                                            */
+/* ************************************************************************** */
 static bool	weapon_advance_loop(t_weapon *w, int start, int end, int steps)
 {
 	bool	ended;
@@ -76,7 +102,7 @@ static bool	weapon_advance_loop(t_weapon *w, int start, int end, int steps)
 			if (w->is_attacking)
 			{
 				w->is_attacking = false;
-				w->current_frame = start;
+				w->current_frame = end;
 				ended = true;
 			}
 			else
@@ -87,8 +113,17 @@ static bool	weapon_advance_loop(t_weapon *w, int start, int end, int steps)
 	}
 	return (ended);
 }
-//update_weapon_animation
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Update weapon animation each frame:                                      */
+/*   - Initialize weapon state if needed.                                     */
+/*   - Increment frame_timer by delta_time.                                   */
+/*   - Select params (attack or idle) based on is_attacking.                  */
+/*   - Clamp current_frame to selected range.                                 */
+/*   - Advance frames using computed steps; reset timer if attack ended.      */
+/*                                                                            */
+/* ************************************************************************** */
 void	update_weapon_animation(t_app *app, double delta_time)
 {
 	t_weapon	*w;

@@ -6,12 +6,21 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 21:47:45 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 21:55:04 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:17:08 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Initializes weapon-related variables if not already initialized.         */
+/*                                                                            */
+/*   - Sets the total number of idle and attack frames for the weapon.        */
+/*   - Initializes alternate animation flag to false.                         */
+/*   - Marks the weapon as initialized to prevent reinitialization.           */
+/*                                                                            */
+/* ************************************************************************** */
 void	weapon_initialize(t_weapon *w, bool *inited)
 {
 	if (!*inited)
@@ -23,6 +32,16 @@ void	weapon_initialize(t_weapon *w, bool *inited)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Initializes drawing data for the weapon texture rendering.               */
+/*                                                                            */
+/*   - Computes the rendered width and height based on the weapon's texture.  */
+/*   - Calculates the offsets for centering the weapon on the screen.         */
+/*   - Calculates texture sub-region dimensions and starting coordinates for  */
+/*     animation frames.                                                      */
+/*                                                                            */
+/* ************************************************************************** */
 static void	init_draw_data(t_app *app, t_draw_data *d)
 {
 	t_weapon	*w;
@@ -45,7 +64,18 @@ static void	init_draw_data(t_app *app, t_draw_data *d)
 	d->st_y = (w->current_frame / COLS) * d->hgt;
 }
 
-static void	draw_pixel(t_app *app, t_draw_data *d,
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws a single pixel of the weapon texture onto the screen.              */
+/*                                                                            */
+/*   - Uses the pixel data from the weapon texture to select the color.       */
+/*   - Converts the texture's pixel color to the screen's color format.       */
+/*   - Only draws non-transparent pixels (alpha value is non-zero).           */
+/*   - Places the pixel at the correct position on the screen based on the    */
+/*     calculated offsets.                                                    */
+/*                                                                            */
+/* ************************************************************************** */
+static void	draw_weapon_pixel(t_app *app, t_draw_data *d,
 		int x, int y)
 {
 	t_weapon	*w;
@@ -67,7 +97,17 @@ static void	draw_pixel(t_app *app, t_draw_data *d,
 			convert_pixel(color));
 }
 
-static void	render_loop(t_app *app, t_draw_data *d)
+/* ************************************************************************** */
+/*                                                                            */
+/*   Loops over all pixels in the weapon sprite and draws them on the screen. */
+/*                                                                            */
+/*   - Loops through each pixel's coordinates in both X and Y directions.     */
+/*   - Calls `draw_pixel()` to draw each valid pixel in the screen area.      */
+/*   - Ensures the weapon is drawn within the screen boundaries (both X and   */
+/*     Y offsets are respected).                                              */
+/*                                                                            */
+/* ************************************************************************** */
+static void	render_weapon_loop(t_app *app, t_draw_data *d)
 {
 	int	x;
 	int	y;
@@ -81,7 +121,7 @@ static void	render_loop(t_app *app, t_draw_data *d)
 			while (x < d->sprite_width)
 			{
 				if (d->offset_x + x >= 0 && d->offset_x + x < WIDTH)
-					draw_pixel(app, d, x, y);
+					draw_weapon_pixel(app, d, x, y);
 				x++;
 			}
 		}
@@ -89,6 +129,15 @@ static void	render_loop(t_app *app, t_draw_data *d)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Renders the weapon preparing drawing data and invoking the render loop.  */
+/*                                                                            */
+/*   - Initializes the drawing data for the weapon.                           */
+/*   - Calls `render_loop()` to perform the pixel-by-pixel drawing.           */
+/*   - Ensures the weapon texture is valid before rendering.                  */
+/*                                                                            */
+/* ************************************************************************** */
 void	render_weapon(t_app *app)
 {
 	t_weapon	*w;
@@ -98,5 +147,5 @@ void	render_weapon(t_app *app)
 	if (!w->texture)
 		return ;
 	init_draw_data(app, &d);
-	render_loop(app, &d);
+	render_weapon_loop(app, &d);
 }

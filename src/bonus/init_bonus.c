@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 12:48:06 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 11:01:47 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:29:45 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,24 +29,12 @@ int	init_app_struct(t_app *app, char **lines, int line_count)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Initializes a ray for the given screen column (x).                       */
-/*                                                                            */
-/*   - Computes `camx`, which represents the camera's x-coordinate in        */
-/*     normalized device coordinates (ranging from -1 to 1).                  */
-/*     Formula: camx = 2 * x / WIDTH - 1                                      */
-/*                                                                            */
-/*   - Calculates the ray direction `raydir` using the camera direction       */
-/*     (`dir`) and plane (`plane`):                                           */
-/*       raydir.x = dir.x + plane.x * camx                                    */
-/*       raydir.y = dir.y + plane.y * camx                                    */
-/*                                                                            */
-/*   - Determines `map_x` and `map_y`, which are the integer coordinates      */
-/*     of the current grid cell (truncated from `pos`).                       */
-/*                                                                            */
-/*   - Computes `deltadist`, the distance the ray travels between grid        */
-/*     lines in each axis. It is calculated as:                               */
-/*       deltadist.x = |raydir_modulus / raydir.x|                            */
-/*       deltadist.y = |raydir_modulus / raydir.y|                            */
+/*   Prepares a ray for grid DDA:                                             */
+/*   - camx = 2*x/WIDTH - 1: normalized device x in [-1,1].                   */
+/*   - raydir = cam.dir + cam.plane * camx: compute ray direction.            */
+/*   - map_x,map_y = integer cell of camera position.                         */
+/*   - raydir_mod = length of raydir vector.                                  */
+/*   - deltadist.x/y = abs(raydir_mod / raydir.x/y) for DDA stepping.         */
 /*                                                                            */
 /* ************************************************************************** */
 void	init_ray(t_app *app, int x, t_ray *ray)
@@ -65,15 +53,10 @@ void	init_ray(t_app *app, int x, t_ray *ray)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Initializes a collision structure (`t_collision`) for a given position.  */
-/*                                                                            */
-/*   - The collision system considers the player as a circular shape with a   */
-/*     radius `COLLISION_RADIUS`.                                             */
-/*   - This function calculates the bounding box around the circle to check   */
-/*     for potential collisions with walls.                                   */
-/*   - The bounding box is defined by:                                        */
-/*       - `min_i` and `max_i`: vertical range of tiles to check.             */
-/*       - `min_j` and `max_j`: horizontal range of tiles to check.           */
+/*   Sets up collision bounds for a circle at (new_x,new_y):                  */
+/*   - r = COLLISION_RADIUS for player circle.                                */
+/*   - min_i/max_i, min_j/max_j = floor/ceil of pos ± r to cover tiles.       */
+/*   - These define the grid cells to check for collisions.                   */
 /*                                                                            */
 /* ************************************************************************** */
 void	init_collision(t_collision *c, double new_x, double new_y)
@@ -88,6 +71,15 @@ void	init_collision(t_collision *c, double new_x, double new_y)
 	c->max_j = (int)ceil(new_x + r);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Adds a new enemy at map cell (i,j):                                      */
+/*   - Increments enemy_count and reallocates the enemies array.              */
+/*   - Sets pos to cell center (j+0.5,i+0.5), speed, active flag, radius,     */
+/*     and resets animation timers.                                           */
+/*   - Replaces map cell with '0' to clear spawn marker.                      */
+/*                                                                            */
+/* ************************************************************************** */
 void	init_enemy(t_game *g, int i, int j)
 {
 	g->enemy_count++;
@@ -104,6 +96,14 @@ void	init_enemy(t_game *g, int i, int j)
 	g->map[i][j] = '0';
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Adds a new door at map cell (i,j):                                       */
+/*   - Increments door_count and reallocates the doors array.                 */
+/*   - Initializes x, y, orientation, is_open=false, open_offset, and timer.  */
+/*   - Sets map cell char to c to mark door in the map.                       */
+/*                                                                            */
+/* ************************************************************************** */
 void	init_door(t_game *g, int i, int j, char c)
 {
 	g->door_count++;

@@ -6,12 +6,21 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 11:36:39 by victor            #+#    #+#             */
-/*   Updated: 2025/04/24 23:26:55 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 12:45:15 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws the player indicator on the minimap.                               */
+/*                                                                            */
+/*   - Puts a green pixel at the center (MINI_X, MINI_Y).                     */
+/*   - Draws a vertical white line below.                                     */
+/*   - Draws two diagonal white lines to the sides forming a "∧" shape.       */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_player_indicator(t_app *app)
 {
 	int	i;
@@ -28,6 +37,15 @@ static void	draw_player_indicator(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws an enemy on the minimap based on its relative position.            */
+/*                                                                            */
+/*   - Converts relative enemy position into minimap pixel coordinates.       */
+/*   - Only draws pixels inside the minimap's circular radius.                */
+/*   - Enemies are shown as small red squares.                                */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_enemy(t_vec2 pos, t_app *app)
 {
 	int		dx;
@@ -50,6 +68,16 @@ static void	draw_enemy(t_vec2 pos, t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Calculates an enemy's position relative to the player, rotated to        */
+/*   match the player's view angle.                                           */
+/*                                                                            */
+/*   - Subtracts player position to get relative vector.                      */
+/*   - Applies a 2D rotation by given angle.                                  */
+/*   - Returns rotated coordinates in player view space.                      */
+/*                                                                            */
+/* ************************************************************************** */
 static t_vec2	calc_enemy_pos(t_enemy *e, t_app *app, double angle)
 {
 	t_vec2	rel_pos;
@@ -62,6 +90,14 @@ static t_vec2	calc_enemy_pos(t_enemy *e, t_app *app, double angle)
 	return (rotated);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draws all active enemies on the minimap.                                 */
+/*                                                                            */
+/*   - Computes rotation angle based on player direction.                     */
+/*   - Calculates each enemy's rotated position and draws it.                 */
+/*                                                                            */
+/* ************************************************************************** */
 void	draw_enemies(t_app *app)
 {
 	int		i;
@@ -79,6 +115,12 @@ void	draw_enemies(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Renders the entire minimap, including background, features, enemies,     */
+/*   and the player indicator.                                                */
+/*                                                                            */
+/* ************************************************************************** */
 void	render_minimap(t_app *app)
 {
 	draw_minimap_background(app);
