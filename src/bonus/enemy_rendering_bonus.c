@@ -6,12 +6,21 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 23:07:08 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 13:35:35 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:29:49 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Choose texture region for current enemy state or facing direction.       */
+/*   - For ATTACK, HIT, DEAD states: use row 4 and anim_frame as column.      */
+/*   - For MOVE state: pick column from direction lookup and set flip flag    */
+/*     for right-facing sprites.                                              */
+/*   - Set d->offset_x/y to select correct sprite in texture atlas.           */
+/*                                                                            */
+/* ************************************************************************** */
 static void	set_enemy_texture(t_draw_data *d, t_enemy *e,
 								bool *flip, int *col)
 {
@@ -36,6 +45,14 @@ static void	set_enemy_texture(t_draw_data *d, t_enemy *e,
 	d->offset_y = e->anim_frame * d->hgt;
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Initialize drawing parameters for one enemy sprite.                      */
+/*   - sprite_height = abs(HEIGHT / transform_y) for perspective scaling.     */
+/*   - Compute start/end X and Y on screen, adjusting for camera view_z.      */
+/*   - Store texture dimensions and per-frame width/height in d.              */
+/*                                                                            */
+/* ************************************************************************** */
 static void	init_draw_data(t_app *app, t_draw_data *d,
 		double transform_y, int screen_x)
 {
@@ -52,6 +69,15 @@ static void	init_draw_data(t_app *app, t_draw_data *d,
 	d->transform_y = transform_y;
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draw a single vertical stripe of the enemy sprite.                       */
+/*   - Skip if off-screen or behind another object (z-buffer test).           */
+/*   - Map screen Y to texture V coordinate and X to U coordinate.            */
+/*   - Apply horizontal flip if needed.                                       */
+/*   - Sample pixel, apply hit flash, and draw non-transparent pixels.        */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_enemy_stripe(t_app *app, t_enemy *e,
 								t_draw_data *d, int x)
 {
@@ -82,6 +108,14 @@ static void	draw_enemy_stripe(t_app *app, t_enemy *e,
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Render full enemy sprite by drawing stripes from st_x to end_x.          */
+/*   - Calls init_draw_data to set up d.                                      */
+/*   - Calls set_enemy_texture to pick correct atlas frame.                   */
+/*   - Iterates each X column and invokes draw_enemy_stripe.                  */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_enemy_sprite(t_app *app, t_enemy *e,
 							int screen_x, double transform_y)
 {
@@ -97,6 +131,16 @@ static void	draw_enemy_sprite(t_app *app, t_enemy *e,
 		draw_enemy_stripe(app, e, &d, x);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Project enemy into camera space and render if in front.                  */
+/*   - Compute relative position rel = enemy.pos - cam.pos.                   */
+/*   - Apply camera matrix inverse det to get transform.x/y.                  */
+/*   - Skip if transform.y <= 0 (behind camera).                              */
+/*   - screen_x = (W/2)*(1 + transform.x/transform.y).                        */
+/*   - Call draw_enemy_sprite with computed screen_x and depth.               */
+/*                                                                            */
+/* ************************************************************************** */
 void	render_enemy(t_app *app, t_enemy *e)
 {
 	t_vec2	rel;

@@ -1,10 +1,10 @@
-NO ./textures/wall.png
-SO ./textures/wall.png
-WE ./textures/brick.png
-EA ./textures/brick.png
+NO ./textures/creep.png
+SO ./textures/creep1.png
+WE ./textures/creep2.png
+EA ./textures/creep2.png
 
-C 35,19,73
-F 15,6,40
+C 17,17,15
+F 19,16,12
 
 111111111111111
 111111000111111

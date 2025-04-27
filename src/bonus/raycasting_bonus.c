@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 13:50:51 by victor            #+#    #+#             */
-/*   Updated: 2025/04/23 11:12:36 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:28:38 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,13 @@
 /*   - The step `ret.x` determines whether the ray moves left (-1) or right   */
 /*     (+1) in the x-direction, and similarly for `ret.y` in the y-direction. */
 /*                                                                            */
-/*   - The initial `sidedist` is calculated using:                            */
-/*       sidedist_x = (map_x + 1 - pos_x) * deltadist_x  (if moving right)    */
-/*       sidedist_x = (pos_x - map_x) * deltadist_x  (if moving left)         */
-/*     Similarly for `sidedist_y`.                                            */
+/*   - The initial `sidedist` represents the distance from the ray's origin   */
+/*     to the first x-side or y-side. It is calculated as:                    */
+/*                                                                            */
+/*       sidedist_x = (map_x + 1 - pos_x) * deltadist_x   (moving right)      */
+/*       sidedist_x = (pos_x - map_x) * deltadist_x       (moving left)       */
+/*                                                                            */
+/*     and similarly for `sidedist_y`.                                        */
 /*                                                                            */
 /* ************************************************************************** */
 static t_vec2	init_step(double pos, int map, double deltadist, double raydir)
@@ -44,21 +47,20 @@ static t_vec2	init_step(double pos, int map, double deltadist, double raydir)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Implements the Digital Differential Analyzer (DDA) algorithm.            */
+/*   Advances the ray using the DDA (Digital Differential Analyzer) method.   */
 /*                                                                            */
-/*   - This algorithm finds the first intersection of the ray with a wall.    */
-/*   - The ray moves in discrete steps, choosing either the x or y direction  */
+/*   - At each step, the ray moves towards the next x-side or y-side,         */
 /*     depending on which `sidedist` is smaller.                              */
 /*                                                                            */
-/*   - If `sidedist.x < sidedist.y`, the ray moves in the x-direction:        */
+/*   - If `sidedist.x < sidedist.y`, the ray moves one square along x:        */
 /*       sidedist.x += deltadist.x                                            */
 /*       map_x += step_x                                                      */
 /*                                                                            */
-/*   - Otherwise, it moves in the y-direction:                                */
+/*   - Otherwise, the ray moves one square along y:                           */
 /*       sidedist.y += deltadist.y                                            */
 /*       map_y += step_y                                                      */
 /*                                                                            */
-/*   - This process repeats until a wall (`'1'`) is found or out of bounds.   */
+/*   - The side (0 for x, 1 for y) is stored to know later the wall direction.*/
 /*                                                                            */
 /* ************************************************************************** */
 static void	update_ray_position(t_ray *ray)
@@ -77,6 +79,14 @@ static void	update_ray_position(t_ray *ray)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Loops DDA steps until a wall or a door collision is found.               */
+/*                                                                            */
+/*   - Keeps updating the ray position with `update_ray_position()`.          */
+/*   - Stops when hitting a wall ('1') or a valid door ('2' or '3').          */
+/*                                                                            */
+/* ************************************************************************** */
 static void	dda_loop(t_app *app, t_ray *ray)
 {
 	while (1)
@@ -93,22 +103,24 @@ static void	dda_loop(t_app *app, t_ray *ray)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Executes the full DDA (raycasting) routine for a single ray.             */
+/*  Digital Differential Analyzer (DDA) for ray traversal.                    */
 /*                                                                            */
-/*   - Calls `init_step()` to determine stepping direction and initial        */
-/*     side distances.                                                        */
+/*   - Initializes step directions and side distances using `init_step()`.    */
+/*   - Traces the ray through the map using `dda_loop()`.                     */
+/*   - Calculates the perpendicular wall distance for correct perspective.    */
 /*                                                                            */
-/*   - Runs `dda_loop()` to trace the ray through the grid until it hits      */
-/*     a wall.                                                                */
+/*   Perpendicular wall distance formula:                                     */
 /*                                                                            */
-/*   - Computes the perpendicular distance to the wall (`perpwalldist`),      */
-/*     which is essential for perspective projection.                         */
+/*     If the wall was hit along x:                                           */
+/*       perpwalldist = (sidedist_x - deltadist_x) / |raydir|                 */
 /*                                                                            */
-/*     Formula:                                                               */
-/*       perpwalldist = (sidedist_x - deltadist_x)/raydir_mod  (if hit		  */
-/*       was on x-side)														  */
-/*       perpwalldist = (sidedist_y - deltadist_y)/raydir_mod  (if hit		  */
-/*       was on y-side)														  */
+/*     If the wall was hit along y:                                           */
+/*       perpwalldist = (sidedist_y - deltadist_y) / |raydir|                 */
+/*                                                                            */
+/*   where:                                                                   */
+/*     - sidedist is the accumulated distance to the wall side.               */
+/*     - deltadist is the distance between sides in that axis.                */
+/*     - |raydir| is the ray's original direction vector magnitude.           */
 /*                                                                            */
 /* ************************************************************************** */
 void	do_dda(t_app *app, t_ray *ray)

@@ -6,12 +6,21 @@
 /*   By: aescande <aescande@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 22:25:21 by aescande          #+#    #+#             */
-/*   Updated: 2025/04/25 21:46:46 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 12:51:19 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Handles crouching when holding the left control key.                     */
+/*                                                                            */
+/*   - Raises the camera when starting to crouch.                             */
+/*   - Lowers the camera back when releasing the key.                         */
+/*   - Halves the movement speed while crouching.                             */
+/*                                                                            */
+/* ************************************************************************** */
 void	get_down(t_app *app, double *speed)
 {
 	static int	is_down = 0;
@@ -30,14 +39,18 @@ void	get_down(t_app *app, double *speed)
 		*speed /= 2;
 }
 
-/*
- *
- * Here the formula y = y0 + v0*t + 1/2*g*t² is being used.
- * As we want to subtract y to view_z when going up and then
- * suming up again, we get the right doing -v/fabs(v) = -+1.
- *
- */
-
+/* ************************************************************************** */
+/*                                                                            */
+/*   Handles jumping when pressing the spacebar.                              */
+/*                                                                            */
+/*   Here the formula y = y0 + v0*t + 1/2*g*t² is being used.                 */
+/*   As we want to subtract y to view_z when going up and then                */
+/*   suming up again, we get the right doing -v/fabs(v) = -+1.                */
+/*                                                                            */
+/*   - Negative initial velocity to move upward, positive to fall down.       */
+/*   - Stops the jump when the peak height is reached.                        */
+/*                                                                            */
+/* ************************************************************************** */
 void	jump(t_app *app)
 {
 	static t_vec2	j = {0, 0};
@@ -66,6 +79,14 @@ void	jump(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Applies fog effect based on distance.                                    */
+/*                                                                            */
+/*   - Darkens the given color according to the distance and fog density.     */
+/*   - Ensures the fog factor does not fall below a minimum threshold.        */
+/*                                                                            */
+/* ************************************************************************** */
 uint32_t	fog(const int *color, double r, double fog_dens, double min_factor)
 {
 	double	fog_factor;

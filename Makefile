@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/25 21:51:11 by victor           ###   ########.fr        #
+#    Updated: 2025/04/26 22:02:54 by victor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@ INCLUDE      = -Iinc -Ilibft -IMLX42/include/MLX42
 BONUS_INCLUDE = -Iinc/bonus
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -g -fsanitize=address -MMD -MP $(INCLUDE) 
+CFLAGS  = -Wall -Wextra -Werror -MMD -MP $(INCLUDE) -g -fsanitize=address
 LDFLAGS = $(LIBFT) $(MINI) -lglfw -lm
 
 # Colors for messages
@@ -76,9 +76,9 @@ RESET  = \033[0m
 
 all: prepare_mlx libs mlx $(NAME)
 
-# Prepares MLX42 (if .git dir doesn't exists, then it's cloned)
+# Prepares MLX42 (dir doesn't exists, then it's cloned)
 prepare_mlx:
-	@if [ ! -d "MLX42/.git" ]; then \
+	@if [ ! -d "MLX42" ]; then \
 		echo "$(RESET)Cloning MLX42..."; \
 		git clone https://github.com/codam-coding-college/MLX42.git MLX42; \
 	fi
@@ -121,7 +121,7 @@ $(OBJ_DIR_BONUS):
 
 clean:
 	@make -C libft clean
-	@make -C MLX42/build clean
+	@if [ -d MLX42/build ]; then make -C MLX42/build clean; fi
 	rm -rf $(OBJ_DIR)
 	rm -rf $(OBJ_DIR_BONUS)
 	@echo "$(RED)Object files deleted.$(RESET)"

@@ -6,7 +6,7 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:23:15 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 00:37:29 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 13:00:58 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Computes the necessary parameters for drawing the texture.              */
+/*   Computes the vertical drawing boundaries for a wall slice.               */
 /*                                                                            */
-/*   - First, it calculates the wall's intersection X-coordinate using the  */
-/*     `get_wall_x()` function.                                              */
-/*   - Then, it selects the correct texture based on the ray's side and      */
-/*     direction using `select_texture()`.                                    */
+/*   - The line height (`lh`) is inversely proportional to the perpendicular  */
+/*     wall distance:                                                         */
+/*        lh = HEIGHT / perpwalldist                                          */
+/*     So, closer walls appear taller, and farther walls shorter.             */
+/*                                                                            */
+/*   - The starting (`ds`) and ending (`de`) pixel coordinates are then       */
+/*     computed to vertically center the wall slice on the screen, adjusted   */
+/*     by the camera's vertical offset (`view_z`) to allow looking up/down.   */
+/*                                                                            */
+/*   - We clamp `ds` and `de` to stay inside the screen bounds.               */
 /*                                                                            */
 /* ************************************************************************** */
 static void	compute_draw_boundaries(t_draw *draw, t_ray *ray, t_app *app)
@@ -58,12 +64,16 @@ static void	render_column(t_app *app, int x, t_ray *ray)
 
 /* ************************************************************************** */
 /*                                                                            */
-/*   Renders the entire scene.                                               */
+/*   Sorts enemies in descending order of distance from the player.           */
 /*                                                                            */
-/*   - Loops over every column (X-coordinate) in the screen.                */
-/*   - For each column, it initializes the ray, performs the DDA (raycasting),*/
-/*     and renders the corresponding column.                                  */
-/*   - The function calls `render_column()` to draw each vertical line.      */
+/*   - Uses a simple bubble sort (acceptable since enemy count is small).     */
+/*                                                                            */
+/*   - Distance is calculated with the Euclidean distance formula:            */
+/*        distance = sqrt((x2 - x1)^2 + (y2 - y1)^2)                          */
+/*      using `hypot()`.                                                      */
+/*                                                                            */
+/*   - This ensures enemies farther away are drawn first, and closer ones     */
+/*     later, preventing visual glitches (painters algorithm).                */
 /*                                                                            */
 /* ************************************************************************** */
 static void	sort_enemies_by_distance(t_enemy **enemies, int count, t_app *a)
@@ -91,6 +101,18 @@ static void	sort_enemies_by_distance(t_enemy **enemies, int count, t_app *a)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Sorts enemies by distance and renders them in correct order.             */
+/*                                                                            */
+/*   - Allocates a temporary array to sort pointers to enemies without        */
+/*     modifying the original enemy array.                                    */
+/*                                                                            */
+/*   - Only active enemies (`is_active == 1`) are rendered.                   */
+/*                                                                            */
+/*   - After rendering, the temporary array is freed.                         */
+/*                                                                            */
+/* ************************************************************************** */
 static void	sort_and_render(t_app *a)
 {
 	t_enemy	**sorted;
@@ -110,6 +132,21 @@ static void	sort_and_render(t_app *a)
 	free(sorted);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Renders the full scene for the current frame.                            */
+/*                                                                            */
+/*   - Steps:                                                                 */
+/*      1. Draws the background (sky and floor).                              */
+/*      2. For each column (screen X-coordinate):                             */
+/*          - Initializes a ray for that column (`init_ray`).                 */
+/*          - Performs DDA to detect wall hit (`do_dda`).                     */
+/*          - Renders the vertical slice of wall (`render_column`).           */
+/*      3. Draws the minimap on top.                                          */
+/*      4. Renders enemies (sorted by distance).                              */
+/*      5. Renders player's weapon and damage feedback effects.               */
+/*                                                                            */
+/* ************************************************************************** */
 void	render_scene(void *param)
 {
 	t_app	*a;

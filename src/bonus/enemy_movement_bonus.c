@@ -6,12 +6,24 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 22:23:00 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 14:26:29 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 12:31:48 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Compute push vector to separate enemy and camera on collision overlap.   */
+/*   - ax,ay: vector from camera to enemy.                                    */
+/*   - dist_sq: squared distance.                                             */
+/*   - min_dist: sum of radii for no-overlap.                                 */
+/*   - If dist_sq < min_dist² and >0:                                         */
+/*       • dist = sqrt(dist_sq).                                              */
+/*       • push = unit(ax,ay)*(min_dist–dist+0.001).                          */
+/*   - Else push = (0,0).                                                     */
+/*                                                                            */
+/* ************************************************************************** */
 static void	calculate_push(t_enemy *e, t_camera *cam,
 		double *push_x, double *push_y)
 {
@@ -38,6 +50,16 @@ static void	calculate_push(t_enemy *e, t_camera *cam,
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Resolve enemy vs camera collision by applying push with collision check. */
+/*   - Get push_x,push_y from calculate_push.                                 */
+/*   - If non-zero push:                                                      */
+/*       • Save original pos.                                                 */
+/*       • Move enemy by push.                                                */
+/*       • If collides with map, revert enemy pos and push camera back.       */
+/*                                                                            */
+/* ************************************************************************** */
 void	handle_enemy_collision(t_app *app, t_enemy *e, t_camera *cam)
 {
 	double	push_x;
@@ -62,6 +84,15 @@ void	handle_enemy_collision(t_app *app, t_enemy *e, t_camera *cam)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Move enemy toward camera within range limits.                            */
+/*   - Compute dx,dy and distance to camera.                                  */
+/*   - Skip if distance <1 or >10 units.                                      */
+/*   - Compute move_x,move_y using facing_angle and speed*dt.                 */
+/*   - If new pos not colliding, apply move.                                  */
+/*                                                                            */
+/* ************************************************************************** */
 void	move_towards_cam(t_app *app, t_enemy *e, t_camera *cam, double dt)
 {
 	double	dx;
@@ -84,6 +115,15 @@ void	move_towards_cam(t_app *app, t_enemy *e, t_camera *cam, double dt)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Map a signed angle difference to one of eight facing directions.         */
+/*   - FRONT if |angle_diff| ≤ π/8.                                           */
+/*   - FRONT_RIGHT if in (π/8,3π/8], RIGHT if in (3π/8,5π/8],                 */
+/*     BACK_RIGHT if in (5π/8,7π/8], BACK if |angle_diff|>7π/8,               */
+/*     BACK_LEFT, LEFT, FRONT_LEFT otherwise in respective octants.           */
+/*                                                                            */
+/* ************************************************************************** */
 static void	determine_enemy_direction(t_enemy *enemy, double angle_diff)
 {
 	if (angle_diff > -M_PI / 8 && angle_diff <= M_PI / 8)
@@ -104,6 +144,17 @@ static void	determine_enemy_direction(t_enemy *enemy, double angle_diff)
 		enemy->e_dir = FRONT_LEFT;
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Update enemy facing angle and facing direction toward the camera.        */
+/*   - target = atan2(cam.pos - enemy.pos).                                   */
+/*   - On first call, set facing_angle = target and mark initialized.         */
+/*   - max_turn = delta_time radians allowed this frame.                      */
+/*   - Compute minimal angle_diff ∈(–π,π] via fmod adjustment.                */
+/*   - Clamp angle_diff to ±max_turn and apply to facing_angle.               */
+/*   - Recompute angle_diff and determine e_dir via helper.                   */
+/*                                                                            */
+/* ************************************************************************** */
 void	update_enemy_dir(t_app *app, t_enemy *enemy, double delta_time)
 {
 	const double	target = atan2(app->cam.pos.y - enemy->pos_y,

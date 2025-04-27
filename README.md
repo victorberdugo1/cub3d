@@ -1,8 +1,9 @@
 # cub3D
 
 <p align="center">
-  <img src="cub3d.jpg" alt="cub3D" style="width:60%; margin:auto;" />
+<video src="https://github.com/user-attachments/assets/0e233f44-0c16-425f-a531-52519b08a03f" width=180/></video>
 </p>
+
 
 ## Mandatory Part
 

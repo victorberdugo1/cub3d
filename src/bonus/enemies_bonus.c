@@ -6,12 +6,20 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:53:46 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 13:41:43 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 12:16:53 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Manages red-screen flash timing after the player is hit.                 */
+/*   - If feedback is inactive, does nothing.                                 */
+/*   - Increments timer by dt while active.                                   */
+/*   - Deactivates feedback when timer exceeds duration.                      */
+/*                                                                            */
+/* ************************************************************************** */
 void	update_hit_feedback(t_app *app, double dt)
 {
 	if (!app->player_hit_feedback.active)
@@ -21,9 +29,14 @@ void	update_hit_feedback(t_app *app, double dt)
 		app->player_hit_feedback.active = false;
 }
 
-// -----------------------------------------------------------------------------
-// Mezcla dos colores 0xAARRGGBB con un alpha externo (0–255)
-// -----------------------------------------------------------------------------
+/* ************************************************************************** */
+/*                                                                            */
+/*   Blends two ARGB colors with a given alpha.                               */
+/*   - base and overlay are 0xAARRGGBB values.                                */
+/*   - alpha in [0,255] is strength of overlay.                               */
+/*   - Computes r,g,b = base*(1−a)+overlay*a; returns 0xFFRRGGBB.             */
+/*                                                                            */
+/* ************************************************************************** */
 static uint32_t	blend_colors(uint32_t base, uint32_t overlay, int alpha)
 {
 	float	a;
@@ -41,9 +54,15 @@ static uint32_t	blend_colors(uint32_t base, uint32_t overlay, int alpha)
 	return ((0xFF << 24) | (r << 16) | (g << 8) | b);
 }
 
-// -----------------------------------------------------------------------------
-// Dibuja un tintado rojo semitransparente sobre la imagen entera
-// -----------------------------------------------------------------------------
+/* ************************************************************************** */
+/*                                                                            */
+/*   Applies a red tint overlay to the entire image when hit.                 */
+/*   - Skips if no feedback active.                                           */
+/*   - prog = timer / duration gives fade progress.                           */
+/*   - alpha = (1 - prog) * 120 for overlay strength.                         */
+/*   - Blends each pixel with red_overlay using blend_colors.                 */
+/*                                                                            */
+/* ************************************************************************** */
 void	render_hit_feedback(t_app *app)
 {
 	int			alpha;
@@ -67,6 +86,13 @@ void	render_hit_feedback(t_app *app)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Updates all enemies each frame.                                          */
+/*   - Calls apply_hit_to_enemy to register hits on enemies.                  */
+/*   - For each active enemy, invokes update_enemy with camera and delta_time */
+/*                                                                            */
+/* ************************************************************************** */
 void	update_enemies(t_app *app, double delta_time)
 {
 	t_camera	*cam;
@@ -82,6 +108,14 @@ void	update_enemies(t_app *app, double delta_time)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Applies a hit flash effect to a single enemy color.                      */
+/*   - Increases red channel by 100 (clamped to 255).                         */
+/*   - Halves green and blue channels.                                        */
+/*   - Recombines channels into a 0xAARRGGBB color, preserving alpha.         */
+/*                                                                            */
+/* ************************************************************************** */
 void	apply_hit_flash(uint32_t *color, t_enemy *e)
 {
 	uint8_t	r;

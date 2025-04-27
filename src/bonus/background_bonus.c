@@ -6,12 +6,23 @@
 /*   By: victor <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 02:02:47 by victor            #+#    #+#             */
-/*   Updated: 2025/04/25 11:23:43 by victor           ###   ########.fr       */
+/*   Updated: 2025/04/26 20:26:07 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D_bonus.h"
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Detect rays near grid cell boundaries.                                   */
+/*   - edge_mask set if frac.x or frac.y is within 0.005 of 0 or 1.           */
+/*   - Uses a bitmask (|) to combine the four edge‐tests                      */
+/*   - r = H/(2*(H/2 - view_z - y)): maps screen y to ray distance scale.     */
+/*   - Darken base ceiling color by 20% for edges.                            */
+/*   - Apply fog(dark_c, r, 0.4, 0.2) for depth fade.                         */
+/*   - Returns true if an edge pixel was drawn, false otherwise.              */
+/*                                                                            */
+/* ************************************************************************** */
 static inline bool	handle_edge_case(t_app *app, int x, int y, t_vec2 frac)
 {
 	int		*c;
@@ -32,19 +43,31 @@ static inline bool	handle_edge_case(t_app *app, int x, int y, t_vec2 frac)
 	return (true);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Draw special ceiling panels with highlight zones.                        */
+/*   - Skip pixels not in the panel pattern lookup.                           */
+/*   - r = H/(2*(H/2 - view_z - y)): recompute depth scale.                   */
+/*   - If |dx-0.5|,|dy-0.5| < 0.3338, draw bright center (240,240,245).       */
+/*   - Else if max_dist < 0.4338, interpolate toward (235,235,240):           */
+/*       i = 1 - (max_dist - 0.3338)*10                                       */
+/*   - Apply fog(wht, r, 0.08, 0.2). Return true if drawn.                    */
+/*                                                                            */
+/* ************************************************************************** */
 static inline bool	handle_light_panel(t_app *a, const bool *pattern,
 		t_ceiling *d)
 {
-	double		r;
-	double		max_dist;
-	double		i;
-	static int	wht[3] = {240, 240, 245};
+	double	r;
+	double	max_dist;
+	double	i;
+	int		wht[3];
 
 	if (!pattern[d->col.i * 15 + d->col.j])
 		return (false);
-	r = HEIGHT / (2.0 * (HEIGHT / 2 - a->cam.view_z - d->y));
+	r = HEIGHT / (2.0 * fmax(HEIGHT / 2 - a->cam.view_z - d->y, 0.01));
 	if (fabs(d->col.dx - 0.5) < 0.3338 && fabs(d->col.dy - 0.5) < 0.3338)
-		return (mlx_put_pixel(a->image, d->x, d->y, fog(wht, r, 0.08, 0.2)), 1);
+		return (mlx_put_pixel(a->image, d->x, d->y,
+				fog((int [3]){240, 240, 245}, r, 0.08, 0.2)), true);
 	max_dist = fmax(fabs(d->col.dx - 0.5), fabs(d->col.dy - 0.5));
 	if (max_dist < 0.4338)
 	{
@@ -61,6 +84,16 @@ static inline bool	handle_light_panel(t_app *a, const bool *pattern,
 	return (false);
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Render ceiling per scanline using raycasting math.                       */
+/*   - r = H/(2*(H/2 - view_z - y)): vertical ray factor.                     */
+/*   - c = cam_x_table[x]: horizontal offset = 2x/WIDTH - 1.                  */
+/*   - world = pos + r*(dir + plane*c): compute hit point.                    */
+/*   - frac = fract(world): fractional offsets for effects.                   */
+/*   - Try edge highlight, then panel; else draw flat color with fog.         */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_ceiling(t_app *app, int y, const double *cam_x_table,
 		const bool light_panel[225])
 {
@@ -90,6 +123,13 @@ static void	draw_ceiling(t_app *app, int y, const double *cam_x_table,
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   Render floor per scanline using inverse projection.                      */
+/*   - horizon = H/2 - view_z; r = H/(2*(y - horizon)).                       */
+/*   - For each x, draw floor_color with fog(floor_color, r, 0.3, 0.2).       */
+/*                                                                            */
+/* ************************************************************************** */
 static void	draw_floor(t_app *app, int y)
 {
 	int		x;
@@ -106,6 +146,19 @@ static void	draw_floor(t_app *app, int y)
 	}
 }
 
+/* ************************************************************************** */
+/*                                                                            */
+/*   - Orchestrates ceiling and floor drawing across all scanlines.           */
+/*   - Uses static lookup tables for performance:                             */
+/*       sx[]     → per-x plane offsets                                       */
+/*       cy[]     → per-y depth scales                                        */
+/*       cam[]    → same as sx (for camera rays)                              */
+/*       light_panel[] → pattern mask for panels                              */
+/*   - view_offs_y[0] = horizon line in screen coords                         */
+/*   - view_offs_y[1,2] = parallax offsets based on camera position           */
+/*   - Loops y from 0 to H–1: draws ceiling if y < horizon, else floor.       */
+/*                                                                            */
+/* ************************************************************************** */
 void	ft_draw_background(t_app *app)
 {
 	static double	sx[WIDTH];
