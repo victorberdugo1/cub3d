@@ -64,6 +64,12 @@ You may use additional functions if justified, and organize bonus files using `_
 
 ---
 
+### Attachments
+
+Please download the attachments below:<br>
+[subject.pdf](./cube3D.pdf)
+
+
 ## Mandatory part
 
 ### Executable name
