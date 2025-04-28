@@ -64,139 +64,116 @@ You may use additional functions if justified, and organize bonus files using `_
 
 ---
 
-Mandatory part
-Executable name
-Check that the project compiles (with or without -fsanitize) when you execute the make. Format and check the executable name is cub3D (if not, see the invalid compilation flag at the end of the scale).
+## Mandatory part
 
-✅/❌
+### Executable name
+Check that the project compiles (with or without -fsanitize) when you execute the `make`. Format and check the executable name is `cub3D` (if not, see the invalid compilation flag at the end of the scale).
 
-Configuration file
+[**YES**](#)  |  [**NO**](#)
+
+### Configuration file
 Check that you can configure ALL the following elements in the configuration file. The formatting has to be as described in the subject:
 
-north texture path - NO
+- north texture path - NO
 
-south texture path - SO
+- south texture path - SO
 
-west texture path - WE
+- west texture path - WE
 
-east texture path - EA
+- east texture path - EA
 
-floor color - F
+- floor color - F
 
-ceiling color - C
+- ceiling color - C
 
-a map (respect the rules for the map configuration described in subject)
+- the map (respect the rules for the map configuration described in subject)
 
-Also, check that the program exits on error and exits properly when:
+Also, check that the program exits on error and exits properly when the configuration file is reconfigured (for example, an invalid path) or the program is launched with a filename that doesn’t end with `.cub` extension.
 
-the configuration file is reconfigured (for example, an invalid path)
+if not, the defense is over and use the appropriate flag incomplete work, crash...
 
-the program is launched with a filename that doesn’t end with .cub
+[**YES**](#)  |  [**NO**](#)
 
-if not, the deletes a user and use the appropriate flag (incomplete work, crash...)
 
-✅/❌
-
-Technical elements of the display
+### Technical elements of the display
 We’re going to check the technical elements of the display. Run it.
 
 Please try to execute the following test. If at least one fails, this means that no points will be awarded for this section.
 
-A window must open at launch of the program, managed through your in- / miniLibX educator
+- A window must open at launch of the program, It must stay open during the whole execution.
 
-A window respecting the window size rules
+- An image representing the inside of a maze must be displayed inside the window.
 
-Hide all or part of the window either by using another window or by using the screen's border, then minimize the window
+- Hide all or part of the window either by using another window or by using the screen's border, then minimize the window and maximize it back. in all cases, the content of the window must remain consistent
 
-Maximize it back: in all cases, the content of the window must remain consistent
+[**YES**](#)  |  [**NO**](#)
 
-✅/❌
 
-User basic events
+### User basic events
 In this section, we’re going to evaluate the program’s user generated events. Execute the 3 following tests. If at least one fails, this means that no points will be awarded for this section.
 
-Move to the next test...
+Move to the next test.
 
-Click the red cross at the top left of the window. The window must close and the program must exit cleanly
+- Click the red cross at the top left of the window. The window must close and the program must exit cleanly
 
-Press the ESC key. The window must close and the program must exit
+- Press the ESC key. The window must close and the program must exit Press another key, in the case of this test, we will accept Press any key to kill the program, for example, Q
 
-Press another key, in the case of this test, we will accept:
+- Press the four movement keys (we’ll accept WASD or ZQSD pair) In the order of your liking. Each key press must make the visible result on the window, such as a player's movement/reaction.
 
-Press any key to kill the program, for example, Q
+[**YES**](#)  |  [**NO**](#)
 
-Press the four movement keys (we’ll accept WASD or ZQSD pair) In the order of your liking. Each key press must make the visible result on the window, such as a player's movement/reaction.
 
-✅/❌
-
-Movements
+### Movements
 In this section, we will evaluate the implementation of the player's movements. Execute the 5 following tests, if at least one fails, this means that no points will be awarded for this section.
 
-The player can rotate the camera on the first image of the project’s description
+- The player's spawning orientation on the first image must be accordace with the configuration file, test for each cardinal orientation (N, S, E, W).
 
-Press A or D (or Q or D...)
+- The player’s view can rotate to the left and to the right as if the player’s head was moving
 
-The player’s view can rotate to the left and to the right as if the player’s head was moving
+- Press W (or Z) then S. The player’s view must go forward and then backward in a straight line
 
-Press W (or Z on Fr)
+- Press A (or Q) then D. The player’s view must go to the left and then to the right in a straight line
 
-The player’s view must go forward and then backward in the straight line
+- During those four movements, was the display smooth? Were we seen in the game "playable" as it is?
 
-Press A or D (then D...)
+[**YES**](#)  |  [**NO**](#)
 
-The player’s view must go to the left and then to the right line
 
-During those four movements, was the display smooth?
-
-Were we seen in the game "playable" as it is?
-
-✅/❌
-
-Walls
+### Walls
 In this section, we’ll evaluate the walls in the maze. Execute the 4 following tests. If at least one fails, this means that no points will be awarded for this section.
 
-The walls’ paints vary depending on which compass point the wall is facing (short, short, east, west)
+- The walls’s texture vary depending on which compass point the wall is facing (north, south, east, west) visible and correct
 
-The north, south, east and west perspective must be:
+- Check that if you modify the path of a wall texture in the configuration file a modified file reloaded texture when the program is launched
 
-visible and correct
+- Also check that if you use non-existent path it raises an error
 
-Check that if you modify the path of a wall texture in the configuration file
+- Check that the floor and ceiling colors are well handled when you modify them in the configuration file
 
-a modified file reloaded texture when the program is launched
+[**YES**](#)  |  [**NO**](#)
 
-Also check that if you use non-existent path it raises an error
 
-Check that the floor and ceiling colors are well handled when you modify them in the configuration file
-
-✅/❌
-
-Error management
+### Error management
 In this section, we will evaluate the program’s error management and reliability. Execute the 4 following tests. If at least one fails, this means that no points will be awarded for this section.
 
-Run the program using numerous arguments and random data
+- Run the program using numerous arguments and random data. Even if the program doesn’t analyze any arguments, it must not crash Check that those arguments don’t alternate or create unhandled errors
 
-Even if the program doesn’t analyze any arguments, it must not crash
+- Check that there are no memory leaks. You can use `top` or `leaks` command in another shell to monitor the memory use is stable. the memory must not increase each time a new action is made
 
-Check that those arguments don’t alternate or create unchecked errors
+- Roll either your arm or your face on the keyboard. The program must not change behavior and it must stay functional
 
-Check that there are no memory leaks. You can use:
+- Modify the map, the program must not show strange behaviors Example: non-closed file map is well configured, if not must raise an error.
 
-leaks command in another shell to monitor the memory
+[**YES**](#)  |  [**NO**](#)
 
-With valgrind, check the memory: memory must not increase each time a new action is made
 
-Reload your own or your leaks on the keyboard. The program must not change behavior and it must stay functional
+## Bonus
+We will look at your bonuses if and only if your mandatory part is excellent. This means that you must complete the mandatory part perfectly in order to even move to the bonus. The mandatory part has been entirely and perfectly done, and the error management handles unexpected or bad usage. In case all the mandatory points were not passed during the defense, bonus points must be totally ignored.
 
-Modify the map, the program must not show strange behaviors Example: non-closed file map is well configured, if not must raise an error.
-
-✅/❌
-
-Bonus
-We will look at your bonuses (if and only if your mandatory part is excellent). This means that you must complete the mandatory part perfectly in order to even move to the bonus.
-
-Remember not to fix a Bonus: even in case of violation of the rules, if the mandatory part is not correct the points will stay at the former bonus level totally ignored.
-
-When I’ll be older I’ll be John Carmack
+### When I’ll be older I’ll be John Carmack
 
 Look at the subject bonus part and add one point for each bonus implemented and fully functional.
+
+`
+🟩🟩🟩🟩🟩  5/5
+`
