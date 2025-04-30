@@ -73,7 +73,7 @@ Please download the attachments below:<br>
 ## Mandatory part
 
 ### Executable name
-Check that the project compiles (with or without -fsanitize) when you execute the `make`. Format and check the executable name is `cub3D` (if not, see the invalid compilation flag at the end of the scale).
+Check that the project compiles (without re-link) when you execute the `make` command that the executable name is `cub3D` if not, use the invalid compilation flag at the end of the scale.
 
 [**YES**](#)  |  [**NO**](#)
 
@@ -92,25 +92,23 @@ Check that you can configure ALL the following elements in the configuration fil
 
 - ceiling color - C
 
-- the map (respect the rules for the map configuration described in subject)
+- the map (see subject for the map configuration details)
 
-Also, check that the program exits on error and exits properly when the configuration file is reconfigured (for example, an invalid path) or the program is launched with a filename that doesn’t end with `.cub` extension.
+Also, check that the program exits on error and exits properly when the configuration file is misconfigured (for example unknown key, double keys an invalid path..) or the filename that doesn’t end with `.cub` extension.
 
-if not, the defense is over and use the appropriate flag incomplete work, crash...
+If not, the defense is over and use the appropriate flag incomplete work, crash...
 
 [**YES**](#)  |  [**NO**](#)
 
 
 ### Technical elements of the display
-We’re going to check the technical elements of the display. Run it.
-
-Please try to execute the following test. If at least one fails, this means that no points will be awarded for this section.
+We’re going to evaluate the technical elements of the display. Run the program and execute the following tests. If at least one fails, no points will be awarded for this section. Move to the next one.
 
 - A window must open at launch of the program, It must stay open during the whole execution.
 
 - An image representing the inside of a maze must be displayed inside the window.
 
-- Hide all or part of the window either by using another window or by using the screen's border, then minimize the window and maximize it back. in all cases, the content of the window must remain consistent
+- Hide all or part of the window either by using another window or by using the screen's border, then minimize the window and maximize it back. in all cases, the content of the window must remain consistent.
 
 [**YES**](#)  |  [**NO**](#)
 
@@ -122,25 +120,25 @@ Move to the next test.
 
 - Click the red cross at the top left of the window. The window must close and the program must exit cleanly
 
-- Press the ESC key. The window must close and the program must exit Press another key, in the case of this test, we will accept Press any key to kill the program, for example, Q
+- Press the ESC key. The window must close and the program must exit Press another key, in the case of this test, we will accept Press any key to kill the program, for example, Q.
 
-- Press the four movement keys (we’ll accept WASD or ZQSD pair) In the order of your liking. Each key press must make the visible result on the window, such as a player's movement/reaction.
+- Press the four movement keys (we’ll accept WASD or ZQSD keys) in the order of your liking. Each key press must render a visible result on the window, such as a player's movement/rotation.
 
 [**YES**](#)  |  [**NO**](#)
 
 
 ### Movements
-In this section, we will evaluate the implementation of the player's movements. Execute the 5 following tests, if at least one fails, this means that no points will be awarded for this section.
+In this section, we will evaluate the implementation of the player's movements/orientation inside the maza. Execute the 5 following tests, if at least one fails, this means that no points will be awarded for this section.
 
 - The player's spawning orientation on the first image must be accordace with the configuration file, test for each cardinal orientation (N, S, E, W).
 
-- The player’s view can rotate to the left and to the right as if the player’s head was moving
+- The the left arrow then the rigth arrow. The player’s view must rotate to the left then and to the right as if the player’s head was moving.
 
 - Press W (or Z) then S. The player’s view must go forward and then backward in a straight line
 
 - Press A (or Q) then D. The player’s view must go to the left and then to the right in a straight line
 
-- During those four movements, was the display smooth? Were we seen in the game "playable" as it is?
+- During those four movements, was the display smooth? By smooth we mean is the game "playable" or is it slow.
 
 [**YES**](#)  |  [**NO**](#)
 
@@ -148,11 +146,11 @@ In this section, we will evaluate the implementation of the player's movements. 
 ### Walls
 In this section, we’ll evaluate the walls in the maze. Execute the 4 following tests. If at least one fails, this means that no points will be awarded for this section.
 
-- The walls’s texture vary depending on which compass point the wall is facing (north, south, east, west) visible and correct
+- The walls’s texture vary depending on which compass point the wall is facing (north, south, east, west). Check that the textures on the walls and perspective are visible and correct
 
-- Check that if you modify the path of a wall texture in the configuration file a modified file reloaded texture when the program is launched
+- Check that if you modify the path of a wall texture in the configuration file, it modifies the rendered textre when the program is re-executed
 
-- Also check that if you use non-existent path it raises an error
+- Also check that if you set a non-existent path it raises an error
 
 - Check that the floor and ceiling colors are well handled when you modify them in the configuration file
 
@@ -162,7 +160,7 @@ In this section, we’ll evaluate the walls in the maze. Execute the 4 following
 ### Error management
 In this section, we will evaluate the program’s error management and reliability. Execute the 4 following tests. If at least one fails, this means that no points will be awarded for this section.
 
-- Run the program using numerous arguments and random data. Even if the program doesn’t analyze any arguments, it must not crash Check that those arguments don’t alternate or create unhandled errors
+- Run the program using numerous arguments and random data. Even if the program doesn’t requiere any arguments, it is critical that those arguments don’t alternate or create unhandled errors
 
 - Check that there are no memory leaks. You can use `top` or `leaks` command in another shell to monitor the memory use is stable. the memory must not increase each time a new action is made
 
@@ -174,7 +172,7 @@ In this section, we will evaluate the program’s error management and reliabili
 
 
 ## Bonus
-We will look at your bonuses if and only if your mandatory part is excellent. This means that you must complete the mandatory part perfectly in order to even move to the bonus. The mandatory part has been entirely and perfectly done, and the error management handles unexpected or bad usage. In case all the mandatory points were not passed during the defense, bonus points must be totally ignored.
+We will look at your bonuses if and only if your mandatory part is excellent. This means that you must complete the mandatory part, beginning to end, and your error managment must be flawless, even in cases twisted or bad usage. So if the mandatory part didn't score all the points during this defense bonuses will be totally ignored.
 
 ### When I’ll be older I’ll be John Carmack
 
