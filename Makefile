@@ -6,7 +6,7 @@
 #    By: victor <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/04 19:37:02 by victor            #+#    #+#              #
-#    Updated: 2025/04/26 22:02:54 by victor           ###   ########.fr        #
+#    Updated: 2025/04/30 11:35:13 by vberdugo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -128,7 +128,7 @@ clean:
 
 fclean: clean
 	@make -C libft fclean
-	rm -rf MLX42/build
+	rm -rf MLX42
 	rm -f $(NAME) $(NAME_BONUS)
 	@echo "$(RED)Executables deleted.$(RESET)"
 
